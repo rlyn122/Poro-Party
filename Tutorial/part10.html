@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Making your first Phaser 3 Game - Part 10</title>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -35,11 +35,13 @@ var config = {
 var player;
 var stars;
 var bombs;
+var powerup;
 var platforms;
 var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
+var invincible = false;
 
 var game = new Phaser.Game(config);
 
@@ -50,6 +52,8 @@ function preload ()
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+
+    this.load.image('powerup', 'assets/powerup.png');
 }
 
 function create ()
@@ -107,10 +111,23 @@ function create ()
         setXY: { x: 12, y: 0, stepX: 70 }
     });
 
+    powerups = this.physics.add.group({
+        key: 'powerup',
+        repeat: 0,
+        setXY: {x: 370, y: 30, stepX: 0 }
+    });
+
     stars.children.iterate(function (child) {
 
         //  Give each star a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+    });
+
+    powerups.children.iterate(function (child) {
+
+        child.setBounceY(Phaser.Math.FloatBetween(0.4,0.8));
+        //child.allowGravity = false;
 
     });
 
@@ -122,10 +139,12 @@ function create ()
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
+    this.physics.add.collider(powerups, platforms);
     this.physics.add.collider(bombs, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, collectStar, null, this);
+    this.physics.add.overlap(player, powerups, collectPowerUp, null, this);
 
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 }
@@ -160,6 +179,11 @@ function update ()
     {
         player.setVelocityY(-330);
     }
+    // if(timer.getElapsed > 5000) {
+    //     invincible = false;
+    //     timer.remove();
+    // }
+
 }
 
 function collectStar (player, star)
@@ -187,19 +211,48 @@ function collectStar (player, star)
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
         bomb.allowGravity = false;
 
+        powerups.children.iterate(function (child) {
+
+            child.enableBody(true, child.x, 0, true, true);
+            //powerup.allowGravity = false;
+        });
+
     }
+}
+
+function collectPowerUp (player, powerup)
+{
+    powerup.disableBody(true, true);
+
+    invincible = true;
+
+    window.setTimeout(toggleInvincibility, 5000);
 }
 
 function hitBomb (player, bomb)
 {
-    this.physics.pause();
+    
+    if(!invincible) {
+        this.physics.pause();
 
-    player.setTint(0xff0000);
+        player.setTint(0xff0000);
 
-    player.anims.play('turn');
+        player.anims.play('turn');
 
-    gameOver = true;
+        gameOver = true;
+    }
+    
 }
+
+function toggleInvincibility() {
+    if(invincible) {
+        invincible = false;
+    }
+    else {
+        invincible = true;
+    }
+}
+
 
 </script>
 
