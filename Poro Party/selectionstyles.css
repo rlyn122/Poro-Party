@@ -1,0 +1,11 @@
+h {
+	color: red;
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	text-align: center;
+	font-size: 75px;
+	font-family: "Lucida Console", monspace, sans-serif;
+	top: 50px;
+}
+
