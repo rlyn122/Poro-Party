@@ -1,0 +1,19 @@
+{
+  "name": "poro-party",
+  "version": "1.0.0",
+  "description": "multiplayer online game poro-party",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitik-merchant/Poro-Party.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mitik-merchant/Poro-Party/issues"
+  },
+  "homepage": "https://github.com/mitik-merchant/Poro-Party#readme"
+}
