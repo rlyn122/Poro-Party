@@ -1,9 +1,13 @@
 body {
-	/*<img src = "Images/cat.jpg" alt = "Cat">
-	 background-color: powderblue; */
-	background-image: url(https://worldofprintables.com/wp-content/uploads/2023/07/White-Cat-Background.jpg);
+	/* background: url("./../assets/startPage.png") no-repeat center center fixed;
+	-webkit-background-size:cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover; */
+	position: relative;
+	background-image: url("./../assets/startPages.png");
 	background-repeat: no-repeat;
-	background-size: cover;
+	background-size: 100% 100vh;
 }
 
 h {
@@ -17,22 +21,40 @@ h {
 	top: 100px;
 }
 
-label {
-	color: black;
-	font-size: 50px;
-	position: relative;
-	top: -65px;
-}
-
-input {
-	position: relative;
-	font-size: 20px;
-	left: -100px;
-	top: -70px;
-}
-
-button {
-	position: relative;
+input[type=text] {
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+			appearance: none;
+	border: none;
+	outline: none;
+	border-bottom: 0.2em solid #ffffff;
+	background: rgba(250, 246, 247, 0.2);
+	border-radius: 0.2em 0.2em 0 0;
+	padding: 0.4em;
+	color: #ffffff;
 	font-size: 30px;
-	top: -200px;
+	position: relative;
+	left: 700px;
+	top: 300px;
+}
+
+input[type=button] {
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+			appearance: none;
+	border: 0.2em solid #ffffff;
+	background: rgba(0, 0, 0, 0);
+	padding: 0.55em 1.5em;
+	color: #ffffff;
+	border-radius: 1em;
+	transition: 0.25s;
+	font-size: 30px;
+	position: relative;
+	top: 400px;
+	left: 215px;
+}
+
+input[type=button]:hover, input[type=button]:focus, input[type=button]:active {
+	background: #000000;
+	color: #fff;
 }
