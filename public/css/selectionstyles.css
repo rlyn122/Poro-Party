@@ -9,10 +9,47 @@ h {
 	top: 50px;
 }
 
-button {
-	position: relative;
-	font-size: 30px;
-	top: 500px;
-	left: 1350px;
+img {
+	object-position: 100px 100px;
 }
 
+input[type=button] {
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+			appearance: none;
+	border: 0.1em solid #000000;
+	background: rgba(0, 0, 0, 0);
+	padding: 0.55em 1.5em;
+	color: #000000;
+	border-radius: 0.5em;
+	transition: 0.25s;
+	font-size: 70px;
+}
+
+input[type=button]:hover, input[type=button]:focus, input[type=button]:active {
+	background: #ff0000;
+	color: #000000;
+}
+
+button {
+	position: relative;
+	height: 200px;
+	width: 200px;
+	font-size: 30px;
+	transition: 0.3s;
+	outline-color: transparent;
+	outline-style: solid;
+	box-shadow: 0 0 0 #5a01a7;
+}
+
+.cats {
+	margin: auto;
+	width: 820px;
+	height: 420px;
+}
+
+.continue {
+	width: 40%;
+	margin: auto;
+	text-align: center;
+}
