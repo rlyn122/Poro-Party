@@ -10,8 +10,14 @@
         }
     </style>
 	<script src="./../scripts/selection.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 	<link rel="stylesheet"  href="css/selectionstyles.css">
 </head>
+
+$('button').on('click', function(){
+	$('button').removeClass('selected');
+	$(this).addClass('selected');
+});
 
 <header>
 	<h>Choose your cat!<h>
@@ -20,14 +26,14 @@
 <body>
 
 	<div class="cats">
-		<button>Cat 1</button>
-		<button>Cat 2</button>
-		<button>Cat 3</button>
-		<button>Cat 4</button>
-		<button>Cat 5</button>
-		<button>Cat 6</button>
-		<button>Cat 7</button>
-		<button>Cat 8</button>
+		<button @click='toggle'>Cat 1</button>
+		<button @click='toggle'>Cat 2</button>
+		<button @click='toggle'>Cat 3</button>
+		<button @click='toggle'>Cat 4</button>
+		<button @click='toggle'>Cat 5</button>
+		<button @click='toggle'>Cat 6</button>
+		<button @click='toggle'>Cat 7</button>
+		<button @click='toggle'>Cat 8</button>
 	</div>
 
 	<div class="continue">
