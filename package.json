@@ -489,7 +489,7 @@
     "yeast": "^0.1.2"
   },
   "scripts": {
-    "start" : "nodemon start"
+    "start": "nodemon start"
   },
   "author": "",
   "license": "ISC"
