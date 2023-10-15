@@ -4,7 +4,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Choose your cat!</title>
-	<link rel="stylesheet"  href="css/selectionStyles.css">
+	<style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+	<script src="./../scripts/selection.js"></script>
+	<link rel="stylesheet"  href="css/selectionstyles.css">
 </head>
 
 <header>
@@ -13,7 +19,22 @@
 
 <body>
 
-	<a href = "mainMap.html"><button>Continue</button></a>
+	<div class="cats">
+		<button>Cat 1</button>
+		<button>Cat 2</button>
+		<button>Cat 3</button>
+		<button>Cat 4</button>
+		<button>Cat 5</button>
+		<button>Cat 6</button>
+		<button>Cat 7</button>
+		<button>Cat 8</button>
+	</div>
+
+	<div class="continue">
+		<form>
+			<input type="button" onClick="mainScreen();" value="Continue"></input>
+		</form>
+	</div>
 
 </body>
 
