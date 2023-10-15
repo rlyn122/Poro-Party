@@ -23,6 +23,19 @@
         <input type="button" onClick="selectionPage();" value="Enter"> </input>
     </form>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        document.addEventListener('keydown', function(event) {
+        // Check if the key pressed is an arrow key
+            if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                // Emit an event to the server with the key pressed
+                socket.emit('arrowKeyPressed', event.key);
+            }
+        });
+    </script>
+
 <body>
 
 <html>

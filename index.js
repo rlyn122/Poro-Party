@@ -1,20 +1,26 @@
-//create express server
+// Import required modules
 const express = require('express');
 const app = express();
-//variable is the instance of http server we are creating
 const server = require('http').createServer(app); 
 const io = require('socket.io')(server, {cors:{origin:"*"}});
 const path = require("path");
 
+// Middleware to serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
 
-//send HTML file
-app.get("/", (req,res) => {
-    res.sendFile(path.join(path.join(__dirname, "public/login.html")))
-})
+// Route to send the login.html file
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public/login.html"));
+});
 
+// Set up socket.io connection handling
 io.on('connection', function(socket){
+    console.log('user connected with socketId ' + socket.id);
 
-    console.log('user connected with socketId '+socket.id);
+    // Listen for the arrowKeyPressed event
+    socket.on('arrowKeyPressed', function(arrowKey) {
+        console.log(`Arrow key pressed: ${arrowKey}`);
+    });
 
     socket.on('event', function(data){
         console.log('event fired');
@@ -23,9 +29,9 @@ io.on('connection', function(socket){
     socket.on('disconnect', function(){ 
         console.log('user disconnected');
     }); 
-
 });
 
-server.listen(3000, ()=>{
-    console.log("Server running on port 3000")
+// Start the server on port 3000
+server.listen(3000, () => {
+    console.log("Server running on port 3000");
 });
