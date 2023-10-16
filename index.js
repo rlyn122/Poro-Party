@@ -5,27 +5,21 @@ const app = express();
 const server = require('http').createServer(app); 
 const io = require('socket.io')(server, {cors:{origin:"*"}});
 const path = require("path");
+const gameState = require('./gameState.js'); // Import the Socket.io setup module
 
+
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 //send HTML file
 app.get("/", (req,res) => {
     res.sendFile(path.join(path.join(__dirname, "public/login.html")))
 })
 
-io.on('connection', function(socket){
+// Initialize socket by passing the instance of the server to the exported function
+gameState(io);
 
-    console.log('user connected with socketId '+socket.id);
-
-    socket.on('event', function(data){
-        console.log('event fired');
-    });
-
-    socket.on('disconnect', function(){ 
-        console.log('user disconnected');
-    }); 
-
-});
-
-server.listen(3000, ()=>{
-    console.log("Server running on port 3000")
+const port = 3000
+server.listen(port, ()=>{
+    console.log(`Server running on port ${3000}`)
 });

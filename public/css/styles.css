@@ -38,7 +38,7 @@ input[type=text] {
 	top: 300px;
 }
 
-input[type=button] {
+button {
 	-webkit-appearance: none;
 	   -moz-appearance: none;
 			appearance: none;
@@ -54,7 +54,7 @@ input[type=button] {
 	left: 215px;
 }
 
-input[type=button]:hover, input[type=button]:focus, input[type=button]:active {
+button:hover, input button:focus, input button:active {
 	background: #000000;
 	color: #fff;
 }
