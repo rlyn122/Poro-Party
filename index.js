@@ -12,6 +12,12 @@ app.get("/", (req,res) => {
     res.sendFile(path.join(path.join(__dirname, "public/login.html")))
 })
 
+app.get("/asdf", (req,res) => {
+    res.sendFile(path.join(path.join(__dirname, "public/selection.html")))
+})
+
+
+
 io.on('connection', function(socket){
 
     console.log('user connected with socketId '+socket.id);
