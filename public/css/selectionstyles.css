@@ -32,24 +32,40 @@ input[type=button]:hover, input[type=button]:focus, input[type=button]:active {
 }
 
 button {
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+			appearance: none;
+	border: 0.1em solid #000000;
 	position: relative;
 	height: 200px;
 	width: 200px;
 	font-size: 30px;
+	margin: 5px;
+}
+
+button:hover {
+	padding: 0.55em 1.5em;
+	border-radius: 0.5em;
 	transition: 0.3s;
 	outline-color: transparent;
 	outline-style: solid;
-	box-shadow: 0 0 0 #5a01a7;
+	box-shadow: 0 0 0 4px #5a01a7;
+}
+
+button:active {
+	background-color: 0 0 0 4px #5a01a7;
 }
 
 .cats {
 	margin: auto;
-	width: 820px;
+	width: 870px;
 	height: 420px;
 }
 
 .continue {
 	width: 40%;
+	position: relative;
+	top: 5px;
 	margin: auto;
 	text-align: center;
 }
