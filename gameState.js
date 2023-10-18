@@ -2,8 +2,8 @@
 const code_length = 5;
 const GameRooms = {
   //[roomKey]: {
-  // gameScore: 0,
-  // players: {},
+  //gameScore: 0,
+  //players: {},
     //[players]: {
       //rotation: 0,
       //x: 400,
