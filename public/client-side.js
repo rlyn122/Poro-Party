@@ -8,8 +8,12 @@ const socket = io();
             console.log(`room ${key} does not exist`);
         })
 
+
+        //confirmation a player entered a valid room
         socket.on("newPlayer",(playerInfo)=>{
             console.log(`A new player ${playerInfo.playerId} has joined your room, num players = ${playerInfo.numPlayers}`);
+            //send html page to lobby screen ADD FUNCTIONALITY LATER
+            enterLobby();
         })
 
         
@@ -21,8 +25,14 @@ const socket = io();
                     socket.emit('arrowKeyPressed', event.key);
                 }
             });
+        
+        //send html page to lobby screen
+        function enterLobby(){
+            
+        }
 
 
+        //communicate with server to joinROom
         function joinRoom(event) {
             event.preventDefault();
             
