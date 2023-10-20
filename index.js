@@ -18,6 +18,4 @@ app.get("/", (req,res) => {
 gameState(io);
 
 const port = 3000
-server.listen(port, ()=>{
-    console.log(`Server running on port ${3000}`)
-});
+server.listen(process.env.PORT || port);
