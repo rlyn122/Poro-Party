@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumper Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+
+    <!-- 引入Google的像素字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(45deg, #0b3d91, #000000);
+            overflow: hidden;
+            color: #00f3ff;
+            text-shadow: 0 0 5px #00f3ff;
+        }
+
+        #game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 5px solid #00f3ff;
+            box-shadow: 0 0 15px #00f3ff, inset 0 0 15px #00f3ff;
+            position: relative;
+        }
+
+        #game-container::before, #game-container::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 2px dashed #00f3ff;
+            box-shadow: 0 0 10px #00f3ff;
+            animation: rotateEffect 60s infinite linear;
+        }
+
+        #game-container::after {
+            animation-direction: reverse;
+            animation-duration: 30s;
+        }
+
+        canvas {
+            border: 3px solid #00f3ff;
+            background-color: #1e1e1e;
+        }
+
+        @keyframes rotateEffect {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 霓虹效果 */
+        h1, h2, h3, h4, h5, h6, p {
+            text-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff;
+        }
+
+        /* 媒体查询 */
+        @media (max-width: 600px) {
+            #game-container {
+                border-width: 3px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+    <script src="game.js"></script>
+</body>
+</html>
