@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SocketIO test</title>
+    <title>Lobby test</title>
+    <style>
+        body {
+            background-color:whitesmoke;
+        }
+        canvas{
+            width:80%;
+        }
+    </style>
 </head>
 <body>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script> 
-    
-    <script>
-        var socket = io("http://localhost:3000"); socket.on("message-from-server-to-client", function(msg) {
-        document.getElementById('message').innerHTML = msg; });
-        socket.emit('message-from-client-to-server', 'Hello World!'); 
-    </script>
-    <p>Socker.io Hello World client started!</p>
-    <p id="message"></p>
-    
+    <div id = "mygame"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./bundle.js" charset="UTF-8"></script>
 </body>
 </html>
