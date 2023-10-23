@@ -1,3 +1,9 @@
+// 1. add obstacles/enemies/garbage shooter
+// 2. add more types of platform: one-time platform - cloud/SOLID platforms cant pass through/booster platform/ moving platform/ cant jump too high platform
+// 3. add power-up system for collecting milk/fish (bonus: airbone/non gravity/etc)
+// 4. add ending system for the game: cats go higher so the platform becomes looser/ending gate at far ending
+// 5. different colors for kittens
+
 class PlayScene extends Phaser.Scene {
     constructor() {
         super({ key: 'PlayScene' });
@@ -11,18 +17,9 @@ class PlayScene extends Phaser.Scene {
         this.load.image('pixel', 'assets/pixel_1.png');
         this.load.image('background', 'assets/background4.jpg');
 
-        this.load.image('gif_frame_1', 'assets/gif_frames/backgroundFrame1.png');
-        this.load.image('gif_frame_2', 'assets/gif_frames/backgroundFrame2.png');
-        this.load.image('gif_frame_3', 'assets/gif_frames/backgroundFrame3.png');
-        this.load.image('gif_frame_4', 'assets/gif_frames/backgroundFrame4.png');
-        this.load.image('gif_frame_5', 'assets/gif_frames/backgroundFrame5.png');
-        this.load.image('gif_frame_6', 'assets/gif_frames/backgroundFrame6.png');
-        this.load.image('gif_frame_7', 'assets/gif_frames/backgroundFrame7.png');
-        this.load.image('gif_frame_8', 'assets/gif_frames/backgroundFrame8.png');
-        this.load.image('gif_frame_9', 'assets/gif_frames/backgroundFrame9.png');
-        this.load.image('gif_frame_10', 'assets/gif_frames/backgroundFrame10.png');
-        this.load.image('gif_frame_11', 'assets/gif_frames/backgroundFrame11.png');
-        this.load.image('gif_frame_12', 'assets/gif_frames/backgroundFrame12.png');
+        for (let i = 0; i <= 49; i++) {
+            this.load.image(`gif_frame_${i}`, `assets/gif_frames/gif_frame_${i}.png`);
+        }
         
 
         for (let i = 1; i <= 7; i++) {
@@ -81,20 +78,20 @@ class PlayScene extends Phaser.Scene {
         //background.setScrollFactor(0);
 
         let frames = [];
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 49; i++) {
             frames.push({ key: 'gif_frame_' + i });
         }
         
         this.anims.create({
             key: 'gif_animation',
             frames: frames,
-            frameRate: 20,  // 这取决于您的GIF的帧率
+            frameRate: 8,  // 这取决于您的GIF的帧率
             repeat: -1  // 无限循环
         });
         
         let gifSprite = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, 'gif_frame_1');
         gifSprite.setScrollFactor(0);
-        gifSprite.setScale(0.27);
+        gifSprite.setScale(1.25);
         gifSprite.setDepth(-100);  // 确保GIF背景位于其他游戏元素的后面
         gifSprite.play('gif_animation');
         
@@ -109,7 +106,6 @@ class PlayScene extends Phaser.Scene {
         this.physics.world.setBounds(0, -20000, this.cameras.main.width, 40000);
 
         this.cursor = this.input.keyboard.createCursorKeys();
-        this.cameras.main.startFollow(this.hero, false, 1, 0.05, 0, -2000);
 
         for (let i = 0; i < 3; i++) {
             this.cloudCreate(this.cameras.main.height - i * 200);
@@ -144,17 +140,49 @@ class PlayScene extends Phaser.Scene {
         this.bgm = this.sound.add('bgm', { loop: true });
         this.jumpSound = this.sound.add('jump');
         this.collisionSound = this.sound.add('collision');
-        this.bgm.setVolume(0.5);
-        this.jumpSound.setVolume(0.7);
-        this.collisionSound.setVolume(1); 
+        this.bgm.setVolume(0.25);
+        this.jumpSound.setVolume(0.35);
+        this.collisionSound.setVolume(0.5); 
+
+        this.lastPlatformY = this.cameras.main.height;
+        this.maxHeightReached = this.cameras.main.height;
         
     }
 
     update() {
         this.cameras.main.setBounds(0, -this.hero.yChange, this.cameras.main.width, this.cameras.main.height + this.hero.yChange);
 
-        this.cameraYMin = Math.min(this.cameraYMin, this.hero.y - this.cameras.main.height + 130);
-        this.cameras.main.scrollY = this.cameraYMin;
+
+        // 根据更高的角色移动camera
+        const higherHeroY = Math.min(this.hero.y, this.hero2.y);
+
+        if (typeof this.maxHeightReached === 'undefined' || higherHeroY < this.maxHeightReached) {
+            this.maxHeightReached = higherHeroY;
+        }
+        
+        this.hero.yChange = Math.max(this.hero.yChange, Math.abs(this.hero.y - this.hero.yOrig));
+        this.hero2.yChange = Math.max(this.hero2.yChange, Math.abs(this.hero2.y - this.hero2.yOrig));
+        
+        const higherYChange = Math.max(this.hero.yChange, this.hero2.yChange);
+        this.cameras.main.setBounds(0, -higherYChange, this.cameras.main.width, this.cameras.main.height + higherYChange);
+        
+        // 使用 maxHeightReached 来设置相机的 scrollY
+        this.cameras.main.scrollY = this.maxHeightReached - this.cameras.main.height + 300;
+
+
+        let keys = this.input.keyboard.addKeys('W,A,S,D');
+
+        if (keys.A.isDown) {
+            this.hero2.body.setVelocityX(-250);
+        } else if (keys.D.isDown) {
+            this.hero2.body.setVelocityX(250);
+        } else {
+            this.hero2.body.setVelocityX(0);
+        }
+        
+        if (keys.W.isDown && this.hero2.body.touching.down) {
+            this.hero2.body.setVelocityY(-400);
+        }
 
         if (this.cursor.left.isDown) {
             this.hero.body.setVelocityX(-250);
@@ -184,10 +212,19 @@ class PlayScene extends Phaser.Scene {
 
 
 
-        if (this.hero.y > this.cameras.main.scrollY + this.cameras.main.height) {
+        this.platforms.getChildren().forEach(platform => {
+            if (this.hero.body.touching.down && platform.getBounds().contains(this.hero.x, this.hero.y - 1)) {
+                this.lastPlatformY = platform.y;
+            }
+        });
+    
+        // 检查任意一个角色是否已经掉落出屏幕下方
+        if (this.hero.y > this.cameras.main.scrollY + this.cameras.main.height+110 || 
+            this.hero2.y > this.cameras.main.scrollY + this.cameras.main.height+110) {
             this.bgm.stop();
             this.scene.restart();
         }
+
 
         
         
@@ -197,12 +234,12 @@ class PlayScene extends Phaser.Scene {
             highestPlatform = Math.min(highestPlatform, platform.y);
         });
     
-        if (highestPlatform > this.cameras.main.scrollY + 200) {
+        if (highestPlatform > this.cameras.main.scrollY + 100) {
             let x;
             let y;
             do {
                 x = Phaser.Math.Between(0, this.cameras.main.width - 50);
-                y = highestPlatform - Phaser.Math.Between(80, 130);
+                y = highestPlatform - Phaser.Math.Between(60, 100);
             } while (this.isOverlappingWithClouds(x, y));
             
             let platformType = 'platform' + Phaser.Math.Between(1, 5);
@@ -251,12 +288,14 @@ class PlayScene extends Phaser.Scene {
         let bottomPlatform = this.platforms.create(this.cameras.main.width / 2, this.cameras.main.height - 8, bottomPlatformType);
         bottomPlatform.setScale(0.15).refreshBody();
     
-        for (let i = 0; i < 9; i++) {
-            let x = Phaser.Math.Between(0, this.cameras.main.width - 50);
-            let y = this.cameras.main.height - 100 - 100 * i;
-            let platformType = 'platform' + Phaser.Math.Between(1, 5);
-            let platform = this.platforms.create(x, y, platformType);
-            platform.setScale(0.07).refreshBody();
+        for (let i = 0; i < 100; i++) {
+            for (let j = 0; j < 2; j++) {
+                let x = Phaser.Math.Between(j * this.cameras.main.width / 2, (j + 1) * this.cameras.main.width / 2 - 50);
+                let y = this.cameras.main.height - 100 - 80 * i;
+                let platformType = 'platform' + Phaser.Math.Between(1, 5);
+                let platform = this.platforms.create(x, y, platformType);
+                platform.setScale(0.07).refreshBody();
+            }
             
         }
     }
@@ -273,15 +312,34 @@ class PlayScene extends Phaser.Scene {
         this.physics.add.existing(this.hero);
         this.hero.body.setGravityY(500);
         this.hero.body.checkCollision.up = false;
-        this.hero.body.checkCollision.left = false;
-        this.hero.body.checkCollision.right = false;
+        this.hero.body.checkCollision.left = true;
+        this.hero.body.checkCollision.right = true;
+
+        // 第二个角色
+        this.hero2 = this.add.sprite(this.cameras.main.centerX, this.cameras.main.height - 36, 'hero');
+        this.hero2.setOrigin(0.5);
+        this.hero2.setScale(0.13);
+        this.hero2.yOrig = this.hero2.y;
+        this.hero2.yChange = 0;
+        this.physics.add.existing(this.hero2);
+        this.hero2.body.setGravityY(500);
+        this.hero2.setDepth(100);
+        this.hero2.body.checkCollision.up = false;
+        this.hero2.body.checkCollision.left = true;
+        this.hero2.body.checkCollision.right = true;
+
+        // 添加碰撞检测
+        this.physics.add.collider(this.hero, this.platforms);
+        this.physics.add.collider(this.hero2, this.platforms);
+        // 添加两个角色之间的碰撞检测
+        this.physics.add.collider(this.hero, this.hero2);
     }
 }
 
 let config = {
     type: Phaser.CANVAS,
-    width: 300,  // 根据需要调整
-    height: 500,  // 根据需要调整
+    width: 900,  // 根据需要调整
+    height: 600,  // 根据需要调整
     parent: 'game-container',  // 指定父容器
     scene: [PlayScene],
     physics: {
