@@ -183,11 +183,20 @@
                 player2.setVelocityX(player2.body.velocity.x);
             }
 
-            if (ball.y > 600) {
+            if (ball.y > 510) {
                 // Ball has fallen to the ground
                 gameOver = true;
                 console.log("Game Over!");
             }
+        } 
+        else {
+            // Game is over, freeze everything
+            player1.setVelocityX(0);
+            player1.setVelocityY(0);
+            player2.setVelocityX(0);
+            player2.setVelocityY(0);
+            ball.setVelocityX(0);
+            ball.setVelocityY(0);
         }
     }
 
