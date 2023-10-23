@@ -15,20 +15,26 @@ const GameRooms = {
   // }
 }
 
+GameRooms[200] = {
+  gameScore: 0,
+  players: {},
+  numPlayers: 0,
+  state: 0
+};
+
 module.exports = (io) => {
   
 io.on('connection', (socket)=>{
-
   console.log('user connected with socketId '+socket.id);
-  //Adds user to a lobby with the same code
+  //Listen for a joinRoom user to a lobby with the same code
   socket.on('joinRoom', (data) => {
-
+    
     //check if room exists
-    if(GameRooms.hasOwnProperty(data.key)){
+    try{
     const roomInfo = GameRooms[data.key];
-    const players = roomInfo.players;
-    // Add new player to GameRooms Object to store data
-    players[socket.id] = {
+    console.log(roomInfo);
+    //add new player data to roomInfo
+    roomInfo.players[socket.id] = {
       rotation:0,
       x:400,
       y:300,
@@ -37,22 +43,34 @@ io.on('connection', (socket)=>{
       playerId: socket.id,
       power: null
     }
+
+    //TODO: change to Object.keys(roomInfo.players).length; later
     roomInfo.numPlayers +=1;
-    console.log(`Player ${players[socket.id].username} has joined ${data.key}`);
+    console.log(`Player ${roomInfo.players[socket.id].username} has joined ${data.key}`);
 
     //add player to sockertIO room
     socket.join(data.key);
-    io.to(data.key).emit("newPlayer",{
-      playerId: socket.id,
+    
+    //set initial state
+    socket.emit("setState",roomInfo)
+    
+    //send current players object to new player
+    socket.emit("currentPlayers",{
+      players: roomInfo.players,
       numPlayers: roomInfo.numPlayers
-     })
+     });
+    
+    //emit only to players in the socketIO room of the new player
+    socket.to(data.key).emit("newPlayer", {
+      playerInfo: roomInfo.players[socket.id],
+      numPlayers: roomInfo.numPlayers
+    });
+    
     }
 
     //user enters a room that has not been created
-    else{
-      console.log(`Room ${data.key} does not exist`)
-      //add emit message to client side
-      socket.emit("RoomDNE", data.key)
+    catch(error){
+      console.log(`Room ${data.key} does not exist or ${error}`);
     }
   });
 

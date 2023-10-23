@@ -53,5 +53,5 @@ const socket = io();
             event.preventDefault();
     
             // Emit the form data to the server
-            socket.emit('createRoom', );
+            socket.emit('createRoom',);
         }
