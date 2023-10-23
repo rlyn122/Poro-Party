@@ -85,7 +85,7 @@ export default class MainScene extends Phaser.Scene{
 
     //add other players to your screen
     addOtherPlayers(scene, playerInfo){
-        const otherPlayer = scene.add.sprite(playerInfo.x+Math.random()*100,playerInfo.y+Math.random()*100,"cat1");
+        const otherPlayer = scene.add.sprite(playerInfo.x+Math.random()*500,playerInfo.y+Math.random()*500,"cat1");
         otherPlayer.playerId = playerInfo.playerId;
         scene.otherPlayers.add(otherPlayer);
     }
