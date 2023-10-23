@@ -1,5 +1,3 @@
-
-/** @type {import("../typings/phaser")} */
 //bring in the scenes
 import "phaser";
 import config from "./config/config.js";
@@ -15,9 +13,11 @@ class Game extends Phaser.Game {
         //TODO: add scenes here
         this.scene.add("MainScene",MainScene);
         this.scene.add("Lobby",Lobby);
+        console.log("hello!");
 
         // start game in main scene
         this.scene.start("MainScene");
+        console.log("Mainscene Launched");
     }
 }
 
