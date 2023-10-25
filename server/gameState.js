@@ -5,6 +5,7 @@ const GameRooms = {
   //gameScore: 0,
   //players: {},
     //[players]: {
+      //cat:1-8 (whichever cat the person selects)
       //rotation: 0,
       //x: 400,
       //y: 300,
@@ -19,22 +20,24 @@ GameRooms[200] = {
   gameScore: 0,
   players: {},
   numPlayers: 0,
-  state: 0
+  state: 0,
+  roomKey:200
 };
 
 module.exports = (io) => {
   
 io.on('connection', (socket)=>{
   console.log('user connected with socketId '+socket.id);
+
   //Listen for a joinRoom user to a lobby with the same code
+  //TODO: add code checking for room isvalid
   socket.on('joinRoom', (data) => {
     
-    //check if room exists
-    try{
-    const roomInfo = GameRooms[data.key];
-    console.log(roomInfo);
+    const roomKey = data.key;
+    const roomInfo = GameRooms[roomKey];
     //add new player data to roomInfo
     roomInfo.players[socket.id] = {
+      cat:data.cat,
       rotation:0,
       x:400,
       y:300,
@@ -46,16 +49,17 @@ io.on('connection', (socket)=>{
 
     //TODO: change to Object.keys(roomInfo.players).length; later
     roomInfo.numPlayers +=1;
-    console.log(`Player ${roomInfo.players[socket.id].username} has joined ${data.key}`);
+    console.log(`${roomInfo.players[socket.id].username} joined room ${roomKey}. Room data: `)
+    console.log(roomInfo);
 
     //add player to sockertIO room
     socket.join(data.key);
     
-    //set initial state
-    socket.emit("setState",roomInfo)
+    //Emit initial state of game for client
+    socket.emit("setState", roomInfo)
     
     //send current players object to new player
-    socket.emit("currentPlayers",{
+    socket.emit("currentPlayers", {
       players: roomInfo.players,
       numPlayers: roomInfo.numPlayers
      });
@@ -66,12 +70,7 @@ io.on('connection', (socket)=>{
       numPlayers: roomInfo.numPlayers
     });
     
-    }
-
-    //user enters a room that has not been created
-    catch(error){
-      console.log(`Room ${data.key} does not exist or ${error}`);
-    }
+    
   });
 
 
@@ -98,6 +97,8 @@ io.on('connection', (socket)=>{
   
   socket.on('disconnect', ()=>{ 
     console.log(`user ${socket.id} has disconnected`);
+
+    /**
     //Find which room they are in
     let key = 0;
 
@@ -125,6 +126,7 @@ io.on('connection', (socket)=>{
     numPlayers: GameRooms[key].numPlayers
   })
   }
+   */
 
   }); 
 
