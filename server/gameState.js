@@ -32,7 +32,9 @@ io.on('connection', (socket)=>{
   //Listen for a joinRoom user to a lobby with the same code
   //TODO: add code checking for room isvalid
   socket.on('joinRoom', (data) => {
-    
+    //add player to sockertIO room
+    socket.join(data.key);
+
     const roomKey = data.key;
     const roomInfo = GameRooms[roomKey];
     //add new player data to roomInfo
@@ -47,13 +49,12 @@ io.on('connection', (socket)=>{
       power: null
     }
 
-    //TODO: change to Object.keys(roomInfo.players).length; later
-    roomInfo.numPlayers +=1;
+    //update number of Players
+    roomInfo.numPlayers =Object.keys(roomInfo.players).length;
     console.log(`${roomInfo.players[socket.id].username} joined room ${roomKey}. Room data: `)
     console.log(roomInfo);
 
-    //add player to sockertIO room
-    socket.join(data.key);
+    
     
     //Emit initial state of game for client
     socket.emit("setState", roomInfo)
@@ -63,16 +64,25 @@ io.on('connection', (socket)=>{
       players: roomInfo.players,
       numPlayers: roomInfo.numPlayers
      });
-    
-    //emit only to players in the socketIO room of the new player
-    socket.to(data.key).emit("newPlayer", {
-      playerInfo: roomInfo.players[socket.id],
-      numPlayers: roomInfo.numPlayers
-    });
-    
-    
+
+
+     //emit to the room of new player arrival
+     socket.to(roomKey).emit("newPlayer", {
+      playerInfo:roomInfo.players[socket.id],
+      numPlayers:roomInfo.numPlayers
+     })
+      
   });
 
+  //listen for movement event and update player object
+  socket.on("playerMovement", (arg)=>{
+    const {x, y, roomKey} = arg
+    GameRooms[roomKey].players[socket.id].x = x;
+    GameRooms[roomKey].players[socket.id].y = y;
+
+    //emit to all players the player has moved
+    socket.to(roomKey).emit("playerMoved",GameRooms[roomKey].players[socket.id]);
+  }) ;
 
 
   //Creates a new lobby with the code
@@ -98,7 +108,7 @@ io.on('connection', (socket)=>{
   socket.on('disconnect', ()=>{ 
     console.log(`user ${socket.id} has disconnected`);
 
-    /**
+    
     //Find which room they are in
     let key = 0;
 
@@ -126,7 +136,7 @@ io.on('connection', (socket)=>{
     numPlayers: GameRooms[key].numPlayers
   })
   }
-   */
+  
 
   }); 
 
