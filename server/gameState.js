@@ -108,37 +108,38 @@ io.on('connection', (socket)=>{
   socket.on('disconnect', ()=>{ 
     console.log(`user ${socket.id} has disconnected`);
 
-    
     //Find which room they are in
-    let key = 0;
+    let roomKey;
 
-    //find what room key player is in
-    for(const roomKey in GameRooms){
-      if (GameRooms.hasOwnProperty(roomKey)){
-      for(const playerId in GameRooms[roomKey].players){
-        if (GameRooms[roomKey].players.hasOwnProperty(playerId) && GameRooms[roomKey].players[playerId].playerId == socket.id)
-        {
-          key = roomKey;
-        }
+    //find what room key player is in by iterating through all roomKeys and players
+    for(const room in GameRooms){
+      for(const player in GameRooms[room].players){
+          if(GameRooms[room].players[player].playerId==socket.id){
+            roomKey = room;
+            break;
+          }
+      }
+      if(roomKey){
+        break;
       }
     }
-  }
-
-    //if the player has joined a room
-  if (GameRooms[key] != undefined && GameRooms[key].hasOwnProperty(players)){
-  //Remove player from gameRoom data
-  delete GameRooms[key].players[socket.id];
-  GameRooms[key].numPlayers = Object.keys(roomInfo.players).length;
-
-  //Disconnect player from socket.io room
-  io.to(key).emit("disconnected", {
-    playerId: socket.id,
-    numPlayers: GameRooms[key].numPlayers
-  })
-  }
   
 
-  }); 
+
+  if(roomKey) {
+  roomInfo = GameRooms[roomKey];
+  //Remove player from gameRoom data
+  delete roomInfo.players[socket.id];
+  //update numPlayers
+  roomInfo.numPlayers = Object.keys(roomInfo.players).length;
+
+  //Disconnect player from socket.io room
+  io.to(roomKey).emit("disconnected", {
+    playerId: socket.id,
+    numPlayers: roomInfo.numPlayers
+  });
+  }
+}); 
 
   // Listen for the arrowKeyPressed event
   socket.on('arrowKeyPressed', function(arrowKey) {
@@ -146,7 +147,7 @@ io.on('connection', (socket)=>{
   });
   
   });
-};
+  };
 
 
 

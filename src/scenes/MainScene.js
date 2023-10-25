@@ -81,6 +81,17 @@ export default class MainScene extends Phaser.Scene{
             })
         })
 
+        this.socket.on("disconnect", (arg)=>{
+            const {playerId, numPlayers} = arg;
+            scene.state.numPlayers = numPlayers;
+            scene.otherPlayers.getChildren().forEach((otherPlayer)=>{
+                //remove the sprite of the player that disconnected
+                if(playerId == otherPlayer.playerId){
+                    otherPlayer.destroy();
+                }
+            });
+        })
+
         //add cursors key object
         this.cursors = this.input.keyboard.createCursorKeys();
 
