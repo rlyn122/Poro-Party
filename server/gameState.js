@@ -31,6 +31,15 @@ io.on('connection', (socket)=>{
 
   //Listen for a joinRoom user to a lobby with the same code
   //TODO: add code checking for room isvalid
+  socket.on('isKeyValid', (key)=>{
+    if(key in Object.keys(GameRooms)){
+      socket.emit("KeyisValid");
+    }
+    else{
+      socket.emit("KeyNotValid");
+    }
+  })
+
   socket.on('joinRoom', (data) => {
     //add player to sockertIO room
     socket.join(data.key);
@@ -77,9 +86,10 @@ io.on('connection', (socket)=>{
   //listen for movement event and update player object
   socket.on("playerMovement", (arg)=>{
     const {x, y, roomKey} = arg
+    if(x!=null&&y!=null){
     GameRooms[roomKey].players[socket.id].x = x;
     GameRooms[roomKey].players[socket.id].y = y;
-
+  }
     //emit to all players the player has moved
     socket.to(roomKey).emit("playerMoved",GameRooms[roomKey].players[socket.id]);
   }) ;

@@ -28,15 +28,16 @@ export default class MainScene extends Phaser.Scene{
         this.socket = io();
         
         //ADD BACK LATER launch Lobby
-        //scene.scene.launch("Lobby", {socket:scene.socket})
+        scene.scene.launch("Login", {socket:scene.socket})
 
         //TEST CODE: sockets to join scene, let this player join room 200
+        /*
         this.socket.emit("joinRoom",{
             key:200,
             username: "Joey",
             cat:"cat2"
         })
-
+        **/
         //sets the scene's state, including information such as roomkey, players, and numPlayers
         this.socket.on("setState",  (state) =>{
             const {roomKey,players,numPlayers} = state;

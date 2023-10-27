@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Choose your cat!</title>
+	<style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+	<script src="./../scripts/selection.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<link rel="stylesheet"  href="css/selectionstyles.css">
+</head>
+
+$('button').on('click', function(){
+	$('button').removeClass('selected');
+	$(this).addClass('selected');
+});
+
+<header>
+	<h>Choose your cat!<h>
+</header>
+
+<body>
+
+	<div class="cats">
+		<button @click='toggle'>Cat 1</button>
+		<button @click='toggle'>Cat 2</button>
+		<button @click='toggle'>Cat 3</button>
+		<button @click='toggle'>Cat 4</button>
+		<button @click='toggle'>Cat 5</button>
+		<button @click='toggle'>Cat 6</button>
+		<button @click='toggle'>Cat 7</button>
+		<button @click='toggle'>Cat 8</button>
+	</div>
+
+	<div class="continue">
+		<form>
+			<input type="button" onClick="mainScreen();" value="Continue"></input>
+		</form>
+	</div>
+
+</body>
+
+</html>

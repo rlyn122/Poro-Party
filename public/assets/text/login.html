@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Poro Party Login</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <form id="joinRoomForm" onsubmit="joinRoom(event);">
+        <input type="text" id="username" placeholder="Username" required> </input>
+
+        <input type="text" id="code" placeholder="Room Code" required> </input>
+
+        <button type="submit">Enter</button>
+    </form>
+
+    <form id="createRoomForm" onsubmit="createRoom(event);">
+        <button type="submit">Create Room</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src ="client-side.js"></script>
+        
+<body>
+
+<html>
+
+
+
