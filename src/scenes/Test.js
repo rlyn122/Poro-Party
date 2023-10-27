@@ -15,8 +15,10 @@ export default class Test extends Phaser.Scene {
     }
 
     create(){
-        let htmlString = this.cache.text.get('form');
-        let domElement = this.add.dom(400, 300, null, null, htmlString);
+        const element = this.add.dom(400, 600).createFromHTML('form');
+        element.setVisible(true);
+        console.log("form created2")
+
     }
 
 }

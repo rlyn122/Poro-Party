@@ -18,7 +18,7 @@ export default{
         default: "arcade"
     },
     dom: {
-        CreateContainer: true,
+        createContainer: true,
     },
     //specifies scenes that will be included in the game
     scene: [],

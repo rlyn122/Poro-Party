@@ -2,20 +2,6 @@ import Phaser from "phaser";
 
 export default class Login extends Phaser.Scene {
 
-    loginhtml = 
-     <div class="container" style="width: 200px; height: 100px;">
-        <form>
-          <input
-            type="text"
-            id="code-form-id"
-            name="code-form"
-            placeholder="enter room key"
-          />
-          <button type="button" id="enterRoom-id" name="enterRoom">enter</button>
-        </form>
-      </div>
-      ;
-
     constructor(){
         super("Login");
         this.state = {};
@@ -29,7 +15,6 @@ export default class Login extends Phaser.Scene {
 
     preload(){
         this.load.html('codeform', "assets/text/codeform.html");
-        this.cache.html.add('codeform',htmlLogin)
     }  
 
     create() {
@@ -52,7 +37,7 @@ export default class Login extends Phaser.Scene {
     
         //title
         scene.title = scene.add.text(100, 75, "Poro Party!", {
-          fill: "#add8e6",
+          fill: "#E75480",
           fontSize: "66px",
           fontStyle: "bold",
         });
@@ -69,9 +54,13 @@ export default class Login extends Phaser.Scene {
         //right popup
         scene.boxes.strokeRect(425, 200, 275, 100);
         scene.boxes.fillRect(425, 200, 275, 100);
-        scene.inputElement = scene.add.dom(562.5, 250).createFromCache("codeform");
-        scene.inputElement.setDisplaySize(200, 100);
-        scene.inputElement.setPosition(0, 0);
+        scene.JoinRoomButton = scene.add.text(465, 215, "Join Room", {
+          fill: "#000000",
+          fontSize: "20px",
+          fontStyle: "bold",
+        });
+        scene.inputElement = scene.add.dom(562.5, 240).createFromCache("codeform");
+
 
         console.log(scene.inputElement)
         /*
