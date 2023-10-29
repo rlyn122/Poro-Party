@@ -31,13 +31,12 @@ io.on('connection', (socket)=>{
 
   //Listen for a joinRoom user to a lobby with the same code
   //TODO: add code checking for room isvalid
-  socket.on('isKeyValid', (data)=>{
-    
-    if(GameRooms.hasOwnProperty(data.key)){
-      socket.emit("KeyisValid", data);
+  socket.on('isKeyValid', (key)=>{
+    if(key in Object.keys(GameRooms)){
+      socket.emit("KeyisValid");
     }
     else{
-      socket.emit("KeyNotValid",data);
+      socket.emit("KeyNotValid");
     }
   })
 
@@ -97,7 +96,7 @@ io.on('connection', (socket)=>{
 
 
   //Creates a new lobby with the code
-  socket.on('getRoomCode', () => {
+  socket.on('createRoom', () => {
     // Generate room code 
     let key = codeGen();
     // Check code does not already exist
@@ -111,7 +110,8 @@ io.on('connection', (socket)=>{
       numPlayers: 0,
       state: 0
     };
-    
+
+    console.log(`User ${socket.id} generated room ${key}`)
     socket.emit("roomCreated", key)
 });
   
@@ -150,6 +150,11 @@ io.on('connection', (socket)=>{
   });
   }
 }); 
+
+  // Listen for the arrowKeyPressed event
+  socket.on('arrowKeyPressed', function(arrowKey) {
+    console.log(`Arrow key pressed: ${arrowKey}`);
+  });
   
   });
   };
