@@ -28,8 +28,9 @@ export default class MainScene extends Phaser.Scene{
         this.socket = io();
         
         //ADD BACK LATER launch Lobby
-        scene.scene.launch("Login", {socket:scene.socket})
+        scene.scene.launch("Login", {socket:scene.socket});
 
+        scene.physics.resume();
         //TEST CODE: sockets to join scene, let this player join room 200
         /*
         this.socket.emit("joinRoom",{

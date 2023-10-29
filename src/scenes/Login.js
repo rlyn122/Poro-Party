@@ -59,47 +59,68 @@ export default class Login extends Phaser.Scene {
           fontSize: "20px",
           fontStyle: "bold",
         });
-        scene.inputElement = scene.add.dom(562.5, 240).createFromCache("codeform");
+
+        scene.inputElement = scene.add.dom(562.5, 260).createFromCache("codeform");
 
 
-        console.log(scene.inputElement)
-        /*
-        scene.inputElement.addListener("click");
-        scene.inputElement.on("click", function (event) {
-          if (event.target.name === "enterRoom") {
-            const input = scene.inputElement.getChildByName("code-form");
-            scene.socket.emit("isKeyValid", input.value);
+        const form = document.getElementById('roomForm');
+
+        form.addEventListener('submit',function(event){
+          event.preventDefault(); //prevent default form submission
+          const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
+          const codeInput = scene.inputElement.node.querySelector('input[name="code-form"]');
+    
+          if (usernameInput && codeInput) {
+            const username = usernameInput.value;
+            const key = codeInput.value;
+          
+          
+          if (username && key){
+            const data = {username, key}; 
+            scene.socket.emit("isKeyValid", data);
           }
-        });
+          else{
+            console.log("Please put in room key and username")
+          }
+        }
+        })
+
     
         scene.requestButton.setInteractive();
         scene.requestButton.on("pointerdown", () => {
           scene.socket.emit("getRoomCode");
         });
     
-        scene.notValidText = scene.add.text(670, 295, "", {
+        
+        scene.notValidText = scene.add.text(562, 295, "", {
           fill: "#ff0000",
           fontSize: "15px",
+          fontStyle: "bold"
         });
+
+        //place to display roomKey text
         scene.roomKeyText = scene.add.text(210, 250, "", {
           fill: "#00ff00",
           fontSize: "20px",
-          fontStyle: "bold",
+          fontStyle: "bold"
         });
-    
+        
+        //recieved room code from server
         scene.socket.on("roomCreated", function (roomKey) {
           scene.roomKey = roomKey;
           scene.roomKeyText.setText(scene.roomKey);
         });
     
-        scene.socket.on("KeyNotValid", function () {
-          scene.notValidText.setText("Invalid Room Key");
-        });
-        scene.socket.on("keyIsValid", function (input) {
-          scene.socket.emit("joinRoom", input);
-          scene.scene.stop("WaitingRoom");
+        scene.socket.on("KeyNotValid", function (data) {
+          scene.notValidText.setText(`Invalid Room Key ${data.key}`);
         });
 
-        **/
+        //if key is valid, emit joinRoom and exit the waiting room
+        scene.socket.on("KeyisValid",  (input) => {
+          scene.socket.emit("joinRoom", input);
+          scene.scene.stop("Login");
+        });
+
+      
       }
 }
