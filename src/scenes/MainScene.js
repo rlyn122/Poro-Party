@@ -28,7 +28,6 @@ export default class MainScene extends Phaser.Scene{
 
         //Allow all other players to have the same intrinisc physics properties by adding to physics group
         this.otherPlayers = this.physics.add.group();
-        
         //create socket
         this.socket = io();
         
@@ -38,7 +37,7 @@ export default class MainScene extends Phaser.Scene{
         
         //sets the scene's state, including information such as roomkey, players, and numPlayers
         this.socket.on("setState",  (state) =>{
-            const {roomKey,players,numPlayers} = state;
+            const {roomKey,players,numPlayers,roomState} = state;
             scene.physics.resume();
 
             //set state object
@@ -70,13 +69,11 @@ export default class MainScene extends Phaser.Scene{
         
         //listen for other player's Movement event and move otherPlayer's position based off that
         this.socket.on("OtherplayerMoved", (playerInfo)=>{
-            console.log("Received OtherplayerMoved event"); // Check if the event is received
-            console.log(playerInfo); // Check the data received from the server
-
+            console.log(`Other player moved event playerInfo`);
             scene.otherPlayers.getChildren().forEach((otherPlayer)=>{
                 if(playerInfo.playerId == otherPlayer.playerId){
                     otherPlayer.setPosition(playerInfo.x,playerInfo.y);
-                    console.log("otherplayer moved");
+                    console.log(`Other player position changed`);
                 }
             })
         })
@@ -95,6 +92,7 @@ export default class MainScene extends Phaser.Scene{
         
         //add cursors key object
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.physics.world.createDebugGraphic();
 
     }
 
@@ -103,6 +101,8 @@ export default class MainScene extends Phaser.Scene{
         const scene = this ;
         //movement
         if(this.cat && this.socket){ //check this cat exists
+            console.log(`${this.cat.x} , ${this.cat.y}`)
+
             const speed = 225;
             //reset velocity from previous scene
             
@@ -132,7 +132,6 @@ export default class MainScene extends Phaser.Scene{
                     x: this.cat.x,
                     y: this.cat.y,
                     roomKey : scene.state.roomKey
-
                 })
             }
 
@@ -152,14 +151,21 @@ export default class MainScene extends Phaser.Scene{
         scene.joined = true;
         
         scene.cat = scene.physics.add.sprite(playerInfo.x,playerInfo.y,playerInfo.cat);
-        scene.cat.setScale(0.25)    }
+        scene.cat.setScale(0.25);
+        //scene.cat.setBounce(0);
+        scene.cat.setCollideWorldBounds(true);
+        //this.physics.add.collider(scene.cat,scene.otherPlayers);
+        }
 
     //add other players to your screen, playerInfo is another player's infor from the server
     addOtherPlayer(scene, playerInfo){
-        const otherPlayer = scene.add.sprite(playerInfo.x,playerInfo.y,playerInfo.cat);
+        const otherPlayer = scene.physics.add.sprite(playerInfo.x,playerInfo.y,playerInfo.cat);
         otherPlayer.setScale(0.25);
         otherPlayer.playerId = playerInfo.playerId;
-        scene.otherPlayers.add(otherPlayer);        
+        otherPlayer.setCollideWorldBounds(true);
+        //otherPlayer.setBounce(0);
+        //this.physics.add.collider(otherPlayer,scene.cat);
+        scene.otherPlayers.add(otherPlayer);     
     }
 }
 

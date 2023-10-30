@@ -12,19 +12,20 @@ const GameRooms = {
       //playerId: socket.id,
       //power: null
   // numPlayers: Object.keys(roomInfo.players).length,
-  // state: 0  (0 - login/waiting room, 1 - Main Lobby, 2->5 - minigames )
-  // roomKey
+  // roomState: 0  (0 - login/waiting room, 1 - Main Lobby, 2->5 - minigames )
+  // roomKey:
   // }
 }
 
 //test room
-GameRooms[200] = {
+GameRooms['20000'] = {
   gameScore: 0,
   players: {},
   numPlayers: 0,
-  state: 0,
-  roomKey:200
+  roomState: 0,
+  roomKey:'20000'
 };
+
 
 module.exports = (io) => {
   
@@ -43,10 +44,11 @@ io.on('connection', (socket)=>{
   })
 
   socket.on('joinRoom', (data) => {
-  
-
-    const roomKey = data.key;
+    
+    const roomKey = String(data.key);
     const roomInfo = GameRooms[roomKey];
+
+    socket.roomKey = roomKey;
 
     //add player to sockertIO room
     socket.join(roomKey);
@@ -60,7 +62,8 @@ io.on('connection', (socket)=>{
       points: 0,
       username: data.username, 
       playerId: socket.id,
-      power: null
+      power: null,
+      roomState:0
     }
 
     //update number of Players
@@ -91,8 +94,6 @@ io.on('connection', (socket)=>{
 
     const {x, y, roomKey} = arg
     
-    const Key = GameRooms[roomKey].roomKey;
-
     //error handling
     if(x!=undefined && y!=undefined){
 
@@ -119,7 +120,7 @@ io.on('connection', (socket)=>{
     playerInfo.y = y;
   
     //emit to all players the player has moved
-    socket.to(JSON.stringify(roomKey)).emit("OtherplayerMoved", playerInfo);
+    socket.to((roomKey)).emit("OtherplayerMoved", playerInfo);
     }
   }) ;
 
@@ -137,7 +138,7 @@ io.on('connection', (socket)=>{
       gameScore: 0,
       players: {},
       numPlayers: 0,
-      state: 0,
+      roomState: 0,
       roomKey:key
     };
     
@@ -146,38 +147,20 @@ io.on('connection', (socket)=>{
   
   socket.on('disconnect', ()=>{ 
     console.log(`user ${socket.id} has disconnected`);
+    const roomKey = socket.roomKey;
+    if(roomKey) {
+      roomInfo = GameRooms[roomKey];
+      //Remove player from gameRoom data
+      delete roomInfo.players[socket.id];
+      //update numPlayers
+      roomInfo.numPlayers = Object.keys(roomInfo.players).length;
 
-    //Find which room they are in
-    let roomKey;
+      //Disconnect player from socket.io room
 
-    //find what room key player is in by iterating through all roomKeys and players
-    for(const room in GameRooms){
-      for(const player in GameRooms[room].players){
-          if(GameRooms[room].players[player].playerId==socket.id){
-            roomKey = room;
-            break;
-          }
-      }
-      if(roomKey){
-        break;
-      }
-    }
-  
-
-
-  if(roomKey) {
-  roomInfo = GameRooms[roomKey];
-  //Remove player from gameRoom data
-  delete roomInfo.players[socket.id];
-  //update numPlayers
-  roomInfo.numPlayers = Object.keys(roomInfo.players).length;
-
-  //Disconnect player from socket.io room
-
-  io.to(roomKey).emit("disconnected", {
-    playerId: socket.id,
-    numPlayers: roomInfo.numPlayers
-  });
+      io.to(roomKey).emit("disconnected", {
+        playerId: socket.id,
+        numPlayers: roomInfo.numPlayers
+      });
   }
 }); 
   
