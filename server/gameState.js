@@ -16,6 +16,7 @@ const GameRooms = {
   // }
 }
 
+//test room
 GameRooms[200] = {
   gameScore: 0,
   players: {},
@@ -32,7 +33,6 @@ io.on('connection', (socket)=>{
   //Listen for a joinRoom user to a lobby with the same code
   //TODO: add code checking for room isvalid
   socket.on('isKeyValid', (data)=>{
-    console.log(GameRooms.hasOwnProperty(data.key));
     if(GameRooms.hasOwnProperty(data.key)){
       socket.emit("KeyisValid", data);
     }
@@ -63,20 +63,18 @@ io.on('connection', (socket)=>{
     roomInfo.numPlayers =Object.keys(roomInfo.players).length;
     console.log(`${roomInfo.players[socket.id].username} joined room ${roomKey}. Room data: `)
     console.log(roomInfo);
-
-    
     
     //Emit initial state of game for client
-    socket.emit("setState", roomInfo)
+    socket.emit("setState", roomInfo);
     
-    //send current players object to new player
+    //send current players object to new player (players in the room before joining)
     socket.emit("currentPlayers", {
       players: roomInfo.players,
       numPlayers: roomInfo.numPlayers
      });
 
 
-     //emit to the room of new player arrival
+     //emit to the room of new player arrival (players in the room after joining)
      socket.to(roomKey).emit("newPlayer", {
       playerInfo:roomInfo.players[socket.id],
       numPlayers:roomInfo.numPlayers
@@ -86,13 +84,37 @@ io.on('connection', (socket)=>{
 
   //listen for movement event and update player object
   socket.on("playerMovement", (arg)=>{
+  
     const {x, y, roomKey} = arg
-    if(x!=null&&y!=null){
-    GameRooms[roomKey].players[socket.id].x = x;
-    GameRooms[roomKey].players[socket.id].y = y;
+    //error handling
+    if(x!=undefined && y!=undefined){
+
+    if (!GameRooms[roomKey]){
+      console.error(`Room ${roomKey} DNE`)
+      return
+    }
+
+    const playersinRoom = GameRooms[roomKey].players;
+
+    if (!playersinRoom) {
+      console.error(`Players property for room ${roomKey} does not exist.`);
+      return;
   }
+
+    if (!playersinRoom[socket.id]) {
+        console.error(`Player with socket id ${socket.id} does not exist in room ${roomKey}.`);
+        return;
+    }
+    const playerInfo = GameRooms[roomKey].players[socket.id];
+
+    //update position on player object on server
+    playerInfo.x = x;
+    playerInfo.y = y;
+  
     //emit to all players the player has moved
-    socket.to(roomKey).emit("playerMoved",GameRooms[roomKey].players[socket.id]);
+    socket.to(roomKey).emit("OtherplayerMoved", playerInfo);
+    console.log(`${playerInfo.username} moved in room ${roomKey}`);
+    }
   }) ;
 
 
@@ -109,7 +131,8 @@ io.on('connection', (socket)=>{
       gameScore: 0,
       players: {},
       numPlayers: 0,
-      state: 0
+      state: 0,
+      roomKey:key
     };
     
     socket.emit("roomCreated", key)
@@ -144,6 +167,7 @@ io.on('connection', (socket)=>{
   roomInfo.numPlayers = Object.keys(roomInfo.players).length;
 
   //Disconnect player from socket.io room
+
   io.to(roomKey).emit("disconnected", {
     playerId: socket.id,
     numPlayers: roomInfo.numPlayers

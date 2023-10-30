@@ -60,7 +60,7 @@ export default class Login extends Phaser.Scene {
           fontStyle: "bold",
         });
 
-        scene.inputElement = scene.add.dom(562.5, 260).createFromCache("codeform");
+        scene.inputElement = scene.add.dom(562.5, 250).createFromCache("codeform");
 
 
         const form = document.getElementById('roomForm');
@@ -69,14 +69,19 @@ export default class Login extends Phaser.Scene {
           event.preventDefault(); //prevent default form submission
           const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
           const codeInput = scene.inputElement.node.querySelector('input[name="code-form"]');
-    
-          if (usernameInput && codeInput) {
+          const catInput = document.querySelector('input[name="cats"]:checked');
+          
+          //if these values exist, save the data into data object and emit isKeyValid event
+          if (usernameInput && codeInput && catInput) {
             const username = usernameInput.value;
             const key = codeInput.value;
-          
+            const cat = catInput.value;
           
           if (username && key){
-            const data = {username, key}; 
+            const data = {
+              username:username, 
+              key: key, 
+              cat: cat}; 
             scene.socket.emit("isKeyValid", data);
           }
           else{
@@ -112,7 +117,7 @@ export default class Login extends Phaser.Scene {
         });
     
         scene.socket.on("KeyNotValid", function (data) {
-          scene.notValidText.setText(`Invalid Room Key ${data.key}`);
+          scene.notValidText.setText(`Invalid Room Key: ${data.key}`);
         });
 
         //if key is valid, emit joinRoom and exit the waiting room
