@@ -13,6 +13,7 @@ const GameRooms = {
       //power: null
   // numPlayers: Object.keys(roomInfo.players).length,
   // state: 0  (0 - login/waiting room, 1 - Main Lobby, 2->5 - minigames )
+  // roomKey
   // }
 }
 
@@ -42,11 +43,14 @@ io.on('connection', (socket)=>{
   })
 
   socket.on('joinRoom', (data) => {
-    //add player to sockertIO room
-    socket.join(data.key);
+  
 
     const roomKey = data.key;
     const roomInfo = GameRooms[roomKey];
+
+    //add player to sockertIO room
+    socket.join(roomKey);
+    
     //add new player data to roomInfo
     roomInfo.players[socket.id] = {
       cat:data.cat,
@@ -84,8 +88,11 @@ io.on('connection', (socket)=>{
 
   //listen for movement event and update player object
   socket.on("playerMovement", (arg)=>{
-  
+
     const {x, y, roomKey} = arg
+    
+    const Key = GameRooms[roomKey].roomKey;
+
     //error handling
     if(x!=undefined && y!=undefined){
 
@@ -112,8 +119,7 @@ io.on('connection', (socket)=>{
     playerInfo.y = y;
   
     //emit to all players the player has moved
-    socket.to(roomKey).emit("OtherplayerMoved", playerInfo);
-    console.log(`${playerInfo.username} moved in room ${roomKey}`);
+    socket.to(JSON.stringify(roomKey)).emit("OtherplayerMoved", playerInfo);
     }
   }) ;
 

@@ -92,6 +92,7 @@ export default class MainScene extends Phaser.Scene{
             });
         })
 
+        
         //add cursors key object
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -158,9 +159,7 @@ export default class MainScene extends Phaser.Scene{
         const otherPlayer = scene.add.sprite(playerInfo.x,playerInfo.y,playerInfo.cat);
         otherPlayer.setScale(0.25);
         otherPlayer.playerId = playerInfo.playerId;
-        scene.otherPlayers.add(otherPlayer);
-        console.log(otherPlayer);
-        
+        scene.otherPlayers.add(otherPlayer);        
     }
 }
 
