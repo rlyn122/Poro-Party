@@ -147,7 +147,18 @@ class PlayScene extends Phaser.Scene {
         this.bgm.setVolume(0.5);
         this.jumpSound.setVolume(0.7);
         this.collisionSound.setVolume(1); 
+
+        this.connectSocket();
         
+    }
+
+    connectSocket() {
+        this.socket = io.connect('http://localhost:3000');
+
+        this.socket.on('playerData', (data) => {
+           // Use the received data to update game elements
+           this.otherPlayer.setPosition(data.x, data.y);
+        });
     }
 
     update() {
@@ -160,10 +171,12 @@ class PlayScene extends Phaser.Scene {
             this.hero.body.setVelocityX(-250);
             this.hero.anims.play('left-walk', true);
             this.lastDirection = 'left'; // 注意这里的变化
+            socket.emit('playerMove', { id: socket.id, x: this.hero.x, y: this.hero.y, direction: 'left' }); // Emit the player's movement data to the server
         } else if (this.cursor.right.isDown) {
             this.hero.body.setVelocityX(250);
             this.hero.anims.play('right-walk', true);
             this.lastDirection = 'right'; // 注意这里的变化
+            socket.emit('playerMove', { id: socket.id, x: this.hero.x, y: this.hero.y, direction: 'right' }); // Emit the player's movement data to the server
         } else {
             this.hero.body.setVelocityX(0);
             if (this.lastDirection === 'left') { // 注意这里的变化
@@ -241,7 +254,7 @@ class PlayScene extends Phaser.Scene {
         }
         this.heroWasTouchingDown = this.hero.body.touching.down;
 
-
+        this.socket.emit('playerMove', { x: this.hero.x, y: this.hero.y });
     }
 
     platformsCreate() {

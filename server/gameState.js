@@ -58,6 +58,7 @@ io.on('connection', (socket)=>{
 
 
 
+
   //Creates a new lobby with the code
   socket.on('createRoom', () => {
     // Generate room code 
@@ -115,7 +116,14 @@ io.on('connection', (socket)=>{
     console.log(`Arrow key pressed: ${arrowKey}`);
   });
   
+  //Handle incoming messages about player movements from the clients and emiting to all other connected clients
+  socket.on('playerMove', (data) => {
+    console.log(data);
+
+    // Emit the player's movement data to all other connected clients
+    socket.broadcast.emit('playerMove', data);
   });
+});
 };
 
 
