@@ -31,6 +31,13 @@ module.exports = (io) => {
   
 io.on('connection', (socket)=>{
   console.log('user connected with socketId '+socket.id);
+  
+  const data = {
+    key:'20000',
+    username:'ry',
+    cat:'cat2',
+  }
+  socket.emit("KeyisValid", data)
 
   //Listen for a joinRoom user to a lobby with the same code
   //TODO: add code checking for room isvalid
@@ -77,7 +84,7 @@ io.on('connection', (socket)=>{
     //send current players object to new player (players in the room before joining)
     socket.emit("currentPlayers", {
       players: roomInfo.players,
-      numPlayers: roomInfo.numPlayers
+      numPlayers: roomInfo.numPlayers,
      });
 
 

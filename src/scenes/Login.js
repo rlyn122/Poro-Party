@@ -65,6 +65,7 @@ export default class Login extends Phaser.Scene {
 
         const form = document.getElementById('roomForm');
 
+        //once submit button is clicked get data and ask server if the key is valid
         form.addEventListener('submit',function(event){
           event.preventDefault(); //prevent default form submission
           const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
@@ -90,13 +91,13 @@ export default class Login extends Phaser.Scene {
         }
         })
 
-    
+        //Create room button 
         scene.requestButton.setInteractive();
         scene.requestButton.on("pointerdown", () => {
           scene.socket.emit("getRoomCode");
         });
-    
         
+        //empty text
         scene.notValidText = scene.add.text(562, 295, "", {
           fill: "#ff0000",
           fontSize: "15px",
@@ -115,7 +116,8 @@ export default class Login extends Phaser.Scene {
           scene.roomKey = roomKey;
           scene.roomKeyText.setText(scene.roomKey);
         });
-    
+        
+        //display that invalid text
         scene.socket.on("KeyNotValid", function (data) {
           scene.notValidText.setText(`Invalid Room Key: ${data.key}`);
         });

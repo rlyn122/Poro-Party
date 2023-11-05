@@ -16,8 +16,9 @@ export default{
     physics: {
         //built in physics system
         default: "arcade",
-        gravity: { y: 400, x:400},
-
+        arcade: {
+            gravity: {},
+        }
     },
     dom: {
         createContainer: true,
