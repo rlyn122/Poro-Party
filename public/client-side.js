@@ -32,7 +32,7 @@ const socket = io();
         }
 
 
-        //communicate with server to joinROom
+        //communicate with server to joinRoom
         function joinRoom(event) {
             event.preventDefault();
             
