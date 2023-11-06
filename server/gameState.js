@@ -32,12 +32,14 @@ module.exports = (io) => {
 io.on('connection', (socket)=>{
   console.log('user connected with socketId '+socket.id);
   
-  const data = {
+  /**
+    const data = {
     key:'20000',
     username:'ry',
     cat:'cat2',
   }
   socket.emit("KeyisValid", data)
+  */
 
   //Listen for a joinRoom user to a lobby with the same code
   //TODO: add code checking for room isvalid
@@ -131,6 +133,17 @@ io.on('connection', (socket)=>{
     }
   }) ;
 
+  //update serverside x and y for collision on movement
+  socket.on('playerCollision', (arg)=>{
+    console.log("collision occured!")
+    const {playerId,otherPlayerId,roomKey} = arg;
+    
+    const playerInfo = GameRooms[roomKey].players[playerId]
+    const otherPlayerInfo = GameRooms[roomKey].players[otherPlayerId]
+    //emit otherplayer info and your info
+    //TODO: receiving event handler not made yet currentPlayerMoved
+    
+  })
 
   //Creates a new lobby with the code
   socket.on('getRoomCode', () => {

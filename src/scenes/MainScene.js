@@ -6,6 +6,8 @@ export default class MainScene extends Phaser.Scene{
         super("MainScene");
         this.state = {
             numPlayers: 0, //number of players
+            roomKey:0,
+            players:0,
         };
     }
 
@@ -95,6 +97,7 @@ export default class MainScene extends Phaser.Scene{
             scene.otherPlayers.getChildren().forEach((otherPlayer)=>{
                 //remove the sprite of the player that disconnected
                 if(playerId == otherPlayer.playerId){
+                    otherPlayer.usernameText.destroy();
                     otherPlayer.destroy();
                 }
             });
@@ -119,8 +122,6 @@ export default class MainScene extends Phaser.Scene{
 
     update(){
 
-        console.log(this.cat);
-
         
         const scene = this ;
         //movement
@@ -129,9 +130,10 @@ export default class MainScene extends Phaser.Scene{
             const speed = 225;
             //reset velocity from previous scene
 
-            this.physics.world.overlap(this.cat,this.otherPlayers, (player,otherPlayer)=>{
-                scene.handlePlayerCollision(player,otherPlayer)
-            })
+            //check if collisions occurred, if so emit event to server
+
+            
+        
             
             this.cat.body.setVelocity(0);
 
@@ -151,7 +153,7 @@ export default class MainScene extends Phaser.Scene{
             var x = this.cat.x;
             var y = this.cat.y;
 
-            //console.log(`${x},${y}`)
+            console.log(`${x},${y}`)
             //update username position
             
             this.setUsername_Pos(this.cat,x,y);
@@ -159,15 +161,22 @@ export default class MainScene extends Phaser.Scene{
             
             
             //detect cat movement
-            if (this.cat.oldPosition && (x != this.cat.oldPosition.x || y!=this.cat.oldPosition.y))
-            {
-                this.moving = true;
+            //if (this.cat.oldPosition && (x != this.cat.oldPosition.x || y!=this.cat.oldPosition.y))
+            //{
                 this.socket.emit("playerMovement", {
                     x: this.cat.x,
                     y: this.cat.y,
                     roomKey : scene.state.roomKey
                 })
-            }
+            //}
+
+            //detect cat collision
+            this.physics.world.overlap(this.cat,this.otherPlayers, (player,otherPlayer)=>{
+                if(otherPlayer){
+                scene.handlePlayerCollision(player.playerId,otherPlayer.playerId,this.state.roomKey)
+                }
+                
+            })
 
             this.cat.oldPosition = {
                 x: this.cat.x,
@@ -177,14 +186,9 @@ export default class MainScene extends Phaser.Scene{
     }
 
     //Collission handler
-    handlePlayerCollision(player,otherPlayer){
+    handlePlayerCollision(playerId,otherPlayerId,roomKey){
         //emit a player collision
-        this.socket.emit('playerCollision',{
-            playerId:player.playerId,
-            otherPlayer:otherPlayer.playerId,
-            rommkey:this.state.roomKey,
-        })
-
+        this.socket.emit('playerCollision',{playerId,otherPlayerId,roomKey})
     }
 
 
