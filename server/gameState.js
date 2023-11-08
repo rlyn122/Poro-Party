@@ -85,6 +85,7 @@ io.on('connection', (socket)=>{
     
     //send current players object to new player (players in the room before joining)
     socket.emit("currentPlayers", {
+      roomKey: roomInfo.roomKey,
       players: roomInfo.players,
       numPlayers: roomInfo.numPlayers,
      });
@@ -128,10 +129,15 @@ io.on('connection', (socket)=>{
     playerInfo.x = x;
     playerInfo.y = y;
   
-    //emit to all players the player has moved
-    socket.to((roomKey)).emit("OtherplayerMoved", playerInfo);
+    //emit to all players the player has moved and update all players positions
+    socket.to((roomKey)).emit("updatePlayers", GameRooms[roomKey]);
     }
   }) ;
+
+  socket.on('stopMainSceneRequest', (roomKey)=>{
+    //TODO: ADD SOME CHECKS FOR ROOMKEY
+    io.to(roomKey).emit("stopMainScene");
+  })
 
   //update serverside x and y for collision on movement
   socket.on('playerCollision', (arg)=>{
