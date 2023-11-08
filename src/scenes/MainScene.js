@@ -55,12 +55,45 @@ export default class MainScene extends Phaser.Scene{
             scene.state.players = players;
             scene.state.numPlayers = numPlayers;
             console.log(scene.state);
+            //set roomkey text so lobby can see
+
+            this.startGameButton = scene.add.text(700,0,"Start Game!",{
+                fill: "#FFFFFF",
+                fontSize: "20px",
+                fontStyle: "bold",
+            });
+
+            this.playerCount = scene.add.text(0, 0, "Lobby: 0/4", {
+                fill: "#7CFC00",
+                fontSize: "20px",
+                fontStyle: "bold",
+            });
+    
+            this.lobbyCode = scene.add.text(200, 0, "Room Code: ", {
+                fill: "#7CFC00",
+                fontSize: "20px",
+                fontStyle: "bold",
+            });
+            
+            this.lobbyCode.setText(`Room Code: ${roomKey}`);
+
+            //set startbutton interactive and tell the server
+            scene.startGameButton.setInteractive();
+            scene.startGameButton.on("pointerdown", () => {
+                //emit to everyone in your room that the game has started
+                scene.socket.emit("stopMainSceneRequest",roomKey);
+            });
         });
 
+        //receive event to stop Lobby scene
+        this.socket.on("stopMainScene", ()=>{
+            this.scene.start("Volleyball");
+        })
         //arg is an object with players object and numPlayers variable
         this.socket.on("currentPlayers", (arg)=>{
-            const {players,numPlayers} = arg;
-            scene.state.numPlayers=numPlayers;
+            const {roomKey,players,numPlayers} = arg;
+            this.state.numPlayers=numPlayers;
+
             //parse through id's and check:
             Object.keys(players).forEach( (id)=>{
                 if(players[id].playerId == scene.socket.id) { //if the player is the client user
@@ -68,6 +101,7 @@ export default class MainScene extends Phaser.Scene{
                 else{ //other players online
                     scene.addOtherPlayer(scene,players[id]);} 
             });
+    
         });
 
         //inform already open client that a new player has joined room
@@ -75,19 +109,19 @@ export default class MainScene extends Phaser.Scene{
             const {playerInfo, numPlayers} = arg;
             scene.state.numPlayers = numPlayers;
             scene.addOtherPlayer(scene,playerInfo);
+    
         })
         
         //listen for other player's Movement event and move otherPlayer's position based off that
-        this.socket.on("OtherplayerMoved", (playerInfo)=>{
+        this.socket.on("updatePlayers", (roomInfo)=>{
             scene.otherPlayers.getChildren().forEach((otherPlayer)=>{
-                if(playerInfo.playerId == otherPlayer.playerId){
-                    const x = playerInfo.x;
-                    const y = playerInfo.y;
+                    const id = otherPlayer.playerId
+                    const x = roomInfo.players[id].x;
+                    const y = roomInfo.players[id].y;
                     //update player positin and username info
                     otherPlayer.setPosition(x,y);
                     this.setUsername_Pos(otherPlayer,x,y); 
-                }
-            })
+                })
         })
 
         //listen for disconnection and destroy characters
@@ -105,12 +139,7 @@ export default class MainScene extends Phaser.Scene{
 
         })
 
-        this.playerCount = scene.add.text(0, 0, "Lobby: 0/4", {
-            fill: "#7CFC00",
-            fontSize: "20px",
-            fontStyle: "bold",
-        });
-        
+
         //add cursors key object
         this.cursors = this.input.keyboard.createCursorKeys();
         
@@ -128,12 +157,8 @@ export default class MainScene extends Phaser.Scene{
         if(this.cat && this.socket){ //check this cat exists
 
             const speed = 225;
-            //reset velocity from previous scene
-
-            //check if collisions occurred, if so emit event to server
-
+            //reset velocity from previous scen
             
-        
             
             this.cat.body.setVelocity(0);
 
@@ -153,7 +178,7 @@ export default class MainScene extends Phaser.Scene{
             var x = this.cat.x;
             var y = this.cat.y;
 
-            console.log(`${x},${y}`)
+
             //update username position
             
             this.setUsername_Pos(this.cat,x,y);
@@ -171,13 +196,14 @@ export default class MainScene extends Phaser.Scene{
             //}
 
             //detect cat collision
+            /**
             this.physics.world.overlap(this.cat,this.otherPlayers, (player,otherPlayer)=>{
                 if(otherPlayer){
                 scene.handlePlayerCollision(player.playerId,otherPlayer.playerId,this.state.roomKey)
                 }
                 
             })
-
+            */
             this.cat.oldPosition = {
                 x: this.cat.x,
                 y: this.cat.y,
@@ -202,7 +228,6 @@ export default class MainScene extends Phaser.Scene{
         scene.cat.setScale(0.25);
         //scene.cat.setBounce(0);
         scene.cat.setCollideWorldBounds(true);
-        this.physics.add.collider(scene.cat,scene.otherPlayers);
         scene.addUsername(scene.cat,scene,playerInfo);
     }   
 
@@ -214,8 +239,6 @@ export default class MainScene extends Phaser.Scene{
         otherPlayer.setScale(0.25);
         otherPlayer.playerId = playerInfo.playerId;
         otherPlayer.setCollideWorldBounds(true);
-        //otherPlayer.setBounce(0);
-        //this.physics.add.collider(otherPlayer,scene.cat);
         scene.otherPlayers.add(otherPlayer);
 
 
