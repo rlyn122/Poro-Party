@@ -7,7 +7,7 @@ export default class MainScene extends Phaser.Scene{
         this.state = {
             numPlayers: 0, //number of players
             roomKey:0,
-            players:0,
+            players:{},
         };
     }
 
@@ -87,7 +87,16 @@ export default class MainScene extends Phaser.Scene{
 
         //receive event to stop Lobby scene
         this.socket.on("stopMainScene", ()=>{
-            this.scene.start("Volleyball");
+            this.cat.scene = this.scene.get('Volleyball');
+
+            this.scene.start("Volleyball",{
+                cat:this.cat,
+                cursors:this.cursors,
+                otherPlayers:this.otherPlayers,
+                socket:this.socket,
+                state:this.state,
+            });
+            
         })
         //arg is an object with players object and numPlayers variable
         this.socket.on("currentPlayers", (arg)=>{
@@ -142,16 +151,12 @@ export default class MainScene extends Phaser.Scene{
 
         //add cursors key object
         this.cursors = this.input.keyboard.createCursorKeys();
-        
-
         this.physics.world.createDebugGraphic();
 
 
     }
 
     update(){
-
-        
         const scene = this ;
         //movement
         if(this.cat && this.socket){ //check this cat exists
@@ -203,11 +208,12 @@ export default class MainScene extends Phaser.Scene{
                 }
                 
             })
-            */
+            
             this.cat.oldPosition = {
                 x: this.cat.x,
                 y: this.cat.y,
             }
+            */
         }
     }
 
