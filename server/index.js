@@ -1,22 +1,46 @@
-// Import required modules
+const path = require('path');
+const jsdom = require('jsdom');
 const express = require('express');
 const app = express();
-const server = require('http').createServer(app); 
-const io = require('socket.io')(server, {cors:{origin:"*"}});
-const path = require("path");
-const gameState = require('./gameState.js'); // Import the Socket.io setup module
+const server = require('http').Server(app);
+const io = require('socket.io').listen(server);
+const { JSDOM } = jsdom;
+const Datauri = require('datauri');
+const datauri = new Datauri();
 
-// Middleware to serve static files
-app.use(express.static(path.join(__dirname, "..", 'public')));
+app.use(express.static(__dirname + '/public'));
 
-//send HTML file
-app.get("/", (req,res) => {
-    res.sendFile(path.join(path.join(__dirname, "../public/index.html")))
-})
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
+});
 
-// Initialize socket by passing the instance of the server to the exported function
-gameState(io);
+function setupAuthoritativePhaser() {
+  JSDOM.fromFile(path.join(__dirname, 'authoritative_server/index.html'), {
+    // To run the scripts in the html file
+    runScripts: "dangerously",
+    // Also load supported external resources
+    resources: "usable",
+    // So requestAnimatinFrame events fire
+    pretendToBeVisual: true
+  }).then((dom) => {
 
-const port = 3000
+    //add phaser functions that JSDOM does not support
+    dom.window.URL.createObjectURL = (blob) => {
+      if (blob){
+        return datauri.format(blob.type, blob[Object.getOwnPropertySymbols(blob)[0]]._buffer).content;
+      }
+    };
+    dom.window.URL.revokeObjectURL = (objectURL) => {};
+    
+    dom.window.gameLoaded = () => {
+      server.listen(process.env.PORT || 8081, function () {
+        console.log(`Listening on ${server.address().port}`);
+      });
+    };
+    dom.window.io = io;
+  }).catch((error) => {
+    console.log(error.message);
+  });
+}
 
-server.listen(process.env.PORT || port, ()=>{console.log(`server running on ${port}`)});
+setupAuthoritativePhaser();
