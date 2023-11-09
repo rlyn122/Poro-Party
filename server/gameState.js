@@ -187,8 +187,10 @@ io.on('connection', (socket)=>{
         playerId: socket.id,
         numPlayers: roomInfo.numPlayers
       });
-  }
-}); 
+    }
+  }); 
+
+  //volleyball sockets below
   
   });
   };

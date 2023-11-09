@@ -17,20 +17,35 @@ export default class Volleyball extends Phaser.Scene{
 
     create(data) {
 
-        const { cat, otherPlayers, cursors, socket, state } = data;
+
+        
+
+        const { cat, catUsernameText, otherPlayers, cursors, socket, state } = data;
 
         // Now access to all the transferred data
         this.cat = cat;
+        this.catUsernameText = catUsernameText;
+
         this.otherPlayers = otherPlayers;
         this.cursors = cursors;
         this.socket = socket;
         this.state = state;
 
 
-        //add players to the screen
-        this.physics.add.existing(cat);
-        console.log(cat);
+        //add players and usernames to the screen
+        this.cat = this.add.existing(this.cat);
+        this.cat.setDepth(1);
+        this.add.existing(this.catUsernameText)
+        this.catUsernameText.setDepth(1);
 
+        this.otherPlayers.getChildren().forEach((otherPlayer)=>{
+            console.log(otherPlayer);
+            this.otherPlayer = this.add.existing(otherPlayer);
+            this.otherPlayer.setDepth(1);
+            this.add.existing(otherPlayer.usernameText)
+            this.otherPlayer.usernameText.setDepth(1);
+
+        })
 
         this.add.image(400, 300, 'sky');
 
@@ -51,6 +66,7 @@ export default class Volleyball extends Phaser.Scene{
         // Draw a rectangle around the game boundaries
         this.graphics.strokeRect(4, 4, 792, 592); // Adjust the rectangle's position and size
         
+        this.physics.world.createDebugGraphic();
 
     }
 /**

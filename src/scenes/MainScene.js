@@ -85,18 +85,19 @@ export default class MainScene extends Phaser.Scene{
             });
         });
 
-        //receive event to stop Lobby scene
+        //receive event to stop mainscene scene
         this.socket.on("stopMainScene", ()=>{
             this.cat.scene = this.scene.get('Volleyball');
 
-            this.scene.start("Volleyball",{
+            this.scene.launch("Volleyball",{
                 cat:this.cat,
+                catUsernameText:this.cat.usernameText,
                 cursors:this.cursors,
                 otherPlayers:this.otherPlayers,
                 socket:this.socket,
                 state:this.state,
             });
-            
+
         })
         //arg is an object with players object and numPlayers variable
         this.socket.on("currentPlayers", (arg)=>{
@@ -249,7 +250,10 @@ export default class MainScene extends Phaser.Scene{
 
 
         //Add username for otherPlayer
+        
         this.addUsername(otherPlayer,scene,playerInfo); 
+ 
+
     }
 
     //function to add player username onto screen
