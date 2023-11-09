@@ -25,4 +25,5 @@ export default{
     },
     //specifies scenes that will be included in the game
     scene: [],
+    
 };
