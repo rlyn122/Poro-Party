@@ -3,9 +3,6 @@ var config = {
   parent: 'game',
   width: 800,
   height: 600,
-  physics: {
-    default: 'arcade',
-  },
   scene: {
     preload: preload,
     create: create,
@@ -17,9 +14,7 @@ var game = new Phaser.Game(config);
 
 function preload() {
   //load sprites
-  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
-  this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
-  this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet('cat', 'assets/volleyball/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
 
   //load background
   this.load.image('sky', 'assets/volleyball/sky.png');
@@ -36,18 +31,12 @@ function create() {
   //add background
 
   var ball;
-  var gameOver = false;
-  var platforms;
 
   this.add.image(400, 300, 'sky');
-  platforms = this.physics.add.staticGroup();
-  platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-  platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
+  this.add.image(400, 568, 'ground').setScale(2)
+  this.add.image(400, 350, 'net').setScale(0.05, 7)
 
-  ball = this.physics.add.sprite(400, 200, 'ball');
-  ball.setBounce(1);
-  ball.setCollideWorldBounds(true);
-  ball.setVelocityX(100);
+  ball = this.add.sprite(400, 200, 'ball');
 
   var graphics = this.add.graphics();
   graphics.lineStyle(8, 0xFFFF00, 0.6); // Yellow color with a bit of transparency
@@ -56,24 +45,25 @@ function create() {
   graphics.strokeRect(4, 4, 792, 592); // Adjust the rectangle's position and size
 
 
+
   //listen for currentPlayers and self
   this.socket.on('currentPlayers', function (players) {
     Object.keys(players).forEach(function (id) {
 
       //if it is this client
       if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], 'cat8');
+        displayPlayers(self, players[id], 'cat');
       }
       //if it is another client
       else{
-        displayPlayers(self,players[id],'cat7')
+        displayPlayers(self,players[id],'cat')
       }
     });
   });
 
   //listen for newPlayer connection
   this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, 'cat7');
+    displayPlayers(self, playerInfo, 'cat');
   });
 
   //listen for player disconnection

@@ -1,6 +1,5 @@
 const players = {};
 
-
 const config = {
   type: Phaser.HEADLESS,
   parent: 'game',
@@ -23,8 +22,7 @@ const config = {
 
 function preload() {
 
-  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
-  
+  this.load.spritesheet('cat', 'assets/volleyball/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
   //load background
   this.load.image('sky', 'assets/volleyball/sky.png');
   this.load.image('net', 'assets/volleyball/platform2.png');
@@ -33,17 +31,13 @@ function preload() {
 }
 
 function create() {
-
   const self = this;
-  this.players = this.physics.add.group();
-
+  this.players = this.add.group();
+  this.balls = this.add.group();
   //add background
 
-  var ball;
-  var gameOver = false;
-  var platforms;
+  this.gameOver = false;
 
-  this.add.image(400, 300, 'sky');
   this.platforms = this.physics.add.staticGroup();
   this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
   this.platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
@@ -53,6 +47,7 @@ function create() {
   this.ball.setCollideWorldBounds(true);
   this.ball.setVelocityX(100);
 
+  this.balls.add(this.ball)
   //socket connection established
   io.on('connection', function (socket) {
     console.log('a user connected');
@@ -103,6 +98,7 @@ function create() {
   this.physics.add.collider(this.players, this.players);
   this.physics.add.collider(this.ball, this.platforms);
   this.physics.add.collider(this.ball, this.players);
+
 }
 
 function update() {
@@ -111,6 +107,7 @@ function update() {
   //constantly emit each player's position
   this.players.getChildren().forEach((player) => {
     const input = players[player.playerId].input;
+
     if (input.left) {
       player.setVelocityX(-speed);
     } else if (input.right) {
@@ -149,10 +146,12 @@ function handlePlayerInput(self, playerId, input) {
 
 //create sprite for player
 function addPlayer(self, playerInfo) {
-  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1').setScale(0.2,0.2).setBounce(0.2);
-  player.setCollideWorldBounds(true);
+  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat');
   player.playerId = playerInfo.playerId;
   self.players.add(player);
+  player.setBounce(0.2);
+  player.setScale(0.2, 0.2);  
+  player.setCollideWorldBounds(true);
 }
 
 
