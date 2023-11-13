@@ -107,17 +107,20 @@ function update() {
   //handle cursor inputs
   if (this.cursors.left.isDown) {
     this.leftKeyPressed = true;
+    this.rightKeyPressed = false;
+    this.upKeyPressed = false;
   } else if (this.cursors.right.isDown) {
     this.rightKeyPressed = true;
+    this.leftKeyPressed = false;
+    this.upKeyPressed = false;
   } else {
     this.leftKeyPressed = false;
     this.rightKeyPressed = false;
+    this.upKeyPressed = false;
   }
   if (this.cursors.up.isDown) {
     this.upKeyPressed = true;
-  } else {
-    this.upKeyPressed = false;
-  }
+  } 
   //if the state of a key has been changed, emit the state of keys to server
   if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
     this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
@@ -128,6 +131,27 @@ function update() {
 //displays  
 function displayPlayers(self, playerInfo, sprite) {
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+
+  self.anims.create({
+    key: 'left',
+    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
+  self.anims.create({
+    key: 'turn',
+    frames: [{ key: 'cat', frame: 2 }],
+    frameRate: 20
+  });
+
+  self.anims.create({
+    key: 'right',
+    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
   player.playerId = playerInfo.playerId;
   self.players.add(player);
 }

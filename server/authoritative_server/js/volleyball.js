@@ -28,6 +28,8 @@ function preload() {
   this.load.image('net', 'assets/volleyball/platform2.png');
   this.load.image('ball', 'assets/volleyball/volleyball.png');
   this.load.image('ground', 'assets/volleyball/platform.png');
+
+  
 }
 
 function create() {
@@ -45,7 +47,11 @@ function create() {
   this.ball = this.physics.add.sprite(400, 200, 'ball');
   this.ball.setBounce(1);
   this.ball.setCollideWorldBounds(true);
-  this.ball.setVelocityX(100);
+  this.ball.setVelocityX(80);
+
+  this.physics.add.collider(this.players, this.ball, function (player, ball) {
+    hitVolleyball(player, ball);
+  });
 
   this.balls.add(this.ball)
   //socket connection established
@@ -115,11 +121,9 @@ function update() {
     } else {
       player.setVelocityX(0);
     }
-    if (input.up) {
+    if (input.up && player.body.touching.down) {
       player.setVelocityY(-330);
-    } else {
-      player.setVelocityY(0);
-    }
+    } 
     players[player.playerId].x = player.x;
     players[player.playerId].y = player.y;
 
@@ -147,6 +151,27 @@ function handlePlayerInput(self, playerId, input) {
 //create sprite for player
 function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat');
+
+  self.anims.create({
+    key: 'left',
+    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
+  self.anims.create({
+    key: 'turn',
+    frames: [{ key: 'cat', frame: 2 }],
+    frameRate: 20
+  });
+
+  self.anims.create({
+    key: 'right',
+    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);
@@ -165,11 +190,11 @@ function removePlayer(self, playerId) {
 }
 
 function hitVolleyball(player, ball) {
-  ball.setVelocityY(-400);
+  ball.setVelocityY(-500);
   if (ball.x < player.x) {
-      ball.setVelocityX(-200);
+      ball.setVelocityX(-300);
   } else {
-      ball.setVelocityX(200);
+      ball.setVelocityX(300);
   }
 }
 
