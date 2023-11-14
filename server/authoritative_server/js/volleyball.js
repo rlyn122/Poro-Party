@@ -1,4 +1,4 @@
-const players = {};
+const players = {}; 
 
 const config = {
   type: Phaser.HEADLESS,

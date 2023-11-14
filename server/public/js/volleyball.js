@@ -1,18 +1,16 @@
-var config = {
-  type: Phaser.AUTO,
-  parent: 'game',
-  width: 800,
-  height: 600,
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
-  }
-};
+import Phaser from "phaser";
 
-var game = new Phaser.Game(config);
+export default class Volleyball extends Phaser.Scene {
 
-function preload() {
+constructor(){
+  super("Volleyball");
+}
+
+init(socket){
+  this.socket = socket;
+}
+
+preload() {
   //load sprites
   this.load.spritesheet('cat', 'assets/volleyball/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
 
@@ -23,7 +21,7 @@ function preload() {
   this.load.image('ground', 'assets/volleyball/platform.png');
 }
 
-function create() {
+create() {
   var self = this;
   this.socket = io();
   this.players = this.add.group();
@@ -98,7 +96,7 @@ function create() {
   this.upKeyPressed = false;
 }
 
-function update() {
+update() {
 
   const left = this.leftKeyPressed;
   const right = this.rightKeyPressed;
@@ -129,7 +127,7 @@ function update() {
 
 
 //displays  
-function displayPlayers(self, playerInfo, sprite) {
+displayPlayers(self, playerInfo, sprite) {
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
 
   self.anims.create({
@@ -154,4 +152,6 @@ function displayPlayers(self, playerInfo, sprite) {
 
   player.playerId = playerInfo.playerId;
   self.players.add(player);
+}
+
 }
