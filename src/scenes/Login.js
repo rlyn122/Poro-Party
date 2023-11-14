@@ -24,7 +24,7 @@ export default class Login extends Phaser.Scene {
         scene.boxes = scene.add.graphics();
     
         // for popup window
-        scene.popUp.lineStyle(1, 0xffffff);
+        scene.popUp.lineStyle(5, 0xffffff);
         scene.popUp.fillStyle(0xffffff, 0.5);
     
         // for boxes
@@ -36,7 +36,7 @@ export default class Login extends Phaser.Scene {
         scene.popUp.fillRect(25, 25, 750, 500);
     
         //title
-        scene.title = scene.add.text(100, 75, "Poro Party!", {
+        scene.title = scene.add.text(200, 60, "Poro Party!", {
           fill: "#E75480",
           fontSize: "66px",
           fontStyle: "bold",
@@ -60,7 +60,7 @@ export default class Login extends Phaser.Scene {
           fontStyle: "bold",
         });
 
-        scene.inputElement = scene.add.dom(562.5, 250).createFromCache("codeform");
+        scene.inputElement = scene.add.dom(300, 250).createFromCache("codeform");
 
 
         const form = document.getElementById('roomForm');
