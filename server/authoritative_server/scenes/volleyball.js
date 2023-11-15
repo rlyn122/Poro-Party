@@ -1,4 +1,3 @@
-const players = {};
 
 class Volleyball extends Phaser.Scene {
 
