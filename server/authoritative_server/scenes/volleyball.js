@@ -117,8 +117,8 @@ update() {
   //emit player positions
   io.emit('playerUpdates', players);
 
-  ball_x = this.ball.x;
-  ball_y = this.ball.y;
+  var ball_x = this.ball.x;
+  var ball_y = this.ball.y;
 
   //emit ball positions
   io.emit('ballUpdates', {ball_x,ball_y})
