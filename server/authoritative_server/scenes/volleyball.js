@@ -1,26 +1,12 @@
 const players = {};
 
-const config = {
-  type: Phaser.HEADLESS,
-  parent: 'game',
-  width: 800,
-  height: 600,
-  physics: {
-    default: 'arcade',
-    arcade: {
-      debug: false,
-      gravity: { y: 400 }
-    }
-  },
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
-  },
-  autoFocus: false
-};
+class Volleyball extends Phaser.Scene {
 
-function preload() {
+  constructor(){
+      super("Volleyball");
+  }
+
+preload() {
 
   this.load.spritesheet('cat', 'assets/volleyball/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
   //load background
@@ -32,7 +18,7 @@ function preload() {
   
 }
 
-function create() {
+create() {
   const self = this;
   this.players = this.add.group();
   this.balls = this.add.group();
@@ -107,7 +93,7 @@ function create() {
 
 }
 
-function update() {
+update() {
 
   const speed = 250
   //constantly emit each player's position
@@ -138,7 +124,7 @@ function update() {
   io.emit('ballUpdates', {ball_x,ball_y})
 
 }
-
+}
 //pass data into player function
 function handlePlayerInput(self, playerId, input) {
   self.players.getChildren().forEach((player) => {
@@ -198,5 +184,3 @@ function hitVolleyball(player, ball) {
   }
 }
 
-const game = new Phaser.Game(config);
-window.gameLoaded();

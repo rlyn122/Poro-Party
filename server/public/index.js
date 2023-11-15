@@ -9,12 +9,6 @@ var config = {
     },
   };
 
-  class Game extends Phaser.Game {
-    constructor(){
-        super(config);
-    }
-}
-
 window.onload = function(){
-    window.game = new Game(config);
+    window.game = new Phaser.Game(config);
 };
