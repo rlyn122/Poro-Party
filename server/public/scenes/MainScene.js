@@ -24,6 +24,9 @@ class MainScene extends Phaser.Scene {
     create() {
         var self = this;
         this.socket = io();
+
+        this.scene.launch("Login", {socket:this.socket});
+
         this.players = this.add.group();
 
         //add background

@@ -1,4 +1,20 @@
 const players = {};
+const GameRooms = {
+  //[roomKey]: {
+  //gameScore: 0,
+  //players: {},
+    //[players]: {
+      //cat:1-8 (whichever cat the person selects)
+      //rotation: 0,
+      //x: 400,
+      //y: 300,
+      //playerId: socket.id,
+      //power: null
+  // numPlayers: Object.keys(roomInfo.players).length,
+  // roomState: 0  (0 - login/waiting room, 1 - Main Lobby, 2->5 - minigames )
+  // roomKey:
+  // }
+}
 
 
 class MainScene extends Phaser.Scene {
@@ -15,7 +31,6 @@ class MainScene extends Phaser.Scene {
     }
 
     create(){
-
 
         const self = this;
         this.players = this.add.group();
@@ -42,9 +57,10 @@ class MainScene extends Phaser.Scene {
                 up: false
             }
             };
-            
-            // add player to server
 
+            self.scene.launch("Login",{socket:socket});
+
+            // add player to server
             addPlayer(self, players[socket.id]);
 
             // send the players object to the new player
@@ -55,7 +71,6 @@ class MainScene extends Phaser.Scene {
 
 
             socket.on('disconnect', function () {
-            console.log('user disconnected');
             // remove player from server
             removePlayer(self, socket.id);
             // remove this player from our players object
@@ -77,9 +92,6 @@ class MainScene extends Phaser.Scene {
     //constantly emit each player's position
     this.players.getChildren().forEach((player) => {
         const input = players[player.playerId].input;
-        if(input.up==true){
-        console.log(player.body.touching.down)
-        }
 
         if (input.left) {
         player.setVelocityX(-speed);
@@ -89,7 +101,6 @@ class MainScene extends Phaser.Scene {
         player.setVelocityX(0);
         }
         if (input.up && player.body.touching.down) {
-        console.log("jamp")
         player.setVelocityY(-330);
         } 
         players[player.playerId].x = player.x;

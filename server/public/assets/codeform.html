@@ -1,0 +1,200 @@
+<style>
+  /* username-id {
+    color: #333;
+  } */
+
+  form[class='codeform'] {
+    width: 30%;
+  }
+
+  input[type="radio"][name = "cats"] { 
+    appearance: none;
+    background-color: white;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid currentColor;
+    border-radius: 50%;
+  }
+
+  input[type="text"] {
+    border: 2px solid #1899D6;
+    border-radius: 4px;
+    font-size: 24px;
+    width: 85%;
+  }
+
+  input[type="text"][class="uname"] {
+    position: relative;
+    left: -175px;
+    top: 25px;
+  }
+
+  input[type="text"][class="key"] {
+    position: relative;
+    left: 150px;
+    top: -7px;
+  }
+
+  label {
+    display: inline-block;
+    padding: 3px;
+    border: 1px solid #e0e0ee;
+    border-radius: 3px;
+    background-color: #f0f0f0;
+    width: 10em;
+    text-align: center;
+  }
+
+  .form {
+    margin: 100px auto;
+    position: relative;
+    left: 400px;
+  }
+
+  input[type="radio"][name="cats"]:checked + label { background-color: black;}
+
+  input[type="radio"][name="cats"]:checked {
+    background-color: black;
+  }
+
+  .cat {
+    position: relative;
+    top: 160px;
+    left: -80px;
+    width: 85%;
+  }
+
+  .cropped {
+    width: 65px;
+    height: 48px;
+    object-fit: cover;
+    object-position: left bottom;
+  }
+
+  .button {
+    appearance: button;
+    background-color: #1899D6;
+    border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: din-round,sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    line-height: 20px;
+    margin: 0;
+    outline: none;
+    overflow: visible;
+    padding: 13px 16px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    transform: translateZ(0);
+    transition: filter .2s;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    left: 140px;
+    top: 30px;
+  }
+
+  .button:after {
+  background-clip: padding-box;
+  background-color: #1CB0F6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+  }
+
+  .button:main,
+  .button:focus {
+    user-select: auto;
+  }
+
+  .button:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.button:disabled {
+  cursor: auto;
+}
+
+.button:active {
+  border-width: 4px 0 0;
+  background: none;
+}
+
+  .textform {
+    position: relative;
+    top: 40px;
+    left: -15px;
+  }
+
+
+</style>
+
+<div id="codeform" class="form">
+  <form id="roomForm" class="codeform">
+
+    <div class="textform">
+      <input type="text" id="username-id" class="uname" name="user-name" placeholder="Username" required/>
+      <input type="text" id="code-form-id" class="key" name="code-form" placeholder="Room Key" required/>
+    </div>
+    
+    <div class="cat">
+      <input type="radio" name="cats" value="cat1">
+      <!-- <label for="cat">Cat 1</label><br> -->
+      <img src="assets/cats/Cat_1.png" alt="cat1" class="cropped">
+
+      <input type="radio" name="cats" value="cat2">
+      <!-- <label for="cat2">Cat 2</label><br> -->
+      <img src="assets/cats/Cat_2.png" alt="cat2" class="cropped" width="100" height="25">
+
+      <input type="radio" name="cats" value="cat3">
+      <!-- <label for="cat3">Cat 3</label><br> -->
+      <img src="assets/cats/Cat_3.png" alt="cat3" class="cropped" width="100" height="25">
+
+      <input type="radio" name="cats" value="cat4">
+      <!-- <label for="cat4">Cat 4</label><br> -->
+      <img src="assets/cats/Cat_4.png" alt="cat4" class="cropped" width="100" height="25">
+
+      <input type="radio" name="cats" value="cat5">
+      <!-- <label for="cat5">Cat 5</label><br> -->
+      <img src="assets/cats/Cat_5.png" alt="cat5" class="cropped" width="100" height="25">
+      
+      <input type="radio" name="cats" value="cat6">
+      <!-- <label for="cat6">Cat 6</label><br> -->
+      <img src="assets/cats/Cat_6.png" alt="cat6" class="cropped" width="100" height="25">
+
+      <input type="radio" name="cats" value="cat7">
+      <!-- <label for="cat7">Cat 7</label><br> -->
+      <img src="assets/cats/Cat_7.png" alt="cat7" class="cropped" width="100" height="25">
+
+      <input type="radio" name="cats" value="cat8">
+      <!-- <label for="cat8">Cat 8</label><br> -->
+      <img src="assets/cats/Cat_8.png" alt="cat8" class="cropped" width="100" height="25">
+
+    </div>
+
+    <button type="submit" id="enterRoom-id" class="button" name="enterRoom">Enter</button>
+
+  </form>
+</div>
