@@ -37,20 +37,9 @@ class Login extends Phaser.Scene {
           fontSize: "66px",
           fontStyle: "bold",
         });
+
     
-        //left popup
-        scene.boxes.strokeRect(100, 200, 275, 100);
-        scene.boxes.fillRect(100, 200, 275, 100);
-        scene.requestButton = scene.add.text(140, 215, "Request Room Key", {
-          fill: "#000000",
-          fontSize: "20px",
-          fontStyle: "bold",
-        });
-    
-        //right popup
-        scene.boxes.strokeRect(425, 200, 275, 100);
-        scene.boxes.fillRect(425, 200, 275, 100);
-        scene.JoinRoomButton = scene.add.text(465, 215, "Join Room", {
+        scene.JoinRoomButton = scene.add.text(250, 215, "Enter Username and Select Cat!", {
           fill: "#000000",
           fontSize: "20px",
           fontStyle: "bold",
@@ -65,34 +54,21 @@ class Login extends Phaser.Scene {
         form.addEventListener('submit',function(event){
           event.preventDefault(); //prevent default form submission
           const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
-          const codeInput = scene.inputElement.node.querySelector('input[name="code-form"]');
           const catInput = document.querySelector('input[name="cats"]:checked');
           
           //if these values exist, save the data into data object and emit isKeyValid event
           if (usernameInput && codeInput && catInput) {
             const username = usernameInput.value;
-            const key = codeInput.value;
             const cat = catInput.value;
           
           if (username && key){
             const data = {
               username:username, 
-              key: key, 
               cat: cat}; 
             scene.socket.emit("isKeyValid", data);
           }
-          else{
-            console.log("Please put in room key and username")
-          }
         }
         })
-
-        //Create room button 
-        scene.requestButton.setInteractive();
-        scene.requestButton.on("pointerdown", () => {
-            console.log("emit getRoomCode");
-          scene.socket.emit("getRoomCode");
-        });
         
         //empty text
         scene.notValidText = scene.add.text(562, 295, "", {
@@ -100,23 +76,10 @@ class Login extends Phaser.Scene {
           fontSize: "15px",
           fontStyle: "bold"
         });
-
-        //place to display roomKey text
-        scene.roomKeyText = scene.add.text(210, 250, "", {
-          fill: "#00ff00",
-          fontSize: "20px",
-          fontStyle: "bold"
-        });
-        
-        //recieved room code from server
-        scene.socket.on("roomCreated", function (roomKey) {
-          scene.roomKey = roomKey;
-          scene.roomKeyText.setText(scene.roomKey);
-        });
         
         //display that invalid text
         scene.socket.on("KeyNotValid", function (data) {
-          scene.notValidText.setText(`Invalid Room Key: ${data.key}`);
+          scene.notValidText.setText(`Invalid Username, Please Try Again: ${data.username}`);
         });
 
         //if key is valid, emit joinRoom and exit the waiting room

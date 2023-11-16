@@ -1,21 +1,4 @@
 const players = {};
-const GameRooms = {
-  //[roomKey]: {
-  //gameScore: 0,
-  //players: {},
-    //[players]: {
-      //cat:1-8 (whichever cat the person selects)
-      //rotation: 0,
-      //x: 400,
-      //y: 300,
-      //playerId: socket.id,
-      //power: null
-  // numPlayers: Object.keys(roomInfo.players).length,
-  // roomState: 0  (0 - login/waiting room, 1 - Main Lobby, 2->5 - minigames )
-  // roomKey:
-  // }
-}
-
 
 class MainScene extends Phaser.Scene {
 
@@ -57,8 +40,6 @@ class MainScene extends Phaser.Scene {
                 up: false
             }
             };
-
-            self.scene.launch("Login",{socket:socket});
 
             // add player to server
             addPlayer(self, players[socket.id]);
