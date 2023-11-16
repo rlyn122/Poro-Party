@@ -45,18 +45,7 @@ class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.platforms,this.players);
         //socket connection established
         io.on('connection', function (socket) {
-            
-            // create a new player and add it to our players object
-            players[socket.id] = {
-            x: Math.floor(Math.random() * 700) + 50,
-            y: 500,
-            playerId: socket.id,
-            input: {
-                left: false,
-                right: false,
-                up: false
-            }
-            };
+
 
             self.scene.launch("Login",{socket:socket});
 
@@ -137,6 +126,8 @@ function addPlayer(self, playerInfo) {
     repeat: -1
   });
 
+  player.cat = playerInfo.cat;
+  player.username = playerInfo.username;
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);

@@ -67,7 +67,8 @@ class Login extends Phaser.Scene {
           const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
           const codeInput = scene.inputElement.node.querySelector('input[name="code-form"]');
           const catInput = document.querySelector('input[name="cats"]:checked');
-          
+        
+          console.log(usernameInput)
           //if these values exist, save the data into data object and emit isKeyValid event
           if (usernameInput && codeInput && catInput) {
             const username = usernameInput.value;
@@ -90,7 +91,6 @@ class Login extends Phaser.Scene {
         //Create room button 
         scene.requestButton.setInteractive();
         scene.requestButton.on("pointerdown", () => {
-            console.log("emit getRoomCode");
           scene.socket.emit("getRoomCode");
         });
         

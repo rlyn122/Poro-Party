@@ -118,31 +118,41 @@ class MainScene extends Phaser.Scene {
       
       }
       
-      //displays  
-      function displayPlayers(self, playerInfo, sprite) {
-        const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-      
-        self.anims.create({
-          key: 'left',
-          frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-          frameRate: 5,
-          repeat: -1
-        });
-      
-        self.anims.create({
-          key: 'turn',
-          frames: [{ key: 'cat', frame: 2 }],
-          frameRate: 20
-        });
-      
-        self.anims.create({
-          key: 'right',
-          frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-          frameRate: 5,
-          repeat: -1
-        });
-      
-        player.playerId = playerInfo.playerId;
-        self.players.add(player);
-      }
+//displays  
+function displayPlayers(self, playerInfo, sprite) {
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+
+  self.anims.create({
+    key: 'left',
+    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
+  self.anims.create({
+    key: 'turn',
+    frames: [{ key: 'cat', frame: 2 }],
+    frameRate: 20
+  });
+
+  self.anims.create({
+    key: 'right',
+    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
+  player.playerId = playerInfo.playerId;
+  self.players.add(player);
+}
+
+function addUsername(player, scene, playerInfo){
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
+  this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
+}
+
+function setUsername_Pos(player, posX, posY){
+  player.usernameText.x = posX-10;
+  player.usernameText.y = posY- player.height / 4;
+}
 

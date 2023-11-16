@@ -14,6 +14,7 @@ class Login extends Phaser.Scene {
 
     create(){
 
+
     //Creates a new lobby with the code
     this.socket.on('getRoomCode', () => {
         // Generate room code 
@@ -36,8 +37,67 @@ class Login extends Phaser.Scene {
         this.socket.emit("roomCreated", key)
         });
 
+    //check if entered room is valid
+    this.socket.on('isKeyValid', (data)=>{
+        if(GameRooms.hasOwnProperty(data.key)){
+        this.socket.emit("KeyisValid", data);
+        }
+        else{
+        this.socket.emit("KeyNotValid",data);
+        }
+    })
+
+
+    //joinRoom code
+  this.socket.on('joinRoom', (data) => {
+    
+    const roomKey = String(data.key);
+    const roomInfo = GameRooms[roomKey];
+
+    this.socket.roomKey = roomKey;
+
+    //add player to sockertIO room
+    this.socket.join(roomKey);
+    // create a new player and add it to our players object
+    players[this.socket.id] = {
+      x: Math.floor(Math.random() * 700) + 50,
+      y: 500,
+      playerId: this.socket.id,
+      input: {
+          left: false,
+          right: false,
+          up: false
+      },
+      username: data.username, 
+      cat:data.cat,
+      };
+
+
+    //add new player data to roomInfo
+    roomInfo.players[this.socket.id] = {
+      cat:data.cat,
+      rotation:0,
+      x:400,
+      y:300,
+      points: 0,
+      username: data.username, 
+      playerId: this.socket.id,
+      power: null,
+      roomState:0
     }
 
+    //update number of Players
+    roomInfo.numPlayers =Object.keys(roomInfo.players).length;
+    console.log(`${roomInfo.players[this.socket.id].username} joined room ${roomKey}. Room data: `)
+    console.log(roomInfo);
+    
+    //Emit initial state of game for client
+    this.socket.emit("setState", roomInfo);
+
+    });
+
+}
+    
     update(){
 
     }
