@@ -10,12 +10,6 @@ class MainScene extends Phaser.Scene {
         //load cats
         this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
         this.load.image('ground', 'assets/volleyball/platform.png');
-        this.load.image("P","assets/letters/P.png")
-        this.load.image("O","assets/letters/O.png")
-        this.load.image("R","assets/letters/R.png")
-        this.load.image("Y","assets/letters/Y.png")
-        this.load.image("A","assets/letters/A.png")
-        this.load.image("T","assets/letters/T.png")
 
     }
 
@@ -24,84 +18,37 @@ class MainScene extends Phaser.Scene {
         const self = this;
         this.players = this.add.group();
 
-        //platforms
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400, 600, 'ground').setScale(2).refreshBody();
         this.platforms.create(100,450,'ground').setScale(0.3).refreshBody();
         this.platforms.create(500,300,'ground').setScale(0.3).refreshBody();
         this.platforms.create(600,200,'ground').setScale(0.3).refreshBody();
         this.platforms.create(300,350,'ground').setScale(0.3).refreshBody();
-        this.physics.add.collider(this.platforms,this.players);
 
-        //letters
-        var letterx = 100
-        this.letters = this.physics.add.staticGroup();
-        this.letters.create(50,letterx,"P").setScale(0.35).refreshBody();
-        this.letters.create(120,letterx,"O").setScale(0.35).refreshBody();
-        this.letters.create(190,letterx,"R").setScale(0.35).refreshBody();
-        this.letters.create(250,letterx,"O").setScale(0.35).refreshBody();
-        this.letters.create(310,letterx,"P").setScale(0.35).refreshBody();
-        this.letters.create(370,letterx,"A").setScale(0.35).refreshBody();
-        this.letters.create(460,letterx,"R").setScale(0.35).refreshBody();
-        this.letters.create(550,letterx,"T").setScale(0.35).refreshBody();
-        this.letters.create(700,letterx,"Y").setScale(0.35).refreshBody();
-        this.physics.add.collider(this.letters,this.players);
-        
-        this.letters.children.iterate(function (letter) {
-          letter.setBounce(0.5);
-      });
+        this.physics.add.collider(this.platforms,this.players);
         //socket connection established
         io.on('connection', function (socket) {
             
-
-            socket.on('joinRoom', function (data){
-              // create a new player and add it to our players object
+            // create a new player and add it to our players object
             players[socket.id] = {
-              x: Math.floor(Math.random() * 700) + 50,
-              y: 500,
-              playerId: socket.id,
-              input: {
-                  left: false,
-                  right: false,
-                  up: false
-              },
-              username:data.username,
-              cat:data.cat,
-              };
-  
-              // add player to server
-              addPlayer(self, players[socket.id]);
-  
-              // send the players object to the new player
-              socket.emit('currentPlayers', players);
-  
-              // update all other players of the new player
-              socket.broadcast.emit('newPlayer', players[socket.id]);
-            })
-            
+            x: Math.floor(Math.random() * 700) + 50,
+            y: 500,
+            playerId: socket.id,
+            input: {
+                left: false,
+                right: false,
+                up: false
+            }
+            };
 
+            // add player to server
+            addPlayer(self, players[socket.id]);
 
-            //ask if username is valid
-            socket.on('isKeyValid', (data)=>{
-              //parse through player names set name_exists = true if username already exists
-              var name_exists = false
-              for (var playerId in players)
-              {
-                var player = players[playerId]
-                //if player name is already available change value of name_exists
-                if (data.username == player.username){
-                  name_exists = true
-                }
-              }
+            // send the players object to the new player
+            socket.emit('currentPlayers', players);
 
-              //only emit for non-existent usernames
-              if(name_exists){
-                socket.emit("KeyNotValid",data)
-              }
-              else{
-                socket.emit("KeyisValid",data)
-              }
-            })
+            // update all other players of the new player
+            socket.broadcast.emit('newPlayer', players[socket.id]);
 
 
             socket.on('disconnect', function () {
