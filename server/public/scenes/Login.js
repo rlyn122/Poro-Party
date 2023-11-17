@@ -57,11 +57,11 @@ class Login extends Phaser.Scene {
           const catInput = document.querySelector('input[name="cats"]:checked');
           
           //if these values exist, save the data into data object and emit isKeyValid event
-          if (usernameInput && catInput) {
+          if (usernameInput && codeInput && catInput) {
             const username = usernameInput.value;
             const cat = catInput.value;
           
-          if (username&&cat){
+          if (username && key){
             const data = {
               username:username, 
               cat: cat}; 
@@ -79,7 +79,7 @@ class Login extends Phaser.Scene {
         
         //display that invalid text
         scene.socket.on("KeyNotValid", function (data) {
-          scene.notValidText.setText(`Username Taken, Please Try Again: ${data.username}`);
+          scene.notValidText.setText(`Invalid Username, Please Try Again: ${data.username}`);
         });
 
         //if key is valid, emit joinRoom and exit the waiting room

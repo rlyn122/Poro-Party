@@ -16,13 +16,6 @@ class MainScene extends Phaser.Scene {
         this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
         this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
-        this.load.image("P","assets/letters/P.png")
-        this.load.image("O","assets/letters/O.png")
-        this.load.image("R","assets/letters/R.png")
-        this.load.image("Y","assets/letters/Y.png")
-        this.load.image("A","assets/letters/A.png")
-        this.load.image("T","assets/letters/T.png")
-
         //load background
         this.load.image("bg","assets/lobby.jpg");
         this.load.image('ground', 'assets/volleyball/platform.png');
@@ -36,9 +29,7 @@ class MainScene extends Phaser.Scene {
 
         this.scene.launch("Login", {socket:this.socket});
 
-        this.letters = this.add.group();
         this.players = this.add.group();
-
 
         //add background
         this.add.image(0,0,"bg").setOrigin(0);
@@ -71,11 +62,11 @@ class MainScene extends Phaser.Scene {
       
             //if it is this client
             if (players[id].playerId === self.socket.id) {
-              displayPlayers(self, players[id], players[id].cat);
+              displayPlayers(self, players[id], 'cat4');
             }
             //if it is another client
             else{
-              displayPlayers(self,players[id],players[id].cat);
+              displayPlayers(self,players[id],'cat5')
             }
 
             
@@ -115,7 +106,6 @@ class MainScene extends Phaser.Scene {
         this.socket.on('disconnect', function (playerId) {
           self.players.getChildren().forEach(function (player) {
             if (playerId === player.playerId) {
-              player.usernameText.destroy();
               player.destroy();
               self.playerCount -= 1;
               self.playerCountText.setText(`Lobby: ${self.playerCount} players`);
@@ -129,13 +119,11 @@ class MainScene extends Phaser.Scene {
             self.players.getChildren().forEach(function (player) {
               if (players[id].playerId === player.playerId) {
                 player.setPosition(players[id].x, players[id].y);
-                setUsername_Pos(player,players[id].x, players[id].y)
               }
             });
           });
           
         });
-      
       
       
         //create cursors
@@ -176,41 +164,31 @@ class MainScene extends Phaser.Scene {
       
       }
       
-//displays  
-function displayPlayers(self, playerInfo, sprite) {
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-  addUsername(player,self,playerInfo)
-  self.anims.create({
-    key: 'left',
-    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-    frameRate: 5,
-    repeat: -1
-  });
+      //displays  
+      function displayPlayers(self, playerInfo, sprite) {
+        const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+      
+        self.anims.create({
+          key: 'left',
+          frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+          frameRate: 5,
+          repeat: -1
+        });
+      
+        self.anims.create({
+          key: 'turn',
+          frames: [{ key: 'cat', frame: 2 }],
+          frameRate: 20
+        });
+      
+        self.anims.create({
+          key: 'right',
+          frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+          frameRate: 5,
+          repeat: -1
+        });
+      
+        player.playerId = playerInfo.playerId;
+        self.players.add(player);
+      }
 
-  self.anims.create({
-    key: 'turn',
-    frames: [{ key: 'cat', frame: 2 }],
-    frameRate: 20
-  });
-
-  self.anims.create({
-    key: 'right',
-    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  player.playerId = playerInfo.playerId;
-  self.players.add(player);
-}
-
-//function to add player username onto screen
-function addUsername(player, scene, playerInfo){
-  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
-  this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
-}
-
-function setUsername_Pos(player, posX, posY){
-  player.usernameText.x = posX-10;
-  player.usernameText.y = posY- player.height / 4;
-}
