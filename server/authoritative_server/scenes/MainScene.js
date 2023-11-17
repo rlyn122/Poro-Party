@@ -34,6 +34,7 @@ class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.platforms,this.players);
 
         //letters
+        /** 
         var letterx = 100
         this.letters = this.physics.add.staticGroup();
         this.letters.create(50,letterx,"P").setScale(0.35).refreshBody();
@@ -50,6 +51,7 @@ class MainScene extends Phaser.Scene {
         this.letters.children.iterate(function (letter) {
           letter.setBounce(0.5);
       });
+      */
         //socket connection established
         io.on('connection', function (socket) {
             
@@ -77,7 +79,8 @@ class MainScene extends Phaser.Scene {
   
               // update all other players of the new player
               socket.broadcast.emit('newPlayer', players[socket.id]);
-            })
+
+              })
             
 
 

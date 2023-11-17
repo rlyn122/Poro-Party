@@ -2,6 +2,7 @@ class MainScene extends Phaser.Scene {
 
     constructor(){
         super("MainScene");
+        this.playerCount = 0;
     }
 
     preload(){
@@ -29,6 +30,7 @@ class MainScene extends Phaser.Scene {
     }
 
     create() {
+
         var self = this;
         this.socket = io();
 
@@ -49,7 +51,7 @@ class MainScene extends Phaser.Scene {
 
 
         //add PoroParty letters
-
+        /**
         var letterx = 100
         this.letters.P = this.add.sprite(50,letterx,"P").setScale(0.35);
         this.letters.O = this.add.sprite(120,letterx,"O").setScale(0.35);
@@ -61,7 +63,8 @@ class MainScene extends Phaser.Scene {
         this.letters.R = this.add.sprite(460,letterx,"R").setScale(0.35);
         this.letters.T = this.add.sprite(550,letterx,"T").setScale(0.35);
         this.letters.Y = this.add.sprite(700,letterx,"Y").setScale(0.35);
-      
+      */
+
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
           Object.keys(players).forEach(function (id) {
@@ -74,12 +77,38 @@ class MainScene extends Phaser.Scene {
             else{
               displayPlayers(self,players[id],players[id].cat);
             }
+
+            
+            self.startGameButton = self.add.text(625,20,"Start Game!",{
+              fill: "#FFFFFF",
+              fontSize: "20px",
+              fontStyle: "bold",
+            });
+
+            //set initial playerCount
+            self.playerCount = (Object.keys(players).length)
+            self.playerCountText = self.add.text(50, 20, `Lobby: ${(Object.keys(players).length)} players`, {
+                fill: "#7CFC00",
+                fontSize: "20px",
+                fontStyle: "bold",
+              });
+            //set startbutton interactive and tell the server
+
+            self.startGameButton.setInteractive();
+            self.startGameButton.on("pointerdown", () => {
+            //emit to everyone in your room that the game has started
+            self.socket.emit("stopMainSceneRequest");
+          });
           });
         });
       
         //listen for newPlayer connection
         this.socket.on('newPlayer', function (playerInfo) {
           displayPlayers(self, playerInfo, playerInfo.cat);
+          if(self.playerCountText){
+          self.playerCount += 1;
+          self.playerCountText.setText(`Lobby: ${self.playerCount} players`);
+          }
         });
       
         //listen for player disconnection
@@ -88,6 +117,8 @@ class MainScene extends Phaser.Scene {
             if (playerId === player.playerId) {
               player.usernameText.destroy();
               player.destroy();
+              self.playerCount -= 1;
+              self.playerCountText.setText(`Lobby: ${self.playerCount} players`);
             }
           });
         });
@@ -102,6 +133,7 @@ class MainScene extends Phaser.Scene {
               }
             });
           });
+          
         });
       
       
