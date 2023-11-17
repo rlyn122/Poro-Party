@@ -29,26 +29,55 @@ class MainScene extends Phaser.Scene {
         //socket connection established
         io.on('connection', function (socket) {
             
-            // create a new player and add it to our players object
+
+            socket.on('joinRoom', function (data){
+              // create a new player and add it to our players object
             players[socket.id] = {
-            x: Math.floor(Math.random() * 700) + 50,
-            y: 500,
-            playerId: socket.id,
-            input: {
-                left: false,
-                right: false,
-                up: false
-            }
-            };
+              x: Math.floor(Math.random() * 700) + 50,
+              y: 500,
+              playerId: socket.id,
+              input: {
+                  left: false,
+                  right: false,
+                  up: false
+              },
+              username:data.username,
+              cat:data.cat,
+              };
+  
+              // add player to server
+              addPlayer(self, players[socket.id]);
+  
+              // send the players object to the new player
+              socket.emit('currentPlayers', players);
+  
+              // update all other players of the new player
+              socket.broadcast.emit('newPlayer', players[socket.id]);
+            })
+            
 
-            // add player to server
-            addPlayer(self, players[socket.id]);
 
-            // send the players object to the new player
-            socket.emit('currentPlayers', players);
+            //ask if username is valid
+            socket.on('isKeyValid', (data)=>{
+              //parse through player names set name_exists = true if username already exists
+              var name_exists = false
+              for (var playerId in players)
+              {
+                var player = players[playerId]
+                //if player name is already available change value of name_exists
+                if (data.username == player.username){
+                  name_exists = true
+                }
+              }
 
-            // update all other players of the new player
-            socket.broadcast.emit('newPlayer', players[socket.id]);
+              //only emit for non-existent usernames
+              if(name_exists){
+                socket.emit("KeyNotValid",data)
+              }
+              else{
+                socket.emit("KeyisValid",data)
+              }
+            })
 
 
             socket.on('disconnect', function () {

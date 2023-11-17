@@ -45,24 +45,25 @@ class MainScene extends Phaser.Scene {
       
             //if it is this client
             if (players[id].playerId === self.socket.id) {
-              displayPlayers(self, players[id], 'cat4');
+              displayPlayers(self, players[id], players[id].cat);
             }
             //if it is another client
             else{
-              displayPlayers(self,players[id],'cat5')
+              displayPlayers(self,players[id],players[id].cat);
             }
           });
         });
       
         //listen for newPlayer connection
         this.socket.on('newPlayer', function (playerInfo) {
-          displayPlayers(self, playerInfo, 'cat5');
+          displayPlayers(self, playerInfo, playerInfo.cat);
         });
       
         //listen for player disconnection
         this.socket.on('disconnect', function (playerId) {
           self.players.getChildren().forEach(function (player) {
             if (playerId === player.playerId) {
+              player.usernameText.destroy();
               player.destroy();
             }
           });
@@ -74,6 +75,7 @@ class MainScene extends Phaser.Scene {
             self.players.getChildren().forEach(function (player) {
               if (players[id].playerId === player.playerId) {
                 player.setPosition(players[id].x, players[id].y);
+                setUsername_Pos(player,players[id].x, players[id].y)
               }
             });
           });
@@ -118,31 +120,41 @@ class MainScene extends Phaser.Scene {
       
       }
       
-      //displays  
-      function displayPlayers(self, playerInfo, sprite) {
-        const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-      
-        self.anims.create({
-          key: 'left',
-          frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-          frameRate: 5,
-          repeat: -1
-        });
-      
-        self.anims.create({
-          key: 'turn',
-          frames: [{ key: 'cat', frame: 2 }],
-          frameRate: 20
-        });
-      
-        self.anims.create({
-          key: 'right',
-          frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-          frameRate: 5,
-          repeat: -1
-        });
-      
-        player.playerId = playerInfo.playerId;
-        self.players.add(player);
-      }
+//displays  
+function displayPlayers(self, playerInfo, sprite) {
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+  addUsername(player,self,playerInfo)
+  self.anims.create({
+    key: 'left',
+    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+    frameRate: 5,
+    repeat: -1
+  });
 
+  self.anims.create({
+    key: 'turn',
+    frames: [{ key: 'cat', frame: 2 }],
+    frameRate: 20
+  });
+
+  self.anims.create({
+    key: 'right',
+    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+    frameRate: 5,
+    repeat: -1
+  });
+
+  player.playerId = playerInfo.playerId;
+  self.players.add(player);
+}
+
+//function to add player username onto screen
+function addUsername(player, scene, playerInfo){
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
+  this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
+}
+
+function setUsername_Pos(player, posX, posY){
+  player.usernameText.x = posX-10;
+  player.usernameText.y = posY- player.height / 4;
+}
