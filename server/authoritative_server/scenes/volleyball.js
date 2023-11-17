@@ -1,23 +1,43 @@
+const players = {};
 
-class Volleyball extends Phaser.Scene {
+const config = {
+  type: Phaser.HEADLESS,
+  parent: 'game',
+  width: 800,
+  height: 600,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: false,
+      gravity: { y: 400 }
+    }
+  },
+  scene: {
+    preload: preload,
+    create: create,
+    update: update
+  },
+  autoFocus: false
+};
 
-  constructor(){
-      super("Volleyball");
-  }
+function preload() {
 
-preload() {
-
-  this.load.spritesheet('cat', 'assets/volleyball/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat3', 'assets/cats/Cat_3.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat4', 'assets/cats/Cat_4.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat5', 'assets/cats/Cat_5.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat6', 'assets/cats/Cat_6.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat7', 'assets/cats/Cat_7.png', { frameWidth: 263, frameHeight: 192 });  
+  this.load.spritesheet('cat8', 'assets/cats/Cat_8.png', { frameWidth: 263, frameHeight: 192 });   
   //load background
   this.load.image('sky', 'assets/volleyball/sky.png');
   this.load.image('net', 'assets/volleyball/platform2.png');
   this.load.image('ball', 'assets/volleyball/volleyball.png');
   this.load.image('ground', 'assets/volleyball/platform.png');
-
-  
 }
 
-create() {
+function create() {
   const self = this;
   this.players = this.add.group();
   this.balls = this.add.group();
@@ -30,12 +50,40 @@ create() {
   this.platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
   
   this.ball = this.physics.add.sprite(400, 200, 'ball');
+  this.ball.body.allowGravity = false;
   this.ball.setBounce(1);
   this.ball.setCollideWorldBounds(true);
-  this.ball.setVelocityX(80);
+  this.ball.setVelocityX(200);
+  this.ball.setVelocityY(200);
 
   this.physics.add.collider(this.players, this.ball, function (player, ball) {
     hitVolleyball(player, ball);
+  });
+
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+    frameRate: 10,
+    repeat: -1
+  });
+
+  this.anims.create({
+    key: 'look_right',
+    frames: [{ key: 'cat', frame: 2 }],
+    frameRate: 20
+  });
+
+  this.anims.create({
+    key: 'look_left',
+    frames: [{ key: 'cat', frame: 1 }],
+    frameRate: 20
+  });
+
+  this.anims.create({
+    key: 'right',
+    frames: this.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+    frameRate: 10,
+    repeat: -1
   });
 
   this.balls.add(this.ball)
@@ -79,38 +127,43 @@ create() {
     socket.on('playerInput', function (inputData) {
       handlePlayerInput(self, socket.id, inputData);
     });
-
-
   });
-
 
   //add colliders
   this.physics.add.collider(this.players, this.platforms);
   this.physics.add.collider(this.players, this.players);
   this.physics.add.collider(this.ball, this.platforms);
   this.physics.add.collider(this.ball, this.players);
-
 }
 
-update() {
+function update() {
 
   const speed = 250
   //constantly emit each player's position
   this.players.getChildren().forEach((player) => {
     const input = players[player.playerId].input;
+    var animationKey = 'look_left';
 
     if (input.left) {
       player.setVelocityX(-speed);
+      animationKey = 'left'
     } else if (input.right) {
       player.setVelocityX(speed);
+      animationKey = 'right'
     } else {
       player.setVelocityX(0);
+      if (animationKey == 'right') {
+        animationKey = 'look_right'
+      }
     }
     if (input.up && player.body.touching.down) {
-      player.setVelocityY(-330);
-    } 
+      player.setVelocityY(-400);
+    }
+
     players[player.playerId].x = player.x;
     players[player.playerId].y = player.y;
+
+    handlePlayerInput(this, player.playerId, input, animationKey); // Pass animation key
 
   });
   //emit player positions
@@ -123,12 +176,13 @@ update() {
   io.emit('ballUpdates', {ball_x,ball_y})
 
 }
-}
+
 //pass data into player function
-function handlePlayerInput(self, playerId, input) {
+function handlePlayerInput(self, playerId, input, animationKey) {
   self.players.getChildren().forEach((player) => {
     if (playerId === player.playerId) {
       players[player.playerId].input = input;
+      players[player.playerId].animationKey = animationKey;
     }
   });
 }
@@ -137,31 +191,13 @@ function handlePlayerInput(self, playerId, input) {
 function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat');
 
-  self.anims.create({
-    key: 'left',
-    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  self.anims.create({
-    key: 'turn',
-    frames: [{ key: 'cat', frame: 2 }],
-    frameRate: 20
-  });
-
-  self.anims.create({
-    key: 'right',
-    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
+  // Set initial animation state
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);
   player.setScale(0.2, 0.2);  
   player.setCollideWorldBounds(true);
+
 }
 
 
@@ -175,7 +211,12 @@ function removePlayer(self, playerId) {
 }
 
 function hitVolleyball(player, ball) {
-  ball.setVelocityY(-500);
+  
+  player.x = 2000;
+  player.y = 2000;
+  player.setVisible(false);
+  
+  ball.setVelocityY(-600);
   if (ball.x < player.x) {
       ball.setVelocityX(-300);
   } else {
@@ -183,3 +224,5 @@ function hitVolleyball(player, ball) {
   }
 }
 
+const game = new Phaser.Game(config);
+window.gameLoaded();
