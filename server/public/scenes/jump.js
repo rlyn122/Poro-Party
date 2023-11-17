@@ -76,6 +76,17 @@ class PlayScene extends Phaser.Scene {
         //background.setScale(this.cameras.main.width / background.width, this.cameras.main.height / background.height);
         //background.setDepth(-2);  // Ensure the background is behind all other game elements
         //background.setScrollFactor(0);
+        
+        this.socket = io('http://localhost:3000'); // Replace with your server URL
+
+        this.socket.on('connect', () => {
+            console.log('Connected to server', this.socket.id);
+            this.socket.emit('playerMoved', { id: this.socket.id, x: this.hero.x, y: this.hero.y });
+        });
+
+        this.socket.on('playerMoved', (playerData) => {
+            
+        });
 
         let frames = [];
         for (let i = 1; i <= 49; i++) {
@@ -182,6 +193,10 @@ class PlayScene extends Phaser.Scene {
         
         if (keys.W.isDown && this.hero2.body.touching.down) {
             this.hero2.body.setVelocityY(-400);
+        }
+
+        if (this.hero.body.velocity.x !== 0 || this.hero.body.velocity.y !== 0) {
+            this.socket.emit('playerMoved', { id: this.socket.id, x: this.hero.x, y: this.hero.y });
         }
 
         if (this.cursor.left.isDown) {
@@ -315,24 +330,8 @@ class PlayScene extends Phaser.Scene {
         this.hero.body.checkCollision.left = true;
         this.hero.body.checkCollision.right = true;
 
-        // 第二个角色
-        this.hero2 = this.add.sprite(this.cameras.main.centerX, this.cameras.main.height - 36, 'hero');
-        this.hero2.setOrigin(0.5);
-        this.hero2.setScale(0.13);
-        this.hero2.yOrig = this.hero2.y;
-        this.hero2.yChange = 0;
-        this.physics.add.existing(this.hero2);
-        this.hero2.body.setGravityY(500);
-        this.hero2.setDepth(100);
-        this.hero2.body.checkCollision.up = false;
-        this.hero2.body.checkCollision.left = true;
-        this.hero2.body.checkCollision.right = true;
-
         // 添加碰撞检测
         this.physics.add.collider(this.hero, this.platforms);
-        this.physics.add.collider(this.hero2, this.platforms);
-        // 添加两个角色之间的碰撞检测
-        this.physics.add.collider(this.hero, this.hero2);
     }
 }
 
