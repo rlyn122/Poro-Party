@@ -77,15 +77,56 @@ class PlayScene extends Phaser.Scene {
         //background.setDepth(-2);  // Ensure the background is behind all other game elements
         //background.setScrollFactor(0);
         
-        this.socket = io('http://localhost:3000'); // Replace with your server URL
+        this.socket = io();
 
-        this.socket.on('connect', () => {
-            console.log('Connected to server', this.socket.id);
-            this.socket.emit('playerMoved', { id: this.socket.id, x: this.hero.x, y: this.hero.y });
+        //listen for currentPlayers and self
+        this.socket.on('currentPlayers', function (players) {
+            Object.keys(players).forEach(function (id) {
+
+            //if it is this client
+            if (players[id].playerId === self.socket.id) {
+                displayPlayers(self, players[id], 'cat');
+            }
+            //if it is another client
+            else{
+                displayPlayers(self,players[id],'cat')
+            }
+            });
         });
 
-        this.socket.on('playerMoved', (playerData) => {
-            
+        //listen for newPlayer connection
+        this.socket.on('newPlayer', function (playerInfo) {
+            displayPlayers(self, playerInfo, 'cat');
+        });
+
+        //listen for player disconnection
+        this.socket.on('disconnect', function (playerId) {
+            self.players.getChildren().forEach(function (player) {
+            if (playerId === player.playerId) {
+                player.destroy();
+            }
+            });
+        });
+
+        //update player movements from server
+        this.socket.on('playerUpdates', function (players) {
+            Object.keys(players).forEach(function (id) {
+            self.players.getChildren().forEach(function (player) {
+                if (players[id].playerId === player.playerId) {
+                    player.setPosition(players[id].x, players[id].y);
+                }
+            });
+            });
+        });
+
+        // generates platforms
+        this.socket.on('platforms', (platformData) => {
+            this.platforms = this.physics.add.staticGroup();
+
+            platformData.forEach(data => {
+                let platform = this.platforms.create(data.x, data.y, data.type);
+                platform.setScale(0.10).refreshBody();
+            });
         });
 
         let frames = [];

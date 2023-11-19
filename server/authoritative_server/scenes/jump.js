@@ -18,6 +18,22 @@ const config = {
       },
 };
 
+const generatePlatforms = () => {
+    const platforms = [];
+    const width = 900; // Replace with actual game width
+    const height = 600; // Replace with actual game height
+
+    for (let i = 0; i < 100; i++) {
+        for (let j = 0; j < 2; j++) {
+            let x = Math.random() * (j * width / 2, (j + 1) * width / 2 - 50);
+            let y = height - 100 - 80 * i;
+            let type = 'platform' + Math.floor(Math.random() * 5 + 1);
+            platforms.push({ x, y, type });
+        }
+    }
+    return platforms;
+};
+
 ////////
 
 
@@ -88,6 +104,12 @@ function create() {
 
             io.emit('disconnect', socket.id);
         });
+        
+        //generates platform on the server side
+        const platforms = generatePlatforms();
+
+        //emits platform data to the players
+        socket.emit('platforms', platforms);
 
         // update player data
         socket.on('playerInput', function(inputData) {
