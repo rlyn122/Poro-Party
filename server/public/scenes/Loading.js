@@ -71,6 +71,9 @@ class Loading extends Phaser.Scene {
 
         // Play the walking animation
         catSprite.anims.play('walk', true);  
+        setTimeout(() => {
+            this.scene.stop('Loading');
+          }, 7500);
 
     }
 

@@ -55,6 +55,19 @@ class MainScene extends Phaser.Scene {
         //socket connection established
         io.on('connection', function (socket) {
             
+          socket.on('stopMainSceneRequest', function (gameName){
+
+            io.emit(gameName);
+            
+            if (gameName == "VolleyballGame"){
+              this.scene.start("Volleyball")
+            }
+            if (gameName == "JumpGame"){
+              //this.sene.start("Jump")
+              console.log("jumpscene launched!")              
+            }
+            });
+
 
             socket.on('joinRoom', function (data){
               // create a new player and add it to our players object
@@ -150,6 +163,9 @@ class MainScene extends Phaser.Scene {
         
     }
 }
+
+
+
 //create sprite for player
 function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');

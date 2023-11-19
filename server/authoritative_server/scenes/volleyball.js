@@ -5,6 +5,10 @@ class Volleyball extends Phaser.Scene {
       super("Volleyball");
   }
 
+  init(data){
+    this.players = data.players;
+  }
+
 preload() {
 
   this.load.spritesheet('cat', 'assets/volleyball/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
@@ -37,6 +41,12 @@ create() {
   this.physics.add.collider(this.players, this.ball, function (player, ball) {
     hitVolleyball(player, ball);
   });
+
+  // Use the received players to recreate them in the Volleyball scene
+  this.players.forEach((player) => {
+    addPlayer(this, player);
+  });
+
 
   this.balls.add(this.ball)
   //socket connection established

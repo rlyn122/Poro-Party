@@ -78,13 +78,6 @@ class MainScene extends Phaser.Scene {
               displayPlayers(self,players[id],players[id].cat);
             }
 
-            
-            self.startGameButton = self.add.text(625,20,"Start Game!",{
-              fill: "#FFFFFF",
-              fontSize: "20px",
-              fontStyle: "bold",
-            });
-
             //set initial playerCount
             self.playerCount = (Object.keys(players).length)
             self.playerCountText = self.add.text(50, 20, `Lobby: ${(Object.keys(players).length)} players`, {
@@ -92,16 +85,48 @@ class MainScene extends Phaser.Scene {
                 fontSize: "20px",
                 fontStyle: "bold",
               });
-            //set startbutton interactive and tell the server
 
-            self.startGameButton.setInteractive();
-            self.startGameButton.on("pointerdown", () => {
-            //emit to everyone in your room that the game has started
-            self.socket.emit("stopMainSceneRequest");
-          });
+            //create scene transition buttons
+            self.startVolleyballGameButton = self.add.text(500,20,"Start Volleyball Game",{
+              fill: "#FFFFFF",
+              fontSize: "20px",
+              fontStyle: "bold",
+            });
+            
+            self.startJumpGameButton = self.add.text(500,40,"Start Jump Game",{
+              fill: "#FFFFFF",
+              fontSize: "20px",
+              fontStyle: "bold",
+            });
+
+            //asking server to launch volleyball scene
+            self.startVolleyballGameButton.setInteractive();
+            self.startVolleyballGameButton.on("pointerdown", () => {
+              self.socket.emit("stopMainSceneRequest","VolleyballGame");
+            });
+
+            //asking server to launch jump scene
+            self.startJumpGameButton.setInteractive();
+            self.startJumpGameButton.on("pointerdown", () => {
+              self.socket.emit("stopMainSceneRequest","JumpGame");
+              });
+
           });
         });
-      
+        
+        //receive signals to launch games from server
+        this.socket.on("VolleyballGame", ()=>{
+          this.scene.start("Volleyball",players)
+
+          this.scene.launch("Loading")
+
+        })
+
+        this.socket.on("JumpGame", ()=>{
+          this.scene.launch("Loading")
+        })
+
+  
         //listen for newPlayer connection
         this.socket.on('newPlayer', function (playerInfo) {
           displayPlayers(self, playerInfo, playerInfo.cat);
