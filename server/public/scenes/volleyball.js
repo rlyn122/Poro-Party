@@ -42,6 +42,9 @@ class Volleyball extends Phaser.Scene {
 
   // create the first ball
   var ball = this.add.sprite(400, 200, 'earth');
+  var ball2 = this.add.sprite(400, 200, 'mars');
+  var ball3 = this.add.sprite(400, 200, 'saturn');
+
 
   //listen for currentPlayers and self
   this.socket.on('currentPlayers', function (players) {
@@ -94,16 +97,12 @@ class Volleyball extends Phaser.Scene {
 
   this.socket.on('ballUpdates2', function(ball2_Pos) {
     const {ball2_x, ball2_y} = ball2_Pos;
-    if (ball2) {
-      ball2.setPosition(ball2_x, ball2_y);
-    }
+    ball2.setPosition(ball2_x, ball2_y);
   });
   
   this.socket.on('ballUpdates3', function(ball3_Pos) {
     const {ball3_x, ball3_y} = ball3_Pos;
-    if (ball3) {
-      ball3.setPosition(ball3_x, ball3_y);
-    }
+    ball3.setPosition(ball3_x, ball3_y);
   });
 
   //create cursors
@@ -138,11 +137,11 @@ class Volleyball extends Phaser.Scene {
     repeat: -1
   });
 
-  // create the second ball 15 seconds after
-  this.time.delayedCall(15000, createSecondBall, [], this);
+  // // create the second ball 15 seconds after
+  // this.time.delayedCall(15000, createSecondBall, [], this);
 
-  // Create the third ball after 30 seconds (15 seconds after the second ball)
-  this.time.delayedCall(30000, createThirdBall, [], this);
+  // // Create the third ball after 30 seconds (15 seconds after the second ball)
+  // this.time.delayedCall(30000, createThirdBall, [], this);
 
 }
  update() {
@@ -186,10 +185,10 @@ function displayPlayers(self, playerInfo, sprite) {
   self.players.add(player);
 }
 
-function createSecondBall() {
-  ball2 = this.add.sprite(300, 200, 'mars');
-}
+// function createSecondBall() {
+//   ball2 = this.add.sprite(300, 200, 'mars');
+// }
 
-function createThirdBall() {
-  ball3 = this.add.sprite(400, 300, 'saturn');
-}
+// function createThirdBall() {
+//   ball3 = this.add.sprite(400, 300, 'saturn');
+// }

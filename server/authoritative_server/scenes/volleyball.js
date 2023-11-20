@@ -46,18 +46,45 @@ create() {
   this.ball.setVelocityY(300);
   this.balls.add(this.ball)
 
-  this.ball2 = null;
-  this.ball3 = null;
+  this.ball2 = this.physics.add.sprite(300, 200, 'mars');
+  this.ball2.body.allowGravity = false;
+  this.ball2.setBounce(1);
+  this.ball2.setCollideWorldBounds(true);
+  this.ball2.setVelocityX(300);
+  this.ball2.setVelocityY(300);
+  this.physics.add.collider(this.ball2, this.platforms);
+  this.physics.add.collider(this.ball2, this.players);
+  this.physics.add.collider(this.ball, this.ball2);
+  this.balls.add(this.ball2);
 
-  // Create the second ball 15 seconds after
-  this.time.delayedCall(15000, createSecondBall, [], this);
-
-  // Create the third ball 30 seconds after the first ball
-  this.time.delayedCall(30000, createThirdBall, [], this);
+  this.ball3 = this.physics.add.sprite(400, 300, 'saturn');
+  this.ball3.body.allowGravity = false;
+  this.ball3.setBounce(1);
+  this.ball3.setCollideWorldBounds(true);
+  this.ball3.setVelocityX(300);
+  this.ball3.setVelocityY(300);
+  this.physics.add.collider(this.ball3, this.platforms);
+  this.physics.add.collider(this.ball3, this.players);
+  this.physics.add.collider(this.ball2, this.ball3);
+  this.physics.add.collider(this.ball, this.ball3);
+  this.balls.add(this.ball3);
 
   this.physics.add.collider(this.players, this.ball, function (player, ball) {
     hitVolleyball(player, ball);
   });
+  this.physics.add.collider(this.players, this.ball2, function (player, ball2) {
+    hitVolleyball(player, ball2);
+  });
+  this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
+    hitVolleyball(player, ball3);
+  });
+
+  // // Create the second ball 15 seconds after
+  // this.time.delayedCall(15000, createSecondBall, [], this);
+
+  // // Create the third ball 30 seconds after the first ball
+  // this.time.delayedCall(30000, createThirdBall, [], this);
+
 
   this.anims.create({
     key: 'left',
@@ -170,24 +197,15 @@ update() {
 
   var ball_x = this.ball.x;
   var ball_y = this.ball.y;
-  if (this.ball2) {
-    var ball2_x = this.ball2.x;
-    var ball2_y = this.ball2.y;
-  }
-  if (this.ball3) {
-    var ball3_x = this.ball3.x;
-    var ball3_y = this.ball3.y;
-  }
+  var ball2_x = this.ball2.x;
+  var ball2_y = this.ball2.y;
+  var ball3_x = this.ball3.x;
+  var ball3_y = this.ball3.y;
 
   //emit ball positions
   io.emit('ballUpdates', {ball_x,ball_y})
-  if (this.ball2) {
-    io.emit('ballUpdates2', {ball2_x,ball2_y})
-  }
-  if (this.ball3) {
-    io.emit('ballUpdates3', {ball3_x,ball3_y})
-  }
-}
+  io.emit('ballUpdates2', {ball2_x,ball2_y})
+  io.emit('ballUpdates3', {ball3_x,ball3_y})
 }
 
 //pass data into player function
@@ -234,35 +252,35 @@ function hitVolleyball(player, ball) {
   }
 }
 
-function createSecondBall() {
-  this.ball2 = this.physics.add.sprite(300, 200, 'mars');
-  this.ball2.body.allowGravity = false;
-  this.ball2.setBounce(1);
-  this.ball2.setCollideWorldBounds(true);
-  this.ball2.setVelocityX(300);
-  this.ball2.setVelocityY(300);
-  this.physics.add.collider(this.ball2, this.platforms);
-  this.physics.add.collider(this.ball2, this.players);
-  this.physics.add.collider(this.ball, this.ball2);
-  this.balls.add(this.ball2);
-  this.physics.add.collider(this.players, this.ball2, function (player, ball2) {
-    hitVolleyball(player, ball2);
-  });
-}
+// function createSecondBall() {
+//   this.ball2 = this.physics.add.sprite(300, 200, 'mars');
+//   this.ball2.body.allowGravity = false;
+//   this.ball2.setBounce(1);
+//   this.ball2.setCollideWorldBounds(true);
+//   this.ball2.setVelocityX(300);
+//   this.ball2.setVelocityY(300);
+//   this.physics.add.collider(this.ball2, this.platforms);
+//   this.physics.add.collider(this.ball2, this.players);
+//   this.physics.add.collider(this.ball, this.ball2);
+//   this.balls.add(this.ball2);
+//   this.physics.add.collider(this.players, this.ball2, function (player, ball2) {
+//     hitVolleyball(player, ball2);
+//   });
+// }
 
-function createThirdBall() {
-  this.ball3 = this.physics.add.sprite(400, 300, 'saturn');
-  this.ball3.body.allowGravity = false;
-  this.ball3.setBounce(1);
-  this.ball3.setCollideWorldBounds(true);
-  this.ball3.setVelocityX(300);
-  this.ball3.setVelocityY(300);
-  this.physics.add.collider(this.ball3, this.platforms);
-  this.physics.add.collider(this.ball3, this.players);
-  this.physics.add.collider(this.ball2, this.ball3);
-  this.physics.add.collider(this.ball, this.ball3);
-  this.balls.add(this.ball3);
-  this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
-    hitVolleyball(player, ball3);
-  });
-}
+// function createThirdBall() {
+//   this.ball3 = this.physics.add.sprite(400, 300, 'saturn');
+//   this.ball3.body.allowGravity = false;
+//   this.ball3.setBounce(1);
+//   this.ball3.setCollideWorldBounds(true);
+//   this.ball3.setVelocityX(300);
+//   this.ball3.setVelocityY(300);
+//   this.physics.add.collider(this.ball3, this.platforms);
+//   this.physics.add.collider(this.ball3, this.players);
+//   this.physics.add.collider(this.ball2, this.ball3);
+//   this.physics.add.collider(this.ball, this.ball3);
+//   this.balls.add(this.ball3);
+//   this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
+//     hitVolleyball(player, ball3);
+//   });
+// }
