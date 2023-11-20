@@ -207,6 +207,7 @@ update() {
   io.emit('ballUpdates2', {ball2_x,ball2_y})
   io.emit('ballUpdates3', {ball3_x,ball3_y})
 }
+}
 
 //pass data into player function
 function handlePlayerInput(self, playerId, input, animationKey) {
