@@ -16,7 +16,8 @@ class Dummy extends Phaser.Scene {
         var self = this
         this.players = this.add.group();
         this.add.image(0,0,"bg2").setOrigin(0);
-        
+        this.add.image(400, 568, 'ground');
+
         
         //ask server to send over player positions and players
         this.socket.emit("Loading Done");
@@ -35,8 +36,59 @@ class Dummy extends Phaser.Scene {
             })
         })
 
+     //update player movements and animations from server
+        this.socket.on('playerUpdates', function (players) {
+            Object.keys(players).forEach(function (id) {
+            self.players.getChildren().forEach(function (player) {
+                if (players[id].playerId === player.playerId) {
+                player.setPosition(players[id].x, players[id].y);
+
+         `       if (player.anims.getCurrentKey() !== players[id].animationKey) {
+                    player.anims.play(players[id].animationKey, true);
+                }`
+                }
+            });
+            });
+        });
+
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.leftKeyPressed = false;
+        this.rightKeyPressed = false;
+        this.upKeyPressed = false;
+
         }
 
+    
+    update(){
+        const left = this.leftKeyPressed;
+        const right = this.rightKeyPressed;
+        const up = this.upKeyPressed;
+      
+        //handle cursor inputs
+        //added new movements and cleaned up control/inputs
+        if (this.cursors.right.isDown) {
+          this.rightKeyPressed = true;
+          this.leftKeyPressed = false;
+          this.upKeyPressed = false;
+        } 
+        else if (this.cursors.left.isDown) {
+          this.leftKeyPressed = true;
+          this.rightKeyPressed = false;
+          this.upKeyPressed = false;
+        } 
+        else{
+          this.leftKeyPressed = false;
+          this.rightKeyPressed = false;
+          this.upKeyPressed = false;
+        }
+        if (this.cursors.up.isDown) {
+          this.upKeyPressed = true;
+        }
+        //if the state of a key has been changed, emit the state of keys to server
+        if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
+          this.socket.emit('vg_playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
+        }
+    }
 }
 
 function displayPlayers(self, playerInfo, sprite) {

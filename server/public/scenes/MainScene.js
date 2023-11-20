@@ -94,14 +94,14 @@ class MainScene extends Phaser.Scene {
           });
         });
         
-        //receive signals to launch games from server
+        //launch volleyball game from here
         this.socket.on("VolleyballGame", ()=>{
           self.socket.off('playerUpdates');
-
           self.scene.stop("MainScene")
-          self.scene.start("Loading",{socket:this.socket})
+          self.scene.start("Loading",{socket:self.socket})
         })
 
+        //launch jump game from here
         this.socket.on("JumpGame", ()=>{
           
         })

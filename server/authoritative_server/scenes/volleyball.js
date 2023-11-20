@@ -97,11 +97,7 @@ create() {
     repeat: -1
   });
 
-  //send players to the game so they can be loaded in
-  self.socket.on("Loading Done", ()=>{
-    console.log("Loading Done event received")
-    self.io.emit("displayPlayers", players)
-  })
+
 
 
   //add colliders
@@ -170,12 +166,10 @@ update() {
 }
 
 //pass data into player function
-function handlePlayerInput(self, playerId, input, animationKey) {
+function handlePlayerInput(self, playerId, input) {
   self.players.getChildren().forEach((player) => {
     if (playerId === player.playerId) {
-      players[player.playerId].input = input;
-      players[player.playerId].animationKey = animationKey;
-    }
+      players[player.playerId].input = input;    }   
   });
 }
 
