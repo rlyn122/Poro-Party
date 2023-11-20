@@ -128,6 +128,7 @@ function create() {
       x: Math.floor(Math.random() * 700) + 50,
       y: 500,
       playerId: socket.id,
+      status: 'alive',
       input: {
         left: false,
         right: false,
@@ -293,6 +294,17 @@ function hitVolleyball(player, ball, ball2, ball3) {
     } else {
       ball3.setVelocityX(300);
     }
+  }
+
+  players[player.playerId].status = 'eliminated';
+  checkForWinner();
+}
+
+function checkForWinner() {
+  const alivePlayers = Object.values(players).filter(p => p.status === 'alive');
+  if (alivePlayers.length === 1) {
+    const winnerId = alivePlayers[0].playerId;
+    io.emit('gameOver', winnerId); // Notify all clients about the winner
   }
 }
 

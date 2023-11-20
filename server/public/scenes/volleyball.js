@@ -121,6 +121,14 @@ function create() {
     ball3.setPosition(ball3_x,ball3_y)
   })
 
+  this.socket.on('gameOver', function (winnerId) {
+    if (winnerId === self.socket.id) {
+      console.log('You win!');
+    } else {
+      console.log('Player ' + winnerId + ' wins!');
+    }
+  });
+
   //create cursors
   this.cursors = this.input.keyboard.createCursorKeys();
   this.leftKeyPressed = false;
