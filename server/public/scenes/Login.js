@@ -32,15 +32,17 @@ class Login extends Phaser.Scene {
         scene.popUp.fillRect(25, 25, 750, 500);
     
         //title
-        scene.title = scene.add.text(200, 60, "Poro Party!", {
+        scene.title = scene.add.text(225, 60, "Poro Party!", {
           fill: "#E75480",
+          fontFamily: 'Arial',
           fontSize: "66px",
           fontStyle: "bold",
         });
 
     
-        scene.JoinRoomButton = scene.add.text(250, 215, "Enter Username and Select Cat!", {
+        scene.JoinRoomButton = scene.add.text(250, 150, "Enter Username and Select Cat!", {
           fill: "#000000",
+          fontFamily: 'Arial',
           fontSize: "20px",
           fontStyle: "bold",
         });
