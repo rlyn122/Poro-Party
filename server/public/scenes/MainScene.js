@@ -16,13 +16,7 @@ class MainScene extends Phaser.Scene {
         this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
         this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
-        this.load.image("P","assets/letters/P.png")
-        this.load.image("O","assets/letters/O.png")
-        this.load.image("R","assets/letters/R.png")
-        this.load.image("Y","assets/letters/Y.png")
-        this.load.image("A","assets/letters/A.png")
-        this.load.image("T","assets/letters/T.png")
-
+      
         //load background
         this.load.image("bg","assets/lobby.jpg");
         this.load.image('ground', 'assets/volleyball/platform.png');
@@ -48,22 +42,6 @@ class MainScene extends Phaser.Scene {
         this.add.image(500,300,'ground').setScale(0.3);
         this.add.image(600,200,'ground').setScale(0.3);
         this.add.image(300,350,'ground').setScale(0.3);
-
-
-        //add PoroParty letters
-        /**
-        var letterx = 100
-        this.letters.P = this.add.sprite(50,letterx,"P").setScale(0.35);
-        this.letters.O = this.add.sprite(120,letterx,"O").setScale(0.35);
-        this.letters.R = this.add.sprite(190,letterx,"R").setScale(0.35);
-        this.letters.O1 = this.add.sprite(250,letterx,"O").setScale(0.35);
-
-        this.letters.P1 = this.add.sprite(310,letterx,"P").setScale(0.35);
-        this.letters.A = this.add.sprite(370,letterx,"A").setScale(0.35);
-        this.letters.R = this.add.sprite(460,letterx,"R").setScale(0.35);
-        this.letters.T = this.add.sprite(550,letterx,"T").setScale(0.35);
-        this.letters.Y = this.add.sprite(700,letterx,"Y").setScale(0.35);
-      */
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {

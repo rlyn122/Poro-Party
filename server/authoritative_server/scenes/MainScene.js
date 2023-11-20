@@ -10,13 +10,6 @@ class MainScene extends Phaser.Scene {
         //load cats
         this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
         this.load.image('ground', 'assets/volleyball/platform.png');
-        this.load.image("P","assets/letters/P.png")
-        this.load.image("O","assets/letters/O.png")
-        this.load.image("R","assets/letters/R.png")
-        this.load.image("Y","assets/letters/Y.png")
-        this.load.image("A","assets/letters/A.png")
-        this.load.image("T","assets/letters/T.png")
-
     }
 
     create(){
@@ -33,25 +26,6 @@ class MainScene extends Phaser.Scene {
         this.platforms.create(300,350,'ground').setScale(0.3).refreshBody();
         this.physics.add.collider(this.platforms,this.players);
 
-        //letters
-        /** 
-        var letterx = 100
-        this.letters = this.physics.add.staticGroup();
-        this.letters.create(50,letterx,"P").setScale(0.35).refreshBody();
-        this.letters.create(120,letterx,"O").setScale(0.35).refreshBody();
-        this.letters.create(190,letterx,"R").setScale(0.35).refreshBody();
-        this.letters.create(250,letterx,"O").setScale(0.35).refreshBody();
-        this.letters.create(310,letterx,"P").setScale(0.35).refreshBody();
-        this.letters.create(370,letterx,"A").setScale(0.35).refreshBody();
-        this.letters.create(460,letterx,"R").setScale(0.35).refreshBody();
-        this.letters.create(550,letterx,"T").setScale(0.35).refreshBody();
-        this.letters.create(700,letterx,"Y").setScale(0.35).refreshBody();
-        this.physics.add.collider(this.letters,this.players);
-        
-        this.letters.children.iterate(function (letter) {
-          letter.setBounce(0.5);
-      });
-      */
         //socket connection established
         io.on('connection', function (socket) {
             

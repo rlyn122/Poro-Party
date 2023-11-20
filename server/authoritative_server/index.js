@@ -10,7 +10,7 @@ const config = {
         gravity: { y: 400 }
       }
     },
-    scene: [MainScene,Login,Volleyball],
+    scene: [Volleyball,MainScene,Login],
     autoFocus: false
   };
 

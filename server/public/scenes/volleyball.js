@@ -1,21 +1,11 @@
-var config = {
-  type: Phaser.AUTO,
-  parent: 'game',
-  width: 800,
-  height: 600,
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
+
+class Volleyball extends Phaser.Scene {
+
+  constructor(){
+      super("Volleyball");
   }
-};
 
-var game = new Phaser.Game(config);
-var ball;
-var ball2;
-var ball3;
-
-function preload() {
+ preload() {
   //load sprites
   this.load.spritesheet('cat', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
   this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 263, frameHeight: 192 });  
@@ -36,7 +26,7 @@ function preload() {
   this.load.image('ground', 'assets/volleyball/platform2.png');
 }
 
-function create() {
+ create() {
   var self = this;
   this.socket = io();
   this.players = this.add.group();
@@ -156,8 +146,7 @@ function create() {
   this.time.delayedCall(30000, createThirdBall, [], this);
 
 }
-
-function update() {
+ update() {
 
   const left = this.leftKeyPressed;
   const right = this.rightKeyPressed;
@@ -189,6 +178,7 @@ function update() {
   }
 }
 
+}
 //displays  
 function displayPlayers(self, playerInfo, sprite) {
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.15,0.15)
