@@ -1,5 +1,3 @@
-
-
 class Volleyball extends Phaser.Scene {
 
   constructor(){
@@ -7,15 +5,7 @@ class Volleyball extends Phaser.Scene {
   }
 
 preload() {
-
-  this.load.spritesheet('cat', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat3', 'assets/cats/Cat_3.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat4', 'assets/cats/Cat_4.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat5', 'assets/cats/Cat_5.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat6', 'assets/cats/Cat_6.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat7', 'assets/cats/Cat_7.png', { frameWidth: 263, frameHeight: 192 });  
-  this.load.spritesheet('cat8', 'assets/cats/Cat_8.png', { frameWidth: 263, frameHeight: 192 });   
+  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
   //load background
   this.load.image('sky', 'assets/volleyball/spaceship.png');
   this.load.image('net', 'assets/volleyball/platform2.png');
@@ -76,26 +66,26 @@ create() {
 
   this.anims.create({
     key: 'left',
-    frames: this.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
+    frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
     frameRate: 10,
     repeat: -1
   });
 
   this.anims.create({
     key: 'look_right',
-    frames: [{ key: 'cat', frame: 2 }],
+    frames: [{ key: 'cat1', frame: 2 }],
     frameRate: 20
   });
 
   this.anims.create({
     key: 'look_left',
-    frames: [{ key: 'cat', frame: 1 }],
+    frames: [{ key: 'cat1', frame: 1 }],
     frameRate: 20
   });
 
   this.anims.create({
     key: 'right',
-    frames: this.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
+    frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
     frameRate: 10,
     repeat: -1
   });
@@ -219,7 +209,7 @@ function handlePlayerInput(self, playerId, input, animationKey) {
 
 //create sprite for player
 function addPlayer(self, playerInfo) {
-  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat');
+  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
 
   // Set initial animation state
   player.playerId = playerInfo.playerId;

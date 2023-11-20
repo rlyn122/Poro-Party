@@ -3,7 +3,7 @@ var config = {
     parent: 'game',
     width: 800,
     height: 600,
-    scene: [Volleyball,Login,MainScene,Loading],
+    scene: [Volleyball, MainScene,Login,Loading],
     dom: {
         createContainer: true,
     },
