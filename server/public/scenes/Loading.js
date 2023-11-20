@@ -3,10 +3,12 @@ class Loading extends Phaser.Scene {
     constructor(){
         super("Loading");
     }
-
+    init(data){
+        this.socket = data.socket
+    }
     preload(){
         this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
-        this.load.image("bg","assets/bgload1.jpg");
+        this.load.image("bg1","assets/bgload1.jpg");
         this.load.image("P","assets/letters/P.png")
         this.load.image("O","assets/letters/O.png")
         this.load.image("R","assets/letters/R.png")
@@ -18,7 +20,7 @@ class Loading extends Phaser.Scene {
     create(){
 
         const scene = this
-        this.add.image(0,0,"bg").setOrigin(0);
+        scene.add.image(0,0,"bg1").setOrigin(0);
         var letterx = 200   
         var lettery = 50
         this.letters = this.add.group()
@@ -72,7 +74,7 @@ class Loading extends Phaser.Scene {
         // Play the walking animation
         catSprite.anims.play('walk', true);  
         setTimeout(() => {
-            this.scene.stop('Loading');
+            this.scene.start("Dummy",{socket:this.socket});
           }, 7500);
 
     }

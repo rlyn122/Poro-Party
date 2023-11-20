@@ -5,6 +5,8 @@ class MainScene extends Phaser.Scene {
         this.playerCount = 0;
     }
 
+
+
     preload(){
         //load cats
         this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
@@ -94,11 +96,14 @@ class MainScene extends Phaser.Scene {
         
         //receive signals to launch games from server
         this.socket.on("VolleyballGame", ()=>{
-          this.scene.launch("Loading")
+          self.socket.off('playerUpdates');
+
+          self.scene.stop("MainScene")
+          self.scene.start("Loading",{socket:this.socket})
         })
 
         this.socket.on("JumpGame", ()=>{
-          this.scene.launch("Loading")
+          
         })
 
   
@@ -180,26 +185,6 @@ class MainScene extends Phaser.Scene {
 function displayPlayers(self, playerInfo, sprite) {
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
   addUsername(player,self,playerInfo)
-  self.anims.create({
-    key: 'left',
-    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  self.anims.create({
-    key: 'turn',
-    frames: [{ key: 'cat', frame: 2 }],
-    frameRate: 20
-  });
-
-  self.anims.create({
-    key: 'right',
-    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
   player.playerId = playerInfo.playerId;
   self.players.add(player);
 }

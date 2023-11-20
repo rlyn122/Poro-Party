@@ -4,6 +4,11 @@ class Volleyball extends Phaser.Scene {
       super("Volleyball");
   }
 
+  init(data){
+    this.socket = data.socket;
+    this.io = data.io;
+  }
+
 preload() {
   this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
   //load background
@@ -16,6 +21,8 @@ preload() {
 }
 
 create() {
+  console.log("volleyball scene reached!")
+
   const self = this;
   this.players = this.add.group();
   this.balls = this.add.group();
@@ -90,47 +97,12 @@ create() {
     repeat: -1
   });
 
-  //socket connection established
-  io.on('connection', function (socket) {
-    console.log('a user connected');
-    
-    // create a new player and add it to our players object
-    players[socket.id] = {
-      x: Math.floor(Math.random() * 700) + 50,
-      y: 500,
-      playerId: socket.id,
-      input: {
-        left: false,
-        right: false,
-        up: false
-      }
-    };
-    
-    // add player to server
-    addPlayer(self, players[socket.id]);
+  //send players to the game so they can be loaded in
+  self.socket.on("Loading Done", ()=>{
+    console.log("Loading Done event received")
+    self.io.emit("displayPlayers", players)
+  })
 
-    // send the players object to the new player
-    socket.emit('currentPlayers', players);
-
-    // update all other players of the new player
-    socket.broadcast.emit('newPlayer', players[socket.id]);
-
-
-    socket.on('disconnect', function () {
-      console.log('user disconnected');
-      // remove player from server
-      removePlayer(self, socket.id);
-      // remove this player from our players object
-      delete players[socket.id];
-      // emit a message to all players to remove this player
-      io.emit('disconnect', socket.id);
-    });
-
-    // when a player moves, update the player data
-    socket.on('playerInput', function (inputData) {
-      handlePlayerInput(self, socket.id, inputData);
-    });
-  });
 
   //add colliders
   this.physics.add.collider(this.players, this.platforms);
