@@ -78,9 +78,9 @@ class Volleyball extends Phaser.Scene {
       self.players.getChildren().forEach(function (player) {
         if (players[id].playerId === player.playerId) {
           player.setPosition(players[id].x, players[id].y);
-          if (player.anims.getCurrentKey() !== players[id].animationKey) {
-            player.anims.play(players[id].animationKey, true);
-          }
+          // if (player.anims.getCurrentKey() !== players[id].animationKey) {
+          //   player.anims.play(players[id].animationKey, true);
+          // }
         }
       });
     });
@@ -180,7 +180,7 @@ class Volleyball extends Phaser.Scene {
 }
 //displays  
 function displayPlayers(self, playerInfo, sprite) {
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.15,0.15)
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.12,0.12)
 
   player.playerId = playerInfo.playerId;
   self.players.add(player);

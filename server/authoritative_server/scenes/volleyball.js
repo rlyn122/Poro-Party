@@ -6,6 +6,13 @@ class Volleyball extends Phaser.Scene {
 
 preload() {
   this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+  this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat5", "assets/cats/Cat_5.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat6", "assets/cats/Cat_6.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
   //load background
   this.load.image('sky', 'assets/volleyball/spaceship.png');
   this.load.image('net', 'assets/volleyball/platform2.png');
@@ -49,19 +56,7 @@ create() {
   this.time.delayedCall(30000, createThirdBall, [], this);
 
   this.physics.add.collider(this.players, this.ball, function (player, ball) {
-    hitVolleyball(player, ball, this.ball2, this.ball3);
-  });
-
-  this.physics.add.collider(this.players, this.ball2, function (player, ball2) {
-    if (this.ball2) {
-      hitVolleyball(player, ball2, this.ball, this.ball3);
-    }
-  });
-
-  this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
-    if (this.ball3) {
-      hitVolleyball(player, ball3, this.ball, this.ball2);
-    }  
+    hitVolleyball(player, ball);
   });
 
   this.anims.create({
@@ -192,9 +187,7 @@ update() {
   if (this.ball3) {
     io.emit('ballUpdates3', {ball3_x,ball3_y})
   }
-
 }
-
 }
 
 //pass data into player function
@@ -229,44 +222,15 @@ function removePlayer(self, playerId) {
   });
 }
 
-function hitVolleyball(player, ball, ball2, ball3) {
-  if (ball) {
-    player.x = 2000;
-    player.y = 2000;
-    player.setVisible(false);
+function hitVolleyball(player, ball) {
+  player.x = 2000;
+  player.y = 2000;
+  player.setVisible(false);
 
-    ball.setVelocityY(-600);
-    if (ball.x < player.x) {
-      ball.setVelocityX(-300);
-    } else {
-      ball.setVelocityX(300);
-    }
-  }
-
-  if (ball2) {
-    player.x = 2000;
-    player.y = 2000;
-    player.setVisible(false);
-
-    ball2.setVelocityY(-600);
-    if (ball2.x < player.x) {
-      ball2.setVelocityX(-300);
-    } else {
-      ball2.setVelocityX(300);
-    }
-  }
-
-  if (ball3) {
-    player.x = 2000;
-    player.y = 2000;
-    player.setVisible(false);
-    
-    ball3.setVelocityY(-600);
-    if (ball3.x < player.x) {
-      ball3.setVelocityX(-300);
-    } else {
-      ball3.setVelocityX(300);
-    }
+  if (ball.x < player.x) {
+    ball.setVelocityX(-300);
+  } else {
+    ball.setVelocityX(300);
   }
 }
 
@@ -281,8 +245,9 @@ function createSecondBall() {
   this.physics.add.collider(this.ball2, this.players);
   this.physics.add.collider(this.ball, this.ball2);
   this.balls.add(this.ball2);
-
-  
+  this.physics.add.collider(this.players, this.ball2, function (player, ball2) {
+    hitVolleyball(player, ball2);
+  });
 }
 
 function createThirdBall() {
@@ -297,4 +262,7 @@ function createThirdBall() {
   this.physics.add.collider(this.ball2, this.ball3);
   this.physics.add.collider(this.ball, this.ball3);
   this.balls.add(this.ball3);
+  this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
+    hitVolleyball(player, ball3);
+  });
 }
