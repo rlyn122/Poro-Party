@@ -30,6 +30,35 @@ create() {
 
   this.gameOver = false;
 
+  //creating movement animations
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
+    frameRate: 10,
+    repeat: -1
+  });
+  
+  this.anims.create({
+    key: 'look_right',
+    frames: [{ key: 'cat1', frame: 2 }],
+    frameRate: 20
+  });
+  
+  this.anims.create({
+    key: 'look_left',
+    frames: [{ key: 'cat1', frame: 1 }],
+    frameRate: 20
+  });
+  
+  this.anims.create({
+    key: 'right',
+    frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
+    frameRate: 10,
+    repeat: -1
+  });
+  
+
+  //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
   this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
   this.platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
@@ -38,6 +67,7 @@ create() {
   this.platforms.create(200, 400, 'ground').setScale(.5).refreshBody();
   this.platforms.create(600, 400, 'ground').setScale(.5).refreshBody();
   
+  //adding ball physics
   this.ball = this.physics.add.sprite(400, 200, 'earth');
   this.ball.body.allowGravity = false;
   this.ball.setBounce(1);
@@ -52,9 +82,6 @@ create() {
   this.ball2.setCollideWorldBounds(true);
   this.ball2.setVelocityX(300);
   this.ball2.setVelocityY(300);
-  this.physics.add.collider(this.ball2, this.platforms);
-  this.physics.add.collider(this.ball2, this.players);
-  this.physics.add.collider(this.ball, this.ball2);
   this.balls.add(this.ball2);
 
   this.ball3 = this.physics.add.sprite(400, 300, 'saturn');
@@ -63,12 +90,9 @@ create() {
   this.ball3.setCollideWorldBounds(true);
   this.ball3.setVelocityX(300);
   this.ball3.setVelocityY(300);
-  this.physics.add.collider(this.ball3, this.platforms);
-  this.physics.add.collider(this.ball3, this.players);
-  this.physics.add.collider(this.ball2, this.ball3);
-  this.physics.add.collider(this.ball, this.ball3);
   this.balls.add(this.ball3);
 
+  //adding physics for balls and players
   this.physics.add.collider(this.players, this.ball, function (player, ball) {
     hitVolleyball(player, ball);
   });
@@ -77,39 +101,6 @@ create() {
   });
   this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
     hitVolleyball(player, ball3);
-  });
-
-  // // Create the second ball 15 seconds after
-  // this.time.delayedCall(15000, createSecondBall, [], this);
-
-  // // Create the third ball 30 seconds after the first ball
-  // this.time.delayedCall(30000, createThirdBall, [], this);
-
-
-  this.anims.create({
-    key: 'left',
-    frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-    frameRate: 10,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'look_right',
-    frames: [{ key: 'cat1', frame: 2 }],
-    frameRate: 20
-  });
-
-  this.anims.create({
-    key: 'look_left',
-    frames: [{ key: 'cat1', frame: 1 }],
-    frameRate: 20
-  });
-
-  this.anims.create({
-    key: 'right',
-    frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-    frameRate: 10,
-    repeat: -1
   });
 
   //socket connection established
@@ -154,21 +145,28 @@ create() {
     });
   });
 
-  //add colliders
+  //add more general colliders
   this.physics.add.collider(this.players, this.platforms);
   this.physics.add.collider(this.players, this.players);
   this.physics.add.collider(this.ball, this.platforms);
   this.physics.add.collider(this.ball, this.players);
+  this.physics.add.collider(this.ball2, this.platforms);
+  this.physics.add.collider(this.ball2, this.players);
+  this.physics.add.collider(this.ball, this.ball2);
+  this.physics.add.collider(this.ball3, this.platforms);
+  this.physics.add.collider(this.ball3, this.players);
+  this.physics.add.collider(this.ball2, this.ball3);
+  this.physics.add.collider(this.ball, this.ball3);
 
 }
 
 update() {
 
   const speed = 250
-  //constantly emit each player's position
+  //constantly emit each player's position/animation
   this.players.getChildren().forEach((player) => {
     const input = players[player.playerId].input;
-    var animationKey = 'look_left';
+    let animationKey = 'look_left';
 
     if (input.left) {
       player.setVelocityX(-speed);
@@ -227,7 +225,7 @@ function addPlayer(self, playerInfo) {
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);
-  player.setScale(0.15, 0.15);  
+  player.setScale(0.12, 0.12);  
   player.setCollideWorldBounds(true);
 
 }
@@ -252,36 +250,3 @@ function hitVolleyball(player, ball) {
     ball.setVelocityX(300);
   }
 }
-
-// function createSecondBall() {
-//   this.ball2 = this.physics.add.sprite(300, 200, 'mars');
-//   this.ball2.body.allowGravity = false;
-//   this.ball2.setBounce(1);
-//   this.ball2.setCollideWorldBounds(true);
-//   this.ball2.setVelocityX(300);
-//   this.ball2.setVelocityY(300);
-//   this.physics.add.collider(this.ball2, this.platforms);
-//   this.physics.add.collider(this.ball2, this.players);
-//   this.physics.add.collider(this.ball, this.ball2);
-//   this.balls.add(this.ball2);
-//   this.physics.add.collider(this.players, this.ball2, function (player, ball2) {
-//     hitVolleyball(player, ball2);
-//   });
-// }
-
-// function createThirdBall() {
-//   this.ball3 = this.physics.add.sprite(400, 300, 'saturn');
-//   this.ball3.body.allowGravity = false;
-//   this.ball3.setBounce(1);
-//   this.ball3.setCollideWorldBounds(true);
-//   this.ball3.setVelocityX(300);
-//   this.ball3.setVelocityY(300);
-//   this.physics.add.collider(this.ball3, this.platforms);
-//   this.physics.add.collider(this.ball3, this.players);
-//   this.physics.add.collider(this.ball2, this.ball3);
-//   this.physics.add.collider(this.ball, this.ball3);
-//   this.balls.add(this.ball3);
-//   this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
-//     hitVolleyball(player, ball3);
-//   });
-// }

@@ -7,7 +7,7 @@ class Volleyball extends Phaser.Scene {
 
  preload() {
   //load sprites
-  this.load.spritesheet("cat", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
   this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
@@ -30,8 +30,34 @@ class Volleyball extends Phaser.Scene {
   this.socket = io();
   this.players = this.add.group();
 
-  //add background
+  //creating movement animations
+  this.anims.create({
+    key: 'left',
+    frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
+    frameRate: 10,
+    repeat: -1
+  });
+  
+  this.anims.create({
+    key: 'look_right',
+    frames: [{ key: 'cat1', frame: 2 }],
+    frameRate: 20
+  });
+  
+  this.anims.create({
+    key: 'look_left',
+    frames: [{ key: 'cat1', frame: 1 }],
+    frameRate: 20
+  });
+  
+  this.anims.create({
+    key: 'right',
+    frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
+    frameRate: 10,
+    repeat: -1
+  });
 
+  //add background
   this.add.image(400, 300, 'sky');
   this.add.image(400, 568, 'ground').setScale(2)
   this.add.image(400, 350, 'net').setScale(0.05, 7)
@@ -52,18 +78,18 @@ class Volleyball extends Phaser.Scene {
 
       //if it is this client
       if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], 'cat');
+        displayPlayers(self, players[id], 'cat1');
       }
       //if it is another client
       else{
-        displayPlayers(self,players[id],'cat')
+        displayPlayers(self,players[id],'cat1')
       }
     });
   });
 
   //listen for newPlayer connection
   this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, 'cat');
+    displayPlayers(self, playerInfo, 'cat1');
   });
 
   //listen for player disconnection
@@ -81,9 +107,9 @@ class Volleyball extends Phaser.Scene {
       self.players.getChildren().forEach(function (player) {
         if (players[id].playerId === player.playerId) {
           player.setPosition(players[id].x, players[id].y);
-          // if (player.anims.getCurrentKey() !== players[id].animationKey) {
-          //   player.anims.play(players[id].animationKey, true);
-          // }
+          if (player.anims.getName() !== players[id].animationKey) {
+            player.anims.play(players[id].animationKey, true);
+          }
         }
       });
     });
@@ -110,40 +136,8 @@ class Volleyball extends Phaser.Scene {
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
-
-  this.anims.create({
-    key: 'left',
-    frames: this.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'look_right',
-    frames: [{ key: 'cat', frame: 2 }],
-    frameRate: 20
-  });
-
-  this.anims.create({
-    key: 'look_left',
-    frames: [{ key: 'cat', frame: 1 }],
-    frameRate: 20
-  });
-
-  this.anims.create({
-    key: 'right',
-    frames: this.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  // // create the second ball 15 seconds after
-  // this.time.delayedCall(15000, createSecondBall, [], this);
-
-  // // Create the third ball after 30 seconds (15 seconds after the second ball)
-  // this.time.delayedCall(30000, createThirdBall, [], this);
-
 }
+
  update() {
 
   const left = this.leftKeyPressed;
@@ -184,11 +178,3 @@ function displayPlayers(self, playerInfo, sprite) {
   player.playerId = playerInfo.playerId;
   self.players.add(player);
 }
-
-// function createSecondBall() {
-//   ball2 = this.add.sprite(300, 200, 'mars');
-// }
-
-// function createThirdBall() {
-//   ball3 = this.add.sprite(400, 300, 'saturn');
-// }
