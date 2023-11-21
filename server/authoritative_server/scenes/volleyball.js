@@ -28,7 +28,13 @@ create() {
   this.balls = this.add.group();
   //add background
 
+  let countdownCompleted = false;
   this.gameOver = false;
+
+  this.events.on("RulesDodgeballDone", function () {
+    self.scene.resume("Volleyball");
+    countdownCompleted = true; // Set to true when countdown is done
+});
 
   //creating movement animations
   this.anims.create({
