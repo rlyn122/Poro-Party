@@ -1,4 +1,3 @@
-
 class Volleyball extends Phaser.Scene {
 
   constructor(){
