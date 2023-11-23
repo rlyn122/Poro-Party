@@ -25,6 +25,7 @@ class MainScene extends Phaser.Scene {
         this.platforms.create(600,200,'ground').setScale(0.3).refreshBody();
         this.platforms.create(300,350,'ground').setScale(0.3).refreshBody();
         this.physics.add.collider(this.platforms,this.players);
+        this.physics.add.collider(this.players,this.players);
 
         //socket connection established
         io.on('connection', function (socket) {
@@ -143,27 +144,6 @@ class MainScene extends Phaser.Scene {
 //create sprite for player
 function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
-
-  self.anims.create({
-    key: 'left',
-    frames: self.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  self.anims.create({
-    key: 'turn',
-    frames: [{ key: 'cat1', frame: 2 }],
-    frameRate: 20
-  });
-
-  self.anims.create({
-    key: 'right',
-    frames: self.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);

@@ -16,15 +16,12 @@ class MainScene extends Phaser.Scene {
         this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
         this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
-      
         //load background
         this.load.image("bg","assets/lobby.jpg");
         this.load.image('ground', 'assets/volleyball/platform.png');
-
     }
 
     create() {
-
         var self = this;
         this.socket = io();
 
@@ -37,11 +34,10 @@ class MainScene extends Phaser.Scene {
         //add background
         this.add.image(0,0,"bg").setOrigin(0);
         this.add.image(400, 600, 'ground').setScale(2).setTint(0); 
-
         this.add.image(100,450,'ground').setScale(0.3);
         this.add.image(500,300,'ground').setScale(0.3);
         this.add.image(600,200,'ground').setScale(0.3);
-        this.add.image(300,350,'ground').setScale(0.3);
+        this.add.image(300,350,'ground').setScale(0.3);      
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
@@ -87,8 +83,7 @@ class MainScene extends Phaser.Scene {
             self.startJumpGameButton.setInteractive();
             self.startJumpGameButton.on("pointerdown", () => {
               self.socket.emit("stopMainSceneRequest","JumpGame");
-              });
-
+            });
           });
         });
         
@@ -129,11 +124,10 @@ class MainScene extends Phaser.Scene {
             self.players.getChildren().forEach(function (player) {
               if (players[id].playerId === player.playerId) {
                 player.setPosition(players[id].x, players[id].y);
-                setUsername_Pos(player,players[id].x, players[id].y)
+                setUsername_Pos(player,players[id].x, players[id].y);
               }
             });
           });
-          
         });
       
       
@@ -180,26 +174,6 @@ class MainScene extends Phaser.Scene {
 function displayPlayers(self, playerInfo, sprite) {
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
   addUsername(player,self,playerInfo)
-  self.anims.create({
-    key: 'left',
-    frames: self.anims.generateFrameNumbers('cat', { start: 0, end: 1 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
-  self.anims.create({
-    key: 'turn',
-    frames: [{ key: 'cat', frame: 2 }],
-    frameRate: 20
-  });
-
-  self.anims.create({
-    key: 'right',
-    frames: self.anims.generateFrameNumbers('cat', { start: 2, end: 3 }),
-    frameRate: 5,
-    repeat: -1
-  });
-
   player.playerId = playerInfo.playerId;
   self.players.add(player);
 }
@@ -211,6 +185,6 @@ function addUsername(player, scene, playerInfo){
 }
 
 function setUsername_Pos(player, posX, posY){
-  player.usernameText.x = posX-10;
-  player.usernameText.y = posY- player.height / 4;
+  player.usernameText.x = posX-15;
+  player.usernameText.y = posY - player.height / 4;
 }
