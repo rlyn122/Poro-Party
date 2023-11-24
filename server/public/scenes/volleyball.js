@@ -31,13 +31,16 @@ class Volleyball extends Phaser.Scene {
   this.players = this.add.group();
 
   this.scene.launch("Rules_Dodgeball");
-  self.scene.pause("Volleyball");
 
   let countdownCompleted = false;
+  this.socket.emit('rulesTime', countdownCompleted);
+
   this.events.on("RulesDodgeballDone", function () {
-    self.scene.resume("Volleyball"); // Resume the Volleyball scene
+    // self.scene.resume("Volleyball"); // Resume the Volleyball scene
     countdownCompleted = true;
-});
+  });
+
+  this.socket.emit('rulesTime', countdownCompleted);
 
   //creating movement animations
   this.anims.create({
@@ -126,24 +129,24 @@ class Volleyball extends Phaser.Scene {
 
   //update ball positions
   this.socket.on('ballUpdates', function(ball_Pos) {
-    if (countdownCompleted) {
+    // if (countdownCompleted) {
         const {ball_x, ball_y} = ball_Pos;
         ball.setPosition(ball_x, ball_y);
-    }
+    // }
 });
 
 this.socket.on('ballUpdates2', function(ball2_Pos) {
-    if (countdownCompleted) {
+    // if (countdownCompleted) {
         const {ball2_x, ball2_y} = ball2_Pos;
         ball2.setPosition(ball2_x, ball2_y);
-    }
+    // }
 });
 
 this.socket.on('ballUpdates3', function(ball3_Pos) {
-    if (countdownCompleted) {
+    // if (countdownCompleted) {
         const {ball3_x, ball3_y} = ball3_Pos;
         ball3.setPosition(ball3_x, ball3_y);
-    }
+    // }
 });
 
   //create cursors

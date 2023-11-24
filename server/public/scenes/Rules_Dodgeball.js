@@ -7,13 +7,28 @@ class Rules_Dodgeball extends Phaser.Scene {
     create() {
       const scene = this;
 
-      scene.scene.pause("Volleyball")
+      scene.scene.pause("Volleyball");
+
+      scene.popUp = scene.add.graphics();
+      scene.boxes = scene.add.graphics();
+
+      // for popup window
+      scene.popUp.lineStyle(5, 0xffffff);
+      scene.popUp.fillStyle(0xff2d00, 0.5);
+  
+      // for boxes
+      scene.boxes.lineStyle(1, 0xffffff);
+      scene.boxes.fillStyle(0xff2d00, 1);
+  
+      // popup window
+      scene.popUp.strokeRect(25, 25, 750, 500);
+      scene.popUp.fillRect(25, 25, 750, 500); 
 
       // Display the rules of the volleyball game
-      const rulesText = scene.add.text(50, 50, "Dodgeball Game Rules:", {
+      const rulesText = scene.add.text(140, 110, "Dodgeball Game Rules:", {
           fill: "#ffffff",
           fontFamily: 'Arial',
-          fontSize: "24px",
+          fontSize: "48px",
           fontStyle: "bold",
       });
 
@@ -22,17 +37,17 @@ class Rules_Dodgeball extends Phaser.Scene {
       ];
 
       // Display the rules as a list
-      const rulesList = scene.add.text(50, 100, rules, {
+      const rulesList = scene.add.text(180, 185, rules, {
           fill: "#ffffff",
           fontFamily: 'Arial',
           fontSize: "16px",
       });
 
       // Create a timer to auto-close the rules after 10 seconds
-      const timerText = scene.add.text(50, 350, "The game will start in:", {
+      const timerText = scene.add.text(230, 350, "The game will start in:", {
           fill: "#ffffff",
           fontFamily: 'Arial',
-          fontSize: "18px",
+          fontSize: "22px",
       });
 
       let countdown = 10; // 10 seconds
@@ -45,7 +60,11 @@ class Rules_Dodgeball extends Phaser.Scene {
               scene.scene.stop("Rules_Dodgeball"); // Close the popup after 10 seconds
               // Emit an event to notify that the scene is done
               scene.events.emit("RulesDodgeballDone");
-              scene.scene.resume("Volleyball")
+
+            //   socket.emit('rulesOver');
+              console.log('ALL DONE');
+
+              scene.scene.resume("Volleyball");
           }
       }, 1000);
   }

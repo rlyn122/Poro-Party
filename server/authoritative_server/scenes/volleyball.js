@@ -28,7 +28,6 @@ create() {
   this.balls = this.add.group();
   //add background
 
-  let countdownCompleted = false;
   this.gameOver = false;
 
   this.events.on("RulesDodgeballDone", function () {
@@ -122,7 +121,8 @@ create() {
         left: false,
         right: false,
         up: false
-      }
+      },
+      invuln: true
     };
     
     // add player to server
@@ -134,6 +134,15 @@ create() {
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
+    // 10 seconds before player can be killed
+    let countdown = 10;
+    const timerInterval = setInterval(() => {
+      countdown--;
+      if(countdown === 0) {
+        clearInterval(timerInterval);
+        players[socket.id].invuln = false;
+      }
+    }, 1000);
 
     socket.on('disconnect', function () {
       console.log('user disconnected');
@@ -210,6 +219,7 @@ update() {
   io.emit('ballUpdates', {ball_x,ball_y})
   io.emit('ballUpdates2', {ball2_x,ball2_y})
   io.emit('ballUpdates3', {ball3_x,ball3_y})
+
 }
 }
 
@@ -246,13 +256,27 @@ function removePlayer(self, playerId) {
 }
 
 function hitVolleyball(player, ball) {
-  player.x = 2000;
-  player.y = 2000;
-  player.setVisible(false);
 
-  if (ball.x < player.x) {
-    ball.setVelocityX(-300);
-  } else {
-    ball.setVelocityX(300);
+  // Checks if player is in loading screen
+  // If they are then ball will bounce off
+  // Otherwise death
+  if(players[player.playerId].invuln) {
+    if (ball.x < player.x) {
+      ball.setVelocityX(-300);
+    } else {
+      ball.setVelocityX(300);
+    }
   }
+  else {
+    player.x = 2000;
+    player.y = 2000;
+    player.setVisible(false);
+
+    if (ball.x < player.x) {
+      ball.setVelocityX(-300);
+    } else {
+      ball.setVelocityX(300);
+    }
+  }
+
 }
