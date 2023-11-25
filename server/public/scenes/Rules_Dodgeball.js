@@ -7,7 +7,7 @@ class Rules_Dodgeball extends Phaser.Scene {
     create() {
       const scene = this;
 
-      scene.scene.pause("Volleyball");
+      scene.scene.pause("Dodgeball");
 
       scene.popUp = scene.add.graphics();
       scene.boxes = scene.add.graphics();
@@ -24,7 +24,7 @@ class Rules_Dodgeball extends Phaser.Scene {
       scene.popUp.strokeRect(25, 25, 750, 500);
       scene.popUp.fillRect(25, 25, 750, 500); 
 
-      // Display the rules of the volleyball game
+      // Display the rules of the dodgeball game
       const rulesText = scene.add.text(140, 110, "Dodgeball Game Rules:", {
           fill: "#ffffff",
           fontFamily: 'Arial',
@@ -64,7 +64,7 @@ class Rules_Dodgeball extends Phaser.Scene {
             //   socket.emit('rulesOver');
               console.log('ALL DONE');
 
-              scene.scene.resume("Volleyball");
+              scene.scene.resume("Dodgeball");
           }
       }, 1000);
   }

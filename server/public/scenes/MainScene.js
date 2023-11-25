@@ -18,7 +18,7 @@ class MainScene extends Phaser.Scene {
 
         //load background
         this.load.image("bg","assets/lobby.jpg");
-        this.load.image('ground', 'assets/volleyball/platform.png');
+        this.load.image('ground', 'assets/dodgeball/platform.png');
     }
 
     create() {
@@ -61,7 +61,7 @@ class MainScene extends Phaser.Scene {
               });
 
             //create scene transition buttons
-            self.startVolleyballGameButton = self.add.text(500,20,"Start Volleyball Game",{
+            self.startDodgeballGameButton = self.add.text(500,20,"Start Dodgeball Game",{
               fill: "#FFFFFF",
               fontSize: "20px",
               fontStyle: "bold",
@@ -73,10 +73,10 @@ class MainScene extends Phaser.Scene {
               fontStyle: "bold",
             });
 
-            //asking server to launch volleyball scene
-            self.startVolleyballGameButton.setInteractive();
-            self.startVolleyballGameButton.on("pointerdown", () => {
-              self.socket.emit("stopMainSceneRequest","VolleyballGame");
+            //asking server to launch dodgeball scene
+            self.startDodgeballGameButton.setInteractive();
+            self.startDodgeballGameButton.on("pointerdown", () => {
+              self.socket.emit("stopMainSceneRequest","DodgeballGame");
             });
 
             //asking server to launch jump scene
@@ -88,7 +88,7 @@ class MainScene extends Phaser.Scene {
         });
         
         //receive signals to launch games from server
-        this.socket.on("VolleyballGame", ()=>{
+        this.socket.on("DodgeballGame", ()=>{
           this.scene.launch("Loading")
         })
 
