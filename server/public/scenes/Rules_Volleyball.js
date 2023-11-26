@@ -33,7 +33,9 @@ class Rules_Volleyball extends Phaser.Scene {
       });
 
       const rules = [
-          "Bump the ball back and forth, first team to 5 points wins!"
+          "Bump the ball back and forth and be quick.",
+          "The ball will reset right away to whoever won the point.",
+          "The first team to 5 points wins!"
       ];
 
       // Display the rules as a list
@@ -61,7 +63,6 @@ class Rules_Volleyball extends Phaser.Scene {
               // Emit an event to notify that the scene is done
               scene.events.emit("RulesVolleyballDone");
 
-            //   socket.emit('rulesOver');
               console.log('ALL DONE');
 
               scene.scene.resume("Volleyball");

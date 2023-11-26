@@ -38,9 +38,6 @@ class Volleyball extends Phaser.Scene {
     });
 
     this.socket.emit('rulesTime', countdownCompleted);
-
-    let blueScore = 0;
-    let redScore = 0;
   
     //creating movement animations
     this.anims.create({
@@ -74,7 +71,7 @@ class Volleyball extends Phaser.Scene {
     this.add.image(400, 568, 'ground').setScale(2.3)
     this.add.image(400, 350, 'net').setScale(0.5).setRotation(Phaser.Math.DegToRad(90));
   
-    // create the first ball
+    // create the ball
     var ball = this.add.sprite(400, 200, 'volleyball');
 
     // Create text objects to display scores

@@ -24,14 +24,19 @@ class Volleyball extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
+    let countdownCompleted = false;
 
-        //add score counters
+    this.events.on("RulesVolleyballDone", function () {
+      self.scene.resume("Volleyball");
+      countdownCompleted = true; // Set to true when countdown is done
+  });
+
+    //add score counters
     let blueScore = 0;
     let redScore = 0;
     this.blueScore = blueScore
     this.redScore = redScore
 
-    //add background
     this.gameOver = false;
   
     //creating movement animations
@@ -87,18 +92,27 @@ class Volleyball extends Phaser.Scene {
       // Check for scoring when the ball touches the ground
       if (ball.x < 400) {
         // Blue side scores
-        blueScore++;
+        if (countdownCompleted) {
+          blueScore++;
+          // Emit score updates to all players
+          io.emit('scoreUpdate', { blueScore, redScore });
+        }
+        // Reset the ball position given to blue
+        ball.setPosition(400, 170);
+        ball.setVelocityX(300);
+        ball.setVelocityY(300);
       } else {
         // Red side scores
-        redScore++;
+        if (countdownCompleted) {
+          redScore++;
+          // Emit score updates to all players
+          io.emit('scoreUpdate', { blueScore, redScore });
+        }
+        // Reset the ball position given to red
+        ball.setPosition(400, 170);
+        ball.setVelocityX(-300);
+        ball.setVelocityY(300);
       }
-      // Emit score updates to all players
-      io.emit('scoreUpdate', { blueScore, redScore });
-
-      // Reset the ball position
-      ball.setPosition(400, 200);
-      ball.setVelocityX(300);
-      ball.setVelocityY(300);
     });
   
     //socket connection established
@@ -142,8 +156,10 @@ class Volleyball extends Phaser.Scene {
         handlePlayerInput(self, socket.id, inputData);
       });
 
-       // Emit initial scores
-      socket.emit('scoreUpdate', { blueScore, redScore });
+      // Emit initial scores
+      if (countdownCompleted) {
+        socket.emit('scoreUpdate', { blueScore, redScore });
+      }
     });
   
     //add more general colliders
