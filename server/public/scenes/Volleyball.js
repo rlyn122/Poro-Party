@@ -28,6 +28,17 @@ class Volleyball extends Phaser.Scene {
     this.socket = io();
     this.players = this.add.group();
 
+    this.scene.launch("Rules_Volleyball");
+
+    let countdownCompleted = false;
+    this.socket.emit('rulesTime', countdownCompleted);
+
+    this.events.on("RulesVolleyballDone", function () {
+      countdownCompleted = true;
+    });
+
+    this.socket.emit('rulesTime', countdownCompleted);
+
     let blueScore = 0;
     let redScore = 0;
   
@@ -67,7 +78,7 @@ class Volleyball extends Phaser.Scene {
     var ball = this.add.sprite(400, 200, 'volleyball');
 
     // Create text objects to display scores
-    this.blueScoreText = this.add.text(600, 16, 'Blue: 0', {
+    this.blueScoreText = this.add.text(640, 16, 'Blue: 0', {
       fontSize: '32px',
       fill: '#0000FF',
     });
