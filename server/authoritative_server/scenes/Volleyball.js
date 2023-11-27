@@ -29,7 +29,7 @@ class Volleyball extends Phaser.Scene {
     this.events.on("RulesVolleyballDone", function () {
       self.scene.resume("Volleyball");
       countdownCompleted = true; // Set to true when countdown is done
-  });
+    });
 
     //add score counters
     let blueScore = 0;
@@ -94,8 +94,6 @@ class Volleyball extends Phaser.Scene {
         // Blue side scores
         if (countdownCompleted) {
           blueScore++;
-          // Emit score updates to all players
-          io.emit('scoreUpdate', { blueScore, redScore });
         }
         // Reset the ball position given to blue
         ball.setPosition(400, 170);
@@ -105,9 +103,10 @@ class Volleyball extends Phaser.Scene {
         // Red side scores
         if (countdownCompleted) {
           redScore++;
-          // Emit score updates to all players
-          io.emit('scoreUpdate', { blueScore, redScore });
         }
+
+        io.emit('scoreUpdate', { blueScore, redScore });
+
         // Reset the ball position given to red
         ball.setPosition(400, 170);
         ball.setVelocityX(-300);
@@ -157,9 +156,7 @@ class Volleyball extends Phaser.Scene {
       });
 
       // Emit initial scores
-      if (countdownCompleted) {
-        socket.emit('scoreUpdate', { blueScore, redScore });
-      }
+      // socket.emit('scoreUpdate', { blueScore, redScore });
     });
   
     //add more general colliders

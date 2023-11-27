@@ -1,9 +1,8 @@
-
 class Volleyball extends Phaser.Scene {
 
-    constructor(){
-        super("Volleyball");
-    }
+  constructor(){
+      super("Volleyball");
+  }
   
    preload() {
     //load sprites
