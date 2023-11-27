@@ -27,7 +27,6 @@ class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.platforms,this.players);
         this.physics.add.collider(this.players,this.players);
 
-
         //socket connection established
         io.on('connection', function (socket) {
             
@@ -35,8 +34,8 @@ class MainScene extends Phaser.Scene {
 
             io.emit(gameName);
             
-            if (gameName == "VolleyballGame"){
-              self.scene.start("Dummy", {socket:socket,io:io,players})
+            if (gameName == "DodgeballGame"){
+              self.scene.launch("Dodgeball")
             }
             if (gameName == "JumpGame"){
               //this.sene.start("Jump")
@@ -143,7 +142,6 @@ class MainScene extends Phaser.Scene {
 //create sprite for player
 function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
-
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);

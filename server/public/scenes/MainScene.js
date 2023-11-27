@@ -18,15 +18,12 @@ class MainScene extends Phaser.Scene {
         this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
         this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
-      
         //load background
         this.load.image("bg","assets/lobby.jpg");
-        this.load.image('ground', 'assets/volleyball/platform.png');
-
+        this.load.image('ground', 'assets/dodgeball/platform.png');
     }
 
     create() {
-
         var self = this;
         this.socket = io();
 
@@ -39,11 +36,10 @@ class MainScene extends Phaser.Scene {
         //add background
         this.add.image(0,0,"bg").setOrigin(0);
         this.add.image(400, 600, 'ground').setScale(2).setTint(0); 
-
         this.add.image(100,450,'ground').setScale(0.3);
         this.add.image(500,300,'ground').setScale(0.3);
         this.add.image(600,200,'ground').setScale(0.3);
-        this.add.image(300,350,'ground').setScale(0.3);
+        this.add.image(300,350,'ground').setScale(0.3);      
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
@@ -67,7 +63,7 @@ class MainScene extends Phaser.Scene {
               });
 
             //create scene transition buttons
-            self.startVolleyballGameButton = self.add.text(500,20,"Start Volleyball Game",{
+            self.startDodgeballGameButton = self.add.text(500,20,"Start Dodgeball Game",{
               fill: "#FFFFFF",
               fontSize: "20px",
               fontStyle: "bold",
@@ -79,26 +75,23 @@ class MainScene extends Phaser.Scene {
               fontStyle: "bold",
             });
 
-            //asking server to launch volleyball scene
-            self.startVolleyballGameButton.setInteractive();
-            self.startVolleyballGameButton.on("pointerdown", () => {
-              self.socket.emit("stopMainSceneRequest","VolleyballGame");
+            //asking server to launch dodgeball scene
+            self.startDodgeballGameButton.setInteractive();
+            self.startDodgeballGameButton.on("pointerdown", () => {
+              self.socket.emit("stopMainSceneRequest","DodgeballGame");
             });
 
             //asking server to launch jump scene
             self.startJumpGameButton.setInteractive();
             self.startJumpGameButton.on("pointerdown", () => {
               self.socket.emit("stopMainSceneRequest","JumpGame");
-              });
-
+            });
           });
         });
         
-        //launch volleyball game from here
-        this.socket.on("VolleyballGame", ()=>{
-          self.socket.off('playerUpdates');
-          self.scene.stop("MainScene")
-          self.scene.start("Loading",{socket:self.socket})
+        //receive signals to launch games from server
+        this.socket.on("DodgeballGame", ()=>{
+          this.scene.launch("Loading")
         })
 
         //launch jump game from here
@@ -134,11 +127,10 @@ class MainScene extends Phaser.Scene {
             self.players.getChildren().forEach(function (player) {
               if (players[id].playerId === player.playerId) {
                 player.setPosition(players[id].x, players[id].y);
-                setUsername_Pos(player,players[id].x, players[id].y)
+                setUsername_Pos(player,players[id].x, players[id].y);
               }
             });
           });
-          
         });
       
       
@@ -196,6 +188,6 @@ function addUsername(player, scene, playerInfo){
 }
 
 function setUsername_Pos(player, posX, posY){
-  player.usernameText.x = posX-10;
-  player.usernameText.y = posY- player.height / 4;
+  player.usernameText.x = posX-15;
+  player.usernameText.y = posY - player.height / 4;
 }
