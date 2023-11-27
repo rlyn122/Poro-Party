@@ -25,11 +25,6 @@ class Soccer extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
-
-    this.events.on("RulesSoccerDone", function () {
-      self.scene.resume("Soccer");
-      countdownCompleted = true; // Set to true when countdown is done
-    });
     
     //add score counters
     let blueScore = 0;

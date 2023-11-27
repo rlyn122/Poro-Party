@@ -24,19 +24,13 @@ class Volleyball extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
-    let countdownCompleted = false;
-
-    this.events.on("RulesVolleyballDone", function () {
-      self.scene.resume("Volleyball");
-      countdownCompleted = true; // Set to true when countdown is done
-    });
 
     //add score counters
+    let countdownCompleted = false;
     let blueScore = 0;
     let redScore = 0;
     this.blueScore = blueScore
     this.redScore = redScore
-
     this.gameOver = false;
   
     //creating movement animations
@@ -78,8 +72,8 @@ class Volleyball extends Phaser.Scene {
     this.ball = this.physics.add.sprite(400, 200, 'volleyball');
     this.ball.setBounce(1);
     this.ball.setCollideWorldBounds(true);
-    this.ball.setVelocityX(300);
-    this.ball.setVelocityY(300);
+    this.ball.setVelocityX(200);
+    this.ball.setVelocityY(-150);
     this.balls.add(this.ball)
   
     //adding physics for balls and players
@@ -97,21 +91,20 @@ class Volleyball extends Phaser.Scene {
         }
         // Reset the ball position given to blue
         ball.setPosition(400, 170);
-        ball.setVelocityX(300);
-        ball.setVelocityY(300);
+        ball.setVelocityX(200);
+        ball.setVelocityY(-150);
       } else {
         // Red side scores
         if (countdownCompleted) {
           redScore++;
         }
-
-        io.emit('scoreUpdate', { blueScore, redScore });
-
         // Reset the ball position given to red
         ball.setPosition(400, 170);
-        ball.setVelocityX(-300);
-        ball.setVelocityY(300);
+        ball.setVelocityX(-200);
+        ball.setVelocityY(-150);
       }
+      io.emit('scoreUpdate', { blueScore, redScore });
+      console.log("countdownCompleted:", countdownCompleted);
     });
   
     //socket connection established
@@ -154,9 +147,9 @@ class Volleyball extends Phaser.Scene {
       socket.on('playerInput', function (inputData) {
         handlePlayerInput(self, socket.id, inputData);
       });
-
+      
       // Emit initial scores
-      // socket.emit('scoreUpdate', { blueScore, redScore });
+      socket.emit('scoreUpdate', { blueScore, redScore });
     });
   
     //add more general colliders
