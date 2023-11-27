@@ -104,7 +104,6 @@ class Volleyball extends Phaser.Scene {
         ball.setVelocityY(-150);
       }
       io.emit('scoreUpdate', { blueScore, redScore });
-      console.log("countdownCompleted:", countdownCompleted);
     });
   
     //socket connection established
