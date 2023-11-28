@@ -29,7 +29,6 @@ class MainScene extends Phaser.Scene {
 
         //socket connection established
         io.on('connection', function (socket) {
-            
           socket.on('stopMainSceneRequest', function (gameName){
 
             io.emit(gameName);

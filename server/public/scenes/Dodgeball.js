@@ -3,6 +3,7 @@ class Dodgeball extends Phaser.Scene {
   constructor(){
       super("Dodgeball");
   }
+  
   init(data){
     this.socket = data.socket;
   }

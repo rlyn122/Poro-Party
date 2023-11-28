@@ -47,7 +47,7 @@ create() {
   //add players to this scene
 
   for (const playerId in players){
-    
+
     addPlayer(this , players[playerId])
   }
 
@@ -55,10 +55,23 @@ create() {
 
   console.log(this.socket.id)
 
-  this.socket.on('dodgeInput', function (inputData) {
-    console.log(inputData)
-    handlePlayerInput(self, self.socket.id, inputData);
-    });
+  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    console.log(id);
+    socket.on('dodgeInput', function (inputData) {
+      console.log(inputData)
+      handlePlayerInput(self, id, inputData);
+      })
+
+      // let countdown = 10;
+      // const timerInterval = setInterval(() => {
+      //   countdown--;
+      //   if(countdown === 0) {
+      //     clearInterval(timerInterval);
+      //     players[id].invuln = false;
+      //   }
+      // }, 1000);
+}
+
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
@@ -111,7 +124,7 @@ create() {
     countdown--;
     if(countdown === 0) {
       clearInterval(timerInterval);
-      players[socket.id].invuln = false;
+      players[this.socket.id].invuln = false;
     }
   }, 1000);
 
@@ -119,6 +132,11 @@ create() {
   this.physics.add.collider(this.platforms, this.ball2)
   this.physics.add.collider(this.platforms, this.ball3)
   this.physics.add.collider(this.players, this.platforms)
+  this.physics.add.collider(this.ball2, this.ball)
+  this.physics.add.collider(this.ball3, this.ball)
+  this.physics.add.collider(this.ball3, this.ball2)
+
+
 
 
 }
