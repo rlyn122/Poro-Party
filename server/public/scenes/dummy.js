@@ -42,10 +42,6 @@ class Dummy extends Phaser.Scene {
             self.players.getChildren().forEach(function (player) {
                 if (players[id].playerId === player.playerId) {
                 player.setPosition(players[id].x, players[id].y);
-
-         `       if (player.anims.getCurrentKey() !== players[id].animationKey) {
-                    player.anims.play(players[id].animationKey, true);
-                }`
                 }
             });
             });

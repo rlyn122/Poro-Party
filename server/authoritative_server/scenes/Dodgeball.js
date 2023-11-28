@@ -27,13 +27,17 @@ preload() {
   this.load.image('ground', 'assets/dodgeball/platform2.png');
 }
 
+
 create() {
-  console.log("volleyball scene reached!")
 
   const self = this;
   this.players = this.add.group();
   this.balls = this.add.group();
+
+
   //add background
+
+  console.log("Serverside Dodgeball Running")
 
   this.gameOver = false;
 
@@ -42,6 +46,7 @@ create() {
     countdownCompleted = true; // Set to true when countdown is done
 });
 
+/** 
   //creating movement animations
   this.anims.create({
     key: 'left',
@@ -68,7 +73,7 @@ create() {
     frameRate: 10,
     repeat: -1
   });
-  
+*/
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
@@ -115,6 +120,13 @@ create() {
     hitDodgeball(player, ball3);
   });
 
+
+
+  // send the players object to the new player
+  this.io.emit('asdf');
+
+  this.io.emit('currentPlayers', players);
+
   //socket connection established
   io.on('connection', function (socket) {
     console.log('a user connected');
@@ -132,11 +144,6 @@ create() {
       invuln: true
     };
     
-    // add player to server
-    addPlayer(self, players[socket.id]);
-
-    // send the players object to the new player
-    socket.emit('currentPlayers', players);
 
     // update all other players of the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);

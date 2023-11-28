@@ -1,8 +1,11 @@
-
 class Dodgeball extends Phaser.Scene {
 
   constructor(){
       super("Dodgeball");
+  }
+
+  init(data){
+    this.players = data.players
   }
 
  preload() {
@@ -30,6 +33,7 @@ class Dodgeball extends Phaser.Scene {
   this.socket = io();
   this.players = this.add.group();
 
+  console.log("Client-side Dodgeball Running")
   this.scene.launch("Rules_Dodgeball");
 
   let countdownCompleted = false;
@@ -82,9 +86,12 @@ class Dodgeball extends Phaser.Scene {
   var ball2 = this.add.sprite(400, 200, 'mars');
   var ball3 = this.add.sprite(400, 200, 'saturn');
 
-
+  this.socket.on('asdf', ()=>{
+    console.log("asdf")
+  })
   //listen for currentPlayers and self
   this.socket.on('currentPlayers', function (players) {
+    console.log("Players received")
     Object.keys(players).forEach(function (id) {
 
       //if it is this client

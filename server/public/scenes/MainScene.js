@@ -83,7 +83,7 @@ class MainScene extends Phaser.Scene {
         
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
-          this.scene.launch("Loading")
+          this.scene.start("Dodgeball")
         })
 
         //launch jump game from here
@@ -171,13 +171,13 @@ function displayPlayers(self, playerInfo, sprite) {
   addUsername(player,self,playerInfo)
   player.playerId = playerInfo.playerId;
   self.players.add(player);
+  console.log(self.players)
 }
 
 //function to add player username onto screen
 function addUsername(player, scene, playerInfo){
   player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
-  console.log(player.usernameText)
 }
 
 function setUsername_Pos(player, posX, posY){
