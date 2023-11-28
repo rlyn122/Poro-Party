@@ -3,9 +3,8 @@ class Dodgeball extends Phaser.Scene {
   constructor(){
       super("Dodgeball");
   }
-
   init(data){
-    this.players = data.players
+    this.socket = data.socket;
   }
 
  preload() {
@@ -30,8 +29,8 @@ class Dodgeball extends Phaser.Scene {
 
  create() {
   var self = this;
-  this.socket = io();
   this.players = this.add.group();
+  console.log(this.socket.id)
 
   console.log("Client-side Dodgeball Running")
   this.scene.launch("Rules_Dodgeball");
@@ -44,7 +43,7 @@ class Dodgeball extends Phaser.Scene {
   });
 
   this.socket.emit('rulesTime', countdownCompleted);
-
+ 
   //creating movement animations
   this.anims.create({
     key: 'left',
@@ -90,24 +89,24 @@ class Dodgeball extends Phaser.Scene {
     console.log("asdf")
   })
   //listen for currentPlayers and self
-  this.socket.on('currentPlayers', function (players) {
+  this.socket.on('currentPlayers_dodge', function (players) {
     console.log("Players received")
     Object.keys(players).forEach(function (id) {
 
       //if it is this client
       if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], 'cat1');
+        displayPlayers(self, players[id], players[id].cat);
       }
       //if it is another client
       else{
-        displayPlayers(self,players[id],'cat1')
+        displayPlayers(self,players[id],players[id].cat)
       }
     });
   });
 
   //listen for newPlayer connection
   this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, 'cat1');
+    displayPlayers(self, playerInfo, playerInfo.cat);
   });
 
   //listen for player disconnection
@@ -120,7 +119,7 @@ class Dodgeball extends Phaser.Scene {
   });
 
   //update player movements and animations from server
-  this.socket.on('playerUpdates', function (players) {
+  this.socket.on('playerUpdates_dodge', function (players) {
     Object.keys(players).forEach(function (id) {
       self.players.getChildren().forEach(function (player) {
         if (players[id].playerId === player.playerId) {
@@ -190,7 +189,8 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   }
   //if the state of a key has been changed, emit the state of keys to server
   if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
-    this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
+    console.log({ left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed })
+    this.socket.emit('dodgeInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
   }
 }
 

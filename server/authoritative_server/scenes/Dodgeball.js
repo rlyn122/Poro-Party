@@ -34,46 +34,30 @@ create() {
   this.players = this.add.group();
   this.balls = this.add.group();
 
-
-  //add background
-
   console.log("Serverside Dodgeball Running")
 
   this.gameOver = false;
 
   this.events.on("RulesDodgeballDone", function () {
     self.scene.resume("Dodgeball");
-    countdownCompleted = true; // Set to true when countdown is done
+    countdownCompleted = true; // Set to true when  countdown is done
 });
 
-/** 
-  //creating movement animations
-  this.anims.create({
-    key: 'left',
-    frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-    frameRate: 10,
-    repeat: -1
-  });
-  
-  this.anims.create({
-    key: 'look_right',
-    frames: [{ key: 'cat1', frame: 2 }],
-    frameRate: 20
-  });
-  
-  this.anims.create({
-    key: 'look_left',
-    frames: [{ key: 'cat1', frame: 1 }],
-    frameRate: 20
-  });
-  
-  this.anims.create({
-    key: 'right',
-    frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-    frameRate: 10,
-    repeat: -1
-  });
-*/
+
+  //add players to this scene
+
+  for (const playerId in players){
+    addPlayer(this , players[playerId])
+  }
+
+  this.io.emit("currentPlayers_dodge", players)
+
+  console.log(this.socket.id)
+
+  this.socket.on('dodgeInput', function (inputData) {
+    console.log(inputData)
+    handlePlayerInput(self, self.socket.id, inputData);
+    });
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
@@ -120,63 +104,15 @@ create() {
     hitDodgeball(player, ball3);
   });
 
+  this.physics.add.collider(this.platforms, this.ball)
+  this.physics.add.collider(this.platforms, this.ball2)
+  this.physics.add.collider(this.platforms, this.ball3)
+  this.physics.add.collider(this.players, this.platforms)
 
-
-  // send the players object to the new player
-  this.io.emit('asdf');
-
-  this.io.emit('currentPlayers', players);
-
-  //socket connection established
-  io.on('connection', function (socket) {
-    console.log('a user connected');
-    
-    // create a new player and add it to our players object
-    players[socket.id] = {
-      x: Math.floor(Math.random() * 700) + 50,
-      y: 500,
-      playerId: socket.id,
-      input: {
-        left: false,
-        right: false,
-        up: false
-      },
-      invuln: true
-    };
-    
-
-    // update all other players of the new player
-    socket.broadcast.emit('newPlayer', players[socket.id]);
-
-    // 10 seconds before player can be killed
-    let countdown = 10;
-    const timerInterval = setInterval(() => {
-      countdown--;
-      if(countdown === 0) {
-        clearInterval(timerInterval);
-        players[socket.id].invuln = false;
-      }
-    }, 1000);
-
-
-  //add more general colliders
-  this.physics.add.collider(this.players, this.platforms);
-  this.physics.add.collider(this.players, this.players);
-  this.physics.add.collider(this.ball, this.platforms);
-  this.physics.add.collider(this.ball, this.players);
-  this.physics.add.collider(this.ball2, this.platforms);
-  this.physics.add.collider(this.ball2, this.players);
-  this.physics.add.collider(this.ball, this.ball2);
-  this.physics.add.collider(this.ball3, this.platforms);
-  this.physics.add.collider(this.ball3, this.players);
-  this.physics.add.collider(this.ball2, this.ball3);
-  this.physics.add.collider(this.ball, this.ball3);
-
-})
 
 }
-update() {
 
+update() {
   const speed = 250
   //constantly emit each player's position/animation
   this.players.getChildren().forEach((player) => {
@@ -206,7 +142,7 @@ update() {
 
   });
   //emit player positions
-  io.emit('playerUpdates', players);
+  io.emit('playerUpdates_dodge', players);
 
   var ball_x = this.ball.x;
   var ball_y = this.ball.y;
@@ -234,7 +170,7 @@ function handlePlayerInput(self, playerId, input) {
 
 //create sprite for player
 function addPlayer(self, playerInfo) {
-  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
+  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, playerInfo.cat);
 
   // Set initial animation state
   player.playerId = playerInfo.playerId;
@@ -242,7 +178,6 @@ function addPlayer(self, playerInfo) {
   player.setBounce(0.2);
   player.setScale(0.12, 0.12);  
   player.setCollideWorldBounds(true);
-
 }
 
 //delete sprite for player

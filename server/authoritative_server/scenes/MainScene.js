@@ -35,6 +35,8 @@ class MainScene extends Phaser.Scene {
             io.emit(gameName);
             
             if (gameName == "DodgeballGame"){
+
+              
               self.scene.start("Dodgeball",{socket:socket, io:io})
             }
             if (gameName == "JumpGame"){
