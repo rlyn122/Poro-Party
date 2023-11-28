@@ -47,6 +47,7 @@ create() {
   //add players to this scene
 
   for (const playerId in players){
+    
     addPlayer(this , players[playerId])
   }
 
@@ -103,6 +104,16 @@ create() {
   this.physics.add.collider(this.players, this.ball3, function (player, ball3) {
     hitDodgeball(player, ball3);
   });
+
+  // 10 seconds before player can be killed
+  let countdown = 10;
+  const timerInterval = setInterval(() => {
+    countdown--;
+    if(countdown === 0) {
+      clearInterval(timerInterval);
+      players[socket.id].invuln = false;
+    }
+  }, 1000);
 
   this.physics.add.collider(this.platforms, this.ball)
   this.physics.add.collider(this.platforms, this.ball2)

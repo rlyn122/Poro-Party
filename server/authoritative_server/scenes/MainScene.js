@@ -35,8 +35,6 @@ class MainScene extends Phaser.Scene {
             io.emit(gameName);
             
             if (gameName == "DodgeballGame"){
-
-              
               self.scene.start("Dodgeball",{socket:socket, io:io})
             }
             if (gameName == "JumpGame"){
@@ -59,6 +57,7 @@ class MainScene extends Phaser.Scene {
               },
               username:data.username,
               cat:data.cat,
+              invuln:true,
               };
   
               // add player to server
