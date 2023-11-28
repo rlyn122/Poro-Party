@@ -90,11 +90,3 @@ class Dummy extends Phaser.Scene {
         }
     }
 }
-
-function displayPlayers(self, playerInfo, sprite) {
-    const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-    addUsername(player,self,playerInfo)
-    player.playerId = playerInfo.playerId;
-    self.players.add(player);
-  }
-  

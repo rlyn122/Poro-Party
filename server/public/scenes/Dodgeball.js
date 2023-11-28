@@ -188,10 +188,3 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
 }
 
 }
-//displays  
-function displayPlayers(self, playerInfo, sprite) {
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.12,0.12)
-
-  player.playerId = playerInfo.playerId;
-  self.players.add(player);
-}

@@ -185,12 +185,4 @@ class Soccer extends Phaser.Scene {
       this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
     }
   }
-
-  //displays  
-  displayPlayers(self, playerInfo, sprite) {
-    const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.15,0.15)
-
-    player.playerId = playerInfo.playerId;
-    self.players.add(player);
-  }
 }

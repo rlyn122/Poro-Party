@@ -44,15 +44,7 @@ class MainScene extends Phaser.Scene {
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
           Object.keys(players).forEach(function (id) {
-      
-            //if it is this client
-            if (players[id].playerId === self.socket.id) {
-              displayPlayers(self, players[id], players[id].cat);
-            }
-            //if it is another client
-            else{
-              displayPlayers(self,players[id],players[id].cat);
-            }
+          displayPlayers(self, players[id], players[id].cat);
 
             //set initial playerCount
             self.playerCount = (Object.keys(players).length)
@@ -172,8 +164,8 @@ class MainScene extends Phaser.Scene {
       }
       
       }
-      
-//displays  
+
+//display players
 function displayPlayers(self, playerInfo, sprite) {
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
   addUsername(player,self,playerInfo)
@@ -185,6 +177,7 @@ function displayPlayers(self, playerInfo, sprite) {
 function addUsername(player, scene, playerInfo){
   player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
+  console.log(player.usernameText)
 }
 
 function setUsername_Pos(player, posX, posY){

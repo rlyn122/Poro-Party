@@ -177,11 +177,4 @@ class Volleyball extends Phaser.Scene {
   }
   
   }
-  //displays  
-  function displayPlayers(self, playerInfo, sprite) {
-    const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2)
-  
-    player.playerId = playerInfo.playerId;
-    self.players.add(player);
-  }
   
