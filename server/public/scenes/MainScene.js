@@ -212,10 +212,16 @@ class MainScene extends Phaser.Scene {
 function displayPlayers(self, playerInfo, sprite) {
   if(playerInfo&&sprite){
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-  addUsername(player,self,playerInfo)
-  player.playerId = playerInfo.playerId;
-  self.players.add(player);
-  console.log(self.players)
+  if (player) {
+    addUsername(player,self,playerInfo)
+    //high depth value to bring the player sprite to the front
+    player.setDepth(100);
+    player.playerId = playerInfo.playerId;
+    self.players.add(player);
+    console.log(self.players)
+  } else {
+    console.error('Failed to create player sprite');
+  }
   }
 }
 
@@ -232,8 +238,8 @@ function setUsername_Pos(player, posX, posY){
 
 function disableButtons(self) {
   // Disable the buttons
-  //self.gameInProgressSign.setVisible(true);
-  self.startDodgeballGameButton.setTint(0x999999); // Change color for visual confirmation
+  console.log("disabled")
+  self.gameInProgressSign.setVisible(true);
   self.startDodgeballGameButton.removeInteractive();
   self.startVolleyGameButton.removeInteractive();
   self.startSoccerGameButton.removeInteractive();

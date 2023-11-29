@@ -117,20 +117,22 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
 
-  const gameOverText = this.add.text(250, 150, "", {
+  const dodge_gameOverText = this.add.text(250, 150, "", {
     fill: "#000000",
     fontFamily: 'Arial',
     fontSize: "50px"
 });
 
 this.socket.on('gameOver', function(username) {
-  gameOverText.setText(username + " Won")
+  dodge_gameOverText.setText(username + " Won")
 });
 
 this.socket.on('stopDodgeballScene', () => {
   self.scene.stop("Dodgeball");
 });
-
+this.players.children.iterate(function (player) {
+  player.setDepth(10);
+});
 }
 
  update() {

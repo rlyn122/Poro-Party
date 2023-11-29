@@ -41,9 +41,8 @@ class Soccer extends Phaser.Scene {
     this.add.image(400, 300, 'sky');
     this.add.image(400, 568, 'ground').setScale(2);
     this.add.image(400, 600, 'ground').setScale(2).setTint(0);
-
-    this.add.image(50, 415, 'red_goal').setScale(.1).setDepth(1);
-    this.add.image(750, 415, 'blue_goal').setScale(-0.1, .1).setDepth(1);
+    this.add.image(50, 415, 'red_goal').setScale(.1);
+    this.add.image(750, 415, 'blue_goal').setScale(-0.1, .1);
 
     // create the first ball
     var ball = this.add.sprite(400, 200, 'ball').setScale(2);
@@ -103,8 +102,10 @@ class Soccer extends Phaser.Scene {
 
     //score updates
     this.socket.on('scoreUpdate', function (scores) {
+      try{
       self.blueScoreText.setText(`Blue: ${scores.blueScore}`);
       self.redScoreText.setText(`Red: ${scores.redScore}`);
+      } catch(error){}
     });
 
     //create cursors
@@ -113,20 +114,24 @@ class Soccer extends Phaser.Scene {
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
     
-    const gameOverText = this.add.text(250, 150, "", {
+    const soc_gameOverText = this.add.text(250, 150, "", {
       fill: "#000000",
       fontFamily: 'Arial',
       fontSize: "50px"
     });
   
     this.socket.on('gameOver', function(team) {
-      gameOverText.setText(team + " Won")
+      soc_gameOverText.setText(team + " Won")
       self.socket.emit('')
     });
   
     this.socket.on('stopSoccerScene', () => {
       self.scene.stop("Soccer");
     });
+
+    this.players.children.iterate(function (player) {
+      player.setDepth(10);
+  });
   }
 
   update() {

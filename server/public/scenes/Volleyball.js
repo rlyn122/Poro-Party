@@ -57,14 +57,9 @@ class Volleyball extends Phaser.Scene {
     this.socket.on('currentPlayers_volley', function (players) {
       Object.keys(players).forEach(function (id) {
   
-        //if it is this client
-        if (players[id].playerId === self.socket.id) {
-          displayPlayers(self, players[id], players[id].cat);
-        }
-        //if it is another client
-        else{
-          displayPlayers(self,players[id],players[id].cat)
-        }
+      try{
+      displayPlayers(self, players[id], players[id].cat);
+      }catch(error){}
       });
     });
   
@@ -109,20 +104,23 @@ class Volleyball extends Phaser.Scene {
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
 
-    const gameOverText = this.add.text(250, 150, "", {
+    const volley_gameOverText = this.add.text(250, 150, "", {
       fill: "#000000",
       fontFamily: 'Arial',
       fontSize: "50px"
     });
   
     this.socket.on('gameOver', function(team) {
-      gameOverText.setText(team + " Won")
+      volley_gameOverText.setText(team + " Won")
       self.socket.emit('')
     });
   
     this.socket.on('stopVolleyballScene', () => {
       self.scene.stop("Volleyball");
     });
+    this.players.children.iterate(function (player) {
+      player.setDepth(10);
+  });
   }
   
    update() {

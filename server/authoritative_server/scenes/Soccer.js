@@ -125,32 +125,6 @@ class Soccer extends Phaser.Scene {
       ball.setVelocityY(300);
     });
 
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-      frameRate: 10,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'look_right',
-      frames: [{ key: 'cat1', frame: 2 }],
-      frameRate: 20
-    });
-
-    this.anims.create({
-      key: 'look_left',
-      frames: [{ key: 'cat1', frame: 1 }],
-      frameRate: 20
-    });
-
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-      frameRate: 10,
-      repeat: -1
-    });
-
     //add colliders
     this.physics.add.collider(this.players, this.platforms);
     this.physics.add.collider(this.players, this.players);
