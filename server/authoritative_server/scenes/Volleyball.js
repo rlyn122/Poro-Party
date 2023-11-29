@@ -47,7 +47,6 @@ class Volleyball extends Phaser.Scene {
   this.io.emit("currentPlayers_volley", players)
 
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-    console.log(id);
     socket.on('volleyInput', function (inputData) {
       handlePlayerInput(self, id, inputData);
     })
@@ -80,7 +79,6 @@ class Volleyball extends Phaser.Scene {
       // Check for scoring when the ball touches the ground
       if (ball.x < 400) {
         // Blue side scores
-        console.log(self.blueScore)
         self.blueScore++;
         // Reset the ball position given to blue
         ball.setPosition(400, 170);

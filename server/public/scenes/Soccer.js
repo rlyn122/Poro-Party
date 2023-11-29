@@ -42,10 +42,6 @@ class Soccer extends Phaser.Scene {
     this.add.image(400, 568, 'ground').setScale(2);
     this.add.image(400, 600, 'ground').setScale(2).setTint(0);
 
-
-    let blueScore = 0;
-    let redScore = 0;
-
     this.add.image(50, 415, 'red_goal').setScale(.1).setDepth(1);
     this.add.image(750, 415, 'blue_goal').setScale(-0.1, .1).setDepth(1);
 
@@ -68,11 +64,11 @@ class Soccer extends Phaser.Scene {
 
         //if it is this client
         if (players[id].playerId === self.socket.id) {
-          displayPlayers(self, players[id], 'cat1');
+          displayPlayers(self, players[id], players[id].cat);
         }
         //if it is another client
         else{
-          displayPlayers(self,players[id],'cat1')
+          displayPlayers(self,players[id], players[id].cat)
         }
       });
     });
@@ -116,32 +112,6 @@ class Soccer extends Phaser.Scene {
     this.leftKeyPressed = false;
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
-
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-      frameRate: 5,
-      repeat: -1
-    });
-
-    this.anims.create({
-      key: 'look_right',
-      frames: [{ key: 'cat1', frame: 2 }],
-      frameRate: 20
-    });
-
-    this.anims.create({
-      key: 'look_left',
-      frames: [{ key: 'cat1', frame: 1 }],
-      frameRate: 20
-    });
-
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-      frameRate: 5,
-      repeat: -1
-    });
     
     const gameOverText = this.add.text(250, 150, "", {
       fill: "#000000",

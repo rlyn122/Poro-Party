@@ -35,33 +35,6 @@ class Dodgeball extends Phaser.Scene {
   console.log("Client-side Dodgeball Running")
   this.scene.launch("Rules_Dodgeball");
 
-  //creating movement animations
-  this.anims.create({
-    key: 'left',
-    frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-    frameRate: 10,
-    repeat: -1
-  });
-  
-  this.anims.create({
-    key: 'look_right',
-    frames: [{ key: 'cat1', frame: 2 }],
-    frameRate: 20
-  });
-  
-  this.anims.create({
-    key: 'look_left',
-    frames: [{ key: 'cat1', frame: 1 }],
-    frameRate: 20
-  });
-  
-  this.anims.create({
-    key: 'right',
-    frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-    frameRate: 10,
-    repeat: -1
-  });
-
   //add background
   this.add.image(400, 300, 'sky');
   this.add.image(400, 568, 'ground').setScale(2)

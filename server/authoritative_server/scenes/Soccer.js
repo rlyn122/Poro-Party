@@ -7,8 +7,6 @@ class Soccer extends Phaser.Scene {
   init(data){
     this.socket = data.socket;
     this.io = data.io;
-    this.blueScore = 0;
-    this.redScore = 0;
   }
 
   preload() {
@@ -35,7 +33,9 @@ class Soccer extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
-    
+    this.blueScore = 0;
+    this.redScore = 0;
+
     //add players to this scene
     for (const playerId in players){
       var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
@@ -108,19 +108,16 @@ class Soccer extends Phaser.Scene {
       // Check for scoring when the ball touches the ground
       if (ball.x < 80 && ball.x > 20) {
         // Blue side scores
-
-        console.log(this.blueScore)
-        this.blueScore = this.blueScore + 1;
-        console.log(this.blueScore)
+        self.blueScore++;
       } else if (ball.x > 720 && ball.x < 780) {
         // Red side scores
-        this.redScore = this.redScore +1;
+        self.redScore++;
       }
       // Emit score updates to all players
-      let b = this.blueScore;
-      let r = this.redScore;
+      let b = self.blueScore;
+      let r = self.redScore;
       console.log(b)
-      io.emit('scoreUpdate', { b, r });
+      io.emit('scoreUpdate', { blueScore:b, redScore:r });
 
       // Reset the ball position
       ball.setPosition(400, 200);
@@ -201,8 +198,8 @@ class Soccer extends Phaser.Scene {
     //emit ball positions
     io.emit('soccer_ballUpdates', {ball_x,ball_y})
 
-    if(getSoccerWinner() != null) {
-      io.emit('gameOver', getSoccerWinner());
+    if(getSoccerWinner(this.blueScore,this.redScore) != null) {
+      io.emit('gameOver', getSoccerWinner(this.blueScore,this.redScore));
   
       let countdown = 5;
       const timerInterval = setInterval(() => {
