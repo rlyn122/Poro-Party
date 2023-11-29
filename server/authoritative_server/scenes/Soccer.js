@@ -7,6 +7,8 @@ class Soccer extends Phaser.Scene {
   init(data){
     this.socket = data.socket;
     this.io = data.io;
+    this.blueScore = 0;
+    this.redScore = 0;
   }
 
   preload() {
@@ -53,13 +55,6 @@ class Soccer extends Phaser.Scene {
         handlePlayerInput(self, id, inputData);
         })
   }
-
-
-    //add score counters
-    let blueScore = 0;
-    let redScore = 0;
-    this.blueScore = blueScore
-    this.redScore = redScore
     
     this.gameOver = false;
 
@@ -113,14 +108,19 @@ class Soccer extends Phaser.Scene {
       // Check for scoring when the ball touches the ground
       if (ball.x < 80 && ball.x > 20) {
         // Blue side scores
-        blueScore++;
 
+        console.log(this.blueScore)
+        this.blueScore = this.blueScore + 1;
+        console.log(this.blueScore)
       } else if (ball.x > 720 && ball.x < 780) {
         // Red side scores
-        redScore++;
+        this.redScore = this.redScore +1;
       }
       // Emit score updates to all players
-      io.emit('scoreUpdate', { blueScore, redScore });
+      let b = this.blueScore;
+      let r = this.redScore;
+      console.log(b)
+      io.emit('scoreUpdate', { b, r });
 
       // Reset the ball position
       ball.setPosition(400, 200);
@@ -217,7 +217,7 @@ class Soccer extends Phaser.Scene {
 
   }
 }
-function getSoccerWinner() {  
+function getSoccerWinner(blueScore, redScore) {  
   if (blueScore == 5) {
     return "Blue"
   }
