@@ -67,6 +67,7 @@ class Soccer extends Phaser.Scene {
     this.net = this.physics.add.staticGroup();
     //ground
     this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    this.platforms.create(400, 600, 'ground').setScale(2).refreshBody().setTint(0);
 
     //sprite backbone
     //left sprite

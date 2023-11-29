@@ -63,6 +63,8 @@ class Volleyball extends Phaser.Scene {
     this.ground = this.physics.add.staticGroup(); 
 
     this.ground.create(400, 568, 'ground').setScale(2.3).refreshBody();
+    this.ground.create(400, 600, 'ground').setScale(2.3).refreshBody();
+
     this.platforms.create(400, 350, 'net').setScale(0.05, 6.4).refreshBody();
     
     //adding ball physics

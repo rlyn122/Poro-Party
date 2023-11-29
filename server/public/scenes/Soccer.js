@@ -40,6 +40,8 @@ class Soccer extends Phaser.Scene {
 
     this.add.image(400, 300, 'sky');
     this.add.image(400, 568, 'ground').setScale(2);
+    this.add.image(400, 600, 'ground').setScale(2).setTint(0);
+
 
     let blueScore = 0;
     let redScore = 0;
