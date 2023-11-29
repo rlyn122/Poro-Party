@@ -191,6 +191,8 @@ class Soccer extends Phaser.Scene {
 
       handlePlayerInput(this, player.playerId, input, animationKey); // Pass animation key
 
+      
+
     });
     //emit player positions
     io.emit('playerUpdates_soccer', players);
@@ -201,5 +203,30 @@ class Soccer extends Phaser.Scene {
     //emit ball positions
     io.emit('soccer_ballUpdates', {ball_x,ball_y})
 
+    if(getSoccerWinner() != null) {
+      io.emit('gameOver', getSoccerWinner());
+  
+      let countdown = 5;
+      const timerInterval = setInterval(() => {
+        countdown--;
+        if(countdown === 0) {
+          clearInterval(timerInterval);
+          io.emit('stopSoccerScene');
+          this.scene.stop("Soccer");
+        }
+      }, 300);
+    }
+
+  }
+}
+function getSoccerWinner() {  
+  if (blueScore == 5) {
+    return "Blue"
+  }
+  else if (redScore == 5) {
+    return "Red";
+  }
+  else{
+    return null;
   }
 }
