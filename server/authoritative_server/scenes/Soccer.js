@@ -190,9 +190,6 @@ class Soccer extends Phaser.Scene {
       players[player.playerId].y = player.y;
 
       handlePlayerInput(this, player.playerId, input, animationKey); // Pass animation key
-
-      
-
     });
     //emit player positions
     io.emit('playerUpdates_soccer', players);

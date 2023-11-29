@@ -20,7 +20,7 @@ class MainScene extends Phaser.Scene {
 
         //load background
         this.load.image("bg","assets/lobby.jpg");
-        this.load.image('ground', 'assets/dodgeball/platform.png');
+        this.load.image('lobbyground', 'assets/dodgeball/lobbyground.png');
     }
 
     create() {
@@ -35,11 +35,11 @@ class MainScene extends Phaser.Scene {
 
         //add background
         this.add.image(0,0,"bg").setOrigin(0);
-        this.add.image(400, 600, 'ground').setScale(2).setTint(0); 
-        this.add.image(100,450,'ground').setScale(0.3);
-        this.add.image(500,300,'ground').setScale(0.3);
-        this.add.image(600,200,'ground').setScale(0.3);
-        this.add.image(300,350,'ground').setScale(0.3);      
+        this.add.image(400, 600, 'lobbyground').setScale(2).setTint(0); 
+        this.add.image(100,450,'lobbyground').setScale(0.3);
+        this.add.image(500,300,'lobbyground').setScale(0.3);
+        this.add.image(600,200,'lobbyground').setScale(0.3);
+        this.add.image(300,350,'lobbyground').setScale(0.3);      
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
