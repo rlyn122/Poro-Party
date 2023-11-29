@@ -210,6 +210,7 @@ class Soccer extends Phaser.Scene {
         if(countdown === 0) {
           clearInterval(timerInterval);
           io.emit('stopSoccerScene');
+          gameActive = false;
           this.scene.stop("Soccer");
         }
       }, 300);

@@ -1,4 +1,5 @@
 const players = {};
+var gameActive = false;
 
 class MainScene extends Phaser.Scene {
 
@@ -36,11 +37,15 @@ class MainScene extends Phaser.Scene {
 
       //socket connection established
       io.on('connection', function (socket) {
+
+
         socket.on('stopMainSceneRequest', function (gameName){
 
           //let clients know to start game
           io.emit(gameName);
-          
+          //handle disabling game buttons
+          gameActive = true;
+
           //launch game on the serverside
           if (gameName == "DodgeballGame"){
             self.scene.launch("Dodgeball",{socket:socket, io:io})
@@ -149,7 +154,8 @@ class MainScene extends Phaser.Scene {
 
   //emit player positions
   io.emit('playerUpdates', players);
-      
+  //emit whether or not an active game is running
+  io.emit("gameStatus",gameActive);
   }
 }
 

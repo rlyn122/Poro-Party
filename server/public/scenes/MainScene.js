@@ -73,6 +73,19 @@ class MainScene extends Phaser.Scene {
               fontStyle: "bold",
             });
 
+            // Create the 'Game in Progress' sign
+            self.gameInProgressSign = self.add.text(450, 20, "Game in progress, \nplease wait till finish", {
+              fill: "#FF0000",
+              fontSize: "20px",
+              fontStyle: "bold",
+              backgroundColor: "#000000",
+              padding: 20,
+              align: 'center',
+              fixedWidth: 310,
+              fixedHeight: 100,
+              border: "5px solid red",
+          }).setVisible(false); // Initially hidden
+
             //asking server to launch dodgeball scene
             self.startDodgeballGameButton.setInteractive();
             self.startDodgeballGameButton.on("pointerdown", () => {
@@ -91,7 +104,19 @@ class MainScene extends Phaser.Scene {
               self.socket.emit("stopMainSceneRequest","SoccerGame");
             });
           });
+
+        //disable game buttons while gameactive 
+        self.socket.on('gameStatus',(gameActive)=>{
+          if(gameActive){
+            disableButtons(self)
+          }
+          else{
+            enableButtons(self)
+          }
+        })
         });
+
+
         
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
@@ -107,7 +132,7 @@ class MainScene extends Phaser.Scene {
         this.socket.on("SoccerGame", ()=>{
           this.scene.launch("Soccer",{socket:self.socket})
         })
-  
+
         //listen for newPlayer connection
         this.socket.on('newPlayer', function (playerInfo) {
           displayPlayers(self, playerInfo, playerInfo.cat);
@@ -140,8 +165,6 @@ class MainScene extends Phaser.Scene {
             });
           });
         });
-      
-      
       
         //create cursors
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -178,6 +201,8 @@ class MainScene extends Phaser.Scene {
           this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
         }
       }
+
+
       
       }
 
@@ -199,4 +224,20 @@ function addUsername(player, scene, playerInfo){
 function setUsername_Pos(player, posX, posY){
   player.usernameText.x = posX-15;
   player.usernameText.y = posY - player.height / 4;
+}
+
+function disableButtons(self) {
+  // Disable the buttons
+  self.gameInProgressSign.setVisible(true);
+  self.startDodgeballGameButton.setInteractive(false);
+  self.startVolleyGameButton.setInteractive(false);
+  self.startSoccerGameButton.setInteractive(false);
+}
+
+function enableButtons(self) {
+  // Enable the buttons
+  self.gameInProgressSign.setVisible(false);
+  self.startDodgeballGameButton.setInteractive(true);
+  self.startVolleyGameButton.setInteractive(true);
+  self.startSoccerGameButton.setInteractive(true);
 }
