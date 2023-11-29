@@ -153,9 +153,10 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
 
 this.socket.on('gameOver', function(username) {
   gameOverText.setText(username + " Won")
-  this.scene.stop("Dodgeball")
 });
-
+this.socket.on('stopDodgeballScene', function(username) {
+  self.scene.stop("Dodgeball")
+});
 }
 
  update() {

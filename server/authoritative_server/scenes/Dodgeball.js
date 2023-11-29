@@ -243,7 +243,7 @@ function getWinnerName() {
   let left = 0;
   sockets = Object.keys(players);
 
-  if(!(players === null) && sockets.length > 1) {
+  if(!(players === null)) {
     for(let i = 0; i < sockets.length; i++) {
       if(players[sockets[i]].alive == 'alive') {
           left++;
