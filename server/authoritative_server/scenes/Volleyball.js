@@ -8,8 +8,6 @@ class Volleyball extends Phaser.Scene {
     init(data){
       this.socket = data.socket;
       this.io = data.io;
-      this.blueScore = 0;
-      this.redScore = 0;
     }
   
   preload() {
@@ -33,6 +31,8 @@ class Volleyball extends Phaser.Scene {
     this.players = this.add.group();
     this.balls = this.add.group();
 
+    this.blueScore = 0;
+    this.redScore = 0;
     console.log("Serverside Volleyball Running")
 
   //add players to this scene
@@ -80,22 +80,23 @@ class Volleyball extends Phaser.Scene {
       // Check for scoring when the ball touches the ground
       if (ball.x < 400) {
         // Blue side scores
-        this.blueScore++;
+        console.log(self.blueScore)
+        self.blueScore++;
         // Reset the ball position given to blue
         ball.setPosition(400, 170);
         ball.setVelocityX(200);
         ball.setVelocityY(-150);
       } else {
         // Red side scores
-        this.redScore++;
+        self.redScore++;
         // Reset the ball position given to red
         ball.setPosition(400, 170);
         ball.setVelocityX(-200);
         ball.setVelocityY(-150);
       }
-      let b = this.blueScore
-      let r = this.redScore
-      io.emit('scoreUpdate', { b, r });
+      let b = self.blueScore
+      let r = self.redScore
+      io.emit('scoreUpdate', {blueScore:b, redScore:r });
     });
   
     //add more general colliders
@@ -146,8 +147,7 @@ class Volleyball extends Phaser.Scene {
     //emit ball positions
     io.emit('ballUpdates', {ball_x,ball_y})
 
-
-    if(getVolleyballWinner() != null) {
+    if(getVolleyballWinner(this.blueScore, this.redScore) != null) {
       io.emit('gameOver', getVolleyballWinner(this.blueScore, this.redScore));
   
       let countdown = 5;
