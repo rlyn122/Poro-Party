@@ -165,38 +165,6 @@ class Volleyball extends Phaser.Scene {
   }
   }
   
-  //pass data into player function
-  function handlePlayerInput(self, playerId, input, animationKey) {
-    self.players.getChildren().forEach((player) => {
-      if (playerId === player.playerId) {
-        players[player.playerId].input = input;
-        players[player.playerId].animationKey = animationKey;
-      }
-    });
-  }
-  
-  //create sprite for player
-  function addPlayer(self, playerInfo) {
-    const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
-  
-    // Set initial animation state
-    player.playerId = playerInfo.playerId;
-    self.players.add(player);
-    player.setBounce(0.2);
-    player.setScale(0.2, 0.2);  
-    player.setCollideWorldBounds(true);
-  
-  }
-  
-  //delete sprite for player
-  function removePlayer(self, playerId) {
-    self.players.getChildren().forEach((player) => {
-      if (playerId === player.playerId) {
-        player.destroy();
-      }
-    });
-  }
-  
   function hitVolleyball(player, ball) {  
     ball.setVelocityY(-500)
     if (ball.x < player.x) {

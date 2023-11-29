@@ -202,26 +202,6 @@ function handlePlayerInput(self, playerId, input) {
   });
 }
 
-//create sprite for player
-function addPlayer(self, playerInfo) {
-  const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, playerInfo.cat);
-  // Set initial animation state
-  player.playerId = playerInfo.playerId;
-  self.players.add(player);
-  player.setBounce(0.2);
-  player.setScale(0.12, 0.12);  
-  player.setCollideWorldBounds(true);
-}
-
-//delete sprite for player
-function removePlayer(self, playerId) {
-  self.players.getChildren().forEach((player) => {
-    if (playerId === player.playerId) {
-      player.destroy();
-    }
-  });
-}
-
 function hitDodgeball(player, ball) {
 
   // Checks if player is in loading screen
