@@ -141,9 +141,19 @@ class Soccer extends Phaser.Scene {
       repeat: -1
     });
     
-    this.socket.on('gameOver', () => {
-      gameOverText.setText("Someone Won");
-      this.scene.stop("Dodgeball")
+    const gameOverText = this.add.text(250, 150, "", {
+      fill: "#000000",
+      fontFamily: 'Arial',
+      fontSize: "50px"
+    });
+  
+    this.socket.on('gameOver', function(team) {
+      gameOverText.setText(team + " Won")
+      self.socket.emit('')
+    });
+  
+    this.socket.on('stopSoccerScene', () => {
+      self.scene.stop("Soccer");
     });
   }
 

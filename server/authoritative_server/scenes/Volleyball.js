@@ -54,7 +54,6 @@ class Volleyball extends Phaser.Scene {
   }
 
     //add score counters
-    let countdownCompleted = false;
     this.blueScore = blueScore
     this.redScore = redScore
     this.gameOver = false;
