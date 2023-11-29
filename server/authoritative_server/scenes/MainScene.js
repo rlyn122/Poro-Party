@@ -57,6 +57,7 @@ class MainScene extends Phaser.Scene {
               username:data.username,
               cat:data.cat,
               invuln:true,
+              alive:"alive",
               };
   
               // add player to server

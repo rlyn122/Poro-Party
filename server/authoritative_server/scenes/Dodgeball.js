@@ -36,6 +36,7 @@ create() {
 
   console.log("Serverside Dodgeball Running")
 
+  let hitCounter = 0;
   this.gameOver = false;
 
   this.events.on("RulesDodgeballDone", function () {
@@ -45,9 +46,7 @@ create() {
 
 
   //add players to this scene
-
   for (const playerId in players){
-
     addPlayer(this , players[playerId])
   }
 
@@ -185,6 +184,12 @@ update() {
   io.emit('ballUpdates2', {ball2_x,ball2_y})
   io.emit('ballUpdates3', {ball3_x,ball3_y})
 
+
+  if(!(getWinnerName() === null)) {
+    io.emit('gameOver');
+    console.log(getWinnerName())
+  }
+
 }
 
 
@@ -200,7 +205,6 @@ function handlePlayerInput(self, playerId, input) {
 //create sprite for player
 function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, playerInfo.cat);
-
   // Set initial animation state
   player.playerId = playerInfo.playerId;
   self.players.add(player);
@@ -241,5 +245,25 @@ function hitDodgeball(player, ball) {
       ball.setVelocityX(300);
     }
   }
+  
+}
 
+function getWinnerName() {
+  let left = 0;
+  sockets = Object.keys(players);
+
+  if(!(players === null) && sockets.length > 1) {
+    for(let i = 0; i < sockets.length; i++) {
+      if(players[sockets[i]].alive == 'alive') {
+          left++;
+      };
+    }
+  }
+
+  if(left === 1 && hitCounter === sockets.length - 1) {
+    console.log("Winner Found");
+    winner = "     ";
+    return winner;
+  }
+  return null;
 }

@@ -36,15 +36,6 @@ class Dodgeball extends Phaser.Scene {
   console.log("Client-side Dodgeball Running")
   this.scene.launch("Rules_Dodgeball");
 
-  let countdownCompleted = false;
-  this.socket.emit('rulesTime', countdownCompleted);
-
-  this.events.on("RulesDodgeballDone", function () {
-    countdownCompleted = true;
-  });
-
-  this.socket.emit('rulesTime', countdownCompleted);
- 
   //creating movement animations
   this.anims.create({
     key: 'left',
@@ -159,6 +150,17 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
+
+  const gameOverText = this.add.text(250, 150, "", {
+    fill: "#000000",
+    fontFamily: 'Arial',
+    fontSize: "50px"
+});
+
+this.socket.on('gameOver', () => {
+  gameOverText.setText("Someone Won");
+});
+
 }
 
  update() {
