@@ -102,20 +102,6 @@ create() {
     hitDodgeball(player, ball3);
   });
 
-<<<<<<< Updated upstream
-=======
-  // 10 seconds before player can be killed
-  let countdown = 10;
-  const timerInterval = setInterval(() => {
-    countdown--;
-    if(countdown === 0) {
-      clearInterval(timerInterval);
-      players[this.socket.id].invuln = false;
-    }
-  }, 1000);
-
-
->>>>>>> Stashed changes
   this.physics.add.collider(this.platforms, this.ball)
   this.physics.add.collider(this.platforms, this.ball2)
   this.physics.add.collider(this.platforms, this.ball3)
@@ -124,7 +110,6 @@ create() {
   this.physics.add.collider(this.ball3, this.ball)
   this.physics.add.collider(this.ball3, this.ball2)
 
-<<<<<<< Updated upstream
   // 10 seconds before player can be killed
   let countdown = 10;
   const timerInterval = setInterval(() => {
@@ -137,8 +122,6 @@ create() {
     }
   }, 1000);
 
-=======
->>>>>>> Stashed changes
 }
 
 update() {
