@@ -4,6 +4,10 @@ class Soccer extends Phaser.Scene {
       super("Soccer");
   }
 
+  init(data){
+    this.socket = data.socket;
+  }
+
   preload() {
     //load sprites
     this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
@@ -27,9 +31,9 @@ class Soccer extends Phaser.Scene {
 
   create() {
     var self = this;
-    this.socket = io();
     this.players = this.add.group();
 
+    console.log("Client-side Soccer Running")
     this.scene.launch("Rules_Soccer");
 
     let countdownCompleted = false;
@@ -66,7 +70,7 @@ class Soccer extends Phaser.Scene {
     });
 
     //listen for currentPlayers and self
-    this.socket.on('currentPlayers', function (players) {
+    this.socket.on('currentPlayers_soccer', function (players) {
       Object.keys(players).forEach(function (id) {
 
         //if it is this client
@@ -80,10 +84,6 @@ class Soccer extends Phaser.Scene {
       });
     });
 
-    //listen for newPlayer connection
-    this.socket.on('newPlayer', function (playerInfo) {
-      displayPlayers(self, playerInfo, 'cat1');
-    });
 
     //listen for player disconnection
     this.socket.on('disconnect', function (playerId) {
@@ -95,7 +95,7 @@ class Soccer extends Phaser.Scene {
     });
 
     //update player movements and animations from server
-    this.socket.on('playerUpdates', function (players) {
+    this.socket.on('playerUpdates_soccer', function (players) {
       Object.keys(players).forEach(function (id) {
         self.players.getChildren().forEach(function (player) {
           if (players[id].playerId === player.playerId) {
@@ -103,13 +103,14 @@ class Soccer extends Phaser.Scene {
             if (player.anims.getName() !== players[id].animationKey) {
               player.anims.play(players[id].animationKey, true);
             }
+            setUsername_Pos(player,players[id].x, players[id].y);
           }
         });
       });
     });
 
     //update ball positions
-    this.socket.on('ballUpdates', function(ball_Pos) {
+    this.socket.on('soccer_ballUpdates', function(ball_Pos) {
       const {ball_x, ball_y} = ball_Pos;
       ball.setPosition(ball_x,ball_y)
     })
@@ -151,7 +152,11 @@ class Soccer extends Phaser.Scene {
       frameRate: 5,
       repeat: -1
     });
-
+    
+    this.socket.on('gameOver', () => {
+      gameOverText.setText("Someone Won");
+      this.scene.stop("Dodgeball")
+    });
   }
 
   update() {
@@ -182,7 +187,7 @@ class Soccer extends Phaser.Scene {
     }
     //if the state of a key has been changed, emit the state of keys to server
     if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
-      this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
+      this.socket.emit('soccerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
     }
   }
 }

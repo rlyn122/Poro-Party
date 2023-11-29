@@ -61,7 +61,13 @@ class MainScene extends Phaser.Scene {
               fontStyle: "bold",
             });
             
-            self.startJumpGameButton = self.add.text(500,40,"Start Jump Game",{
+            self.startVolleyGameButton = self.add.text(500,60,"Start Volleyball Game",{
+              fill: "#FFFFFF",
+              fontSize: "20px",
+              fontStyle: "bold",
+            });
+
+            self.startSoccerGameButton = self.add.text(500,100,"Start Soccer Game",{
               fill: "#FFFFFF",
               fontSize: "20px",
               fontStyle: "bold",
@@ -73,23 +79,33 @@ class MainScene extends Phaser.Scene {
               self.socket.emit("stopMainSceneRequest","DodgeballGame");
             });
 
-            //asking server to launch jump scene
-            self.startJumpGameButton.setInteractive();
-            self.startJumpGameButton.on("pointerdown", () => {
-              self.socket.emit("stopMainSceneRequest","JumpGame");
+            //asking server to launch volleyball scene
+            self.startVolleyGameButton.setInteractive();
+            self.startVolleyGameButton.on("pointerdown", () => {
+              self.socket.emit("stopMainSceneRequest","VolleyballGame");
+            });
+
+            //asking server to launch volleyball scene
+            self.startSoccerGameButton.setInteractive();
+            self.startSoccerGameButton.on("pointerdown", () => {
+              self.socket.emit("stopMainSceneRequest","SoccerGame");
             });
           });
         });
         
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
-          console.log(self.socket.id)
           this.scene.launch("Dodgeball",{socket:self.socket})
         })
 
-        //launch jump game from here
-        this.socket.on("JumpGame", ()=>{
-          
+        //launch volleyball game from here
+        this.socket.on("VolleyballGame", ()=>{
+          this.scene.launch("Volleyball",{socket:self.socket})
+        })
+
+        //launch soccer game from here
+        this.socket.on("SoccerGame", ()=>{
+          this.scene.launch("Soccer",{socket:self.socket})
         })
   
         //listen for newPlayer connection

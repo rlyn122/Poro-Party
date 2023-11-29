@@ -39,12 +39,6 @@ create() {
   // let hitCounter = 0;
   this.gameOver = false;
 
-  this.events.on("RulesDodgeballDone", function () {
-    self.scene.resume("Dodgeball");
-    countdownCompleted = true; // Set to true when  countdown is done
-});
-
-
   //add players to this scene
   for(const playerId in players) {
     addPlayer(this, players[playerId])
@@ -52,12 +46,9 @@ create() {
 
   this.io.emit("currentPlayers_dodge", players)
 
-  console.log(this.socket.id)
-
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     console.log(id);
     socket.on('dodgeInput', function (inputData) {
-      // console.log(inputData)
       handlePlayerInput(self, id, inputData);
     })
   }

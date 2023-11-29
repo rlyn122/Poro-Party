@@ -31,7 +31,6 @@ class Dodgeball extends Phaser.Scene {
  create() {
   var self = this;
   this.players = this.add.group();
-  console.log(this.socket.id)
 
   console.log("Client-side Dodgeball Running")
   this.scene.launch("Rules_Dodgeball");
@@ -94,11 +93,6 @@ class Dodgeball extends Phaser.Scene {
     });
   });
 
-  //listen for newPlayer connection
-  this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, playerInfo.cat);
-  });
-
   //listen for player disconnection
   this.socket.on('disconnect', function (playerId) {
     self.players.getChildren().forEach(function (player) {
@@ -159,6 +153,7 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
 
 this.socket.on('gameOver', function(username) {
   gameOverText.setText(username + " Won")
+  this.scene.stop("Dodgeball")
 });
 
 }
