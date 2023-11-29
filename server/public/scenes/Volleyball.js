@@ -3,6 +3,10 @@ class Volleyball extends Phaser.Scene {
   constructor(){
       super("Volleyball");
   }
+
+  init(data){
+    this.socket = data.socket;
+  }
   
    preload() {
     //load sprites
@@ -24,20 +28,11 @@ class Volleyball extends Phaser.Scene {
   
    create() {
     var self = this;
-    this.socket = io();
     this.players = this.add.group();
 
+    console.log("Client-side Volleyball Running")
     this.scene.launch("Rules_Volleyball");
 
-    let countdownCompleted = false;
-    this.socket.emit('rulesTime', countdownCompleted);
-
-    this.events.on("RulesVolleyballDone", function () {
-      countdownCompleted = true;
-    });
-
-    this.socket.emit('rulesTime', countdownCompleted);
-  
     //creating movement animations
     this.anims.create({
       key: 'left',
@@ -84,7 +79,7 @@ class Volleyball extends Phaser.Scene {
     });
   
     //listen for currentPlayers and self
-    this.socket.on('currentPlayers', function (players) {
+    this.socket.on('currentPlayers_volley', function (players) {
       Object.keys(players).forEach(function (id) {
   
         //if it is this client
@@ -98,11 +93,6 @@ class Volleyball extends Phaser.Scene {
       });
     });
   
-    //listen for newPlayer connection
-    this.socket.on('newPlayer', function (playerInfo) {
-      displayPlayers(self, playerInfo, 'cat1');
-    });
-  
     //listen for player disconnection
     this.socket.on('disconnect', function (playerId) {
       self.players.getChildren().forEach(function (player) {
@@ -113,7 +103,7 @@ class Volleyball extends Phaser.Scene {
     });
   
     //update player movements and animations from server
-    this.socket.on('playerUpdates', function (players) {
+    this.socket.on('playerUpdates_volley', function (players) {
       Object.keys(players).forEach(function (id) {
         self.players.getChildren().forEach(function (player) {
           if (players[id].playerId === player.playerId) {
@@ -121,6 +111,8 @@ class Volleyball extends Phaser.Scene {
             if (player.anims.getName() !== players[id].animationKey) {
               player.anims.play(players[id].animationKey, true);
             }
+            setUsername_Pos(player,players[id].x, players[id].y);
+
           }
         });
       });
@@ -187,7 +179,7 @@ class Volleyball extends Phaser.Scene {
     }
     //if the state of a key has been changed, emit the state of keys to server
     if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
-      this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
+      this.socket.emit('volleyInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
     }
   }
   

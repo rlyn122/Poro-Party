@@ -109,6 +109,7 @@ create() {
   this.physics.add.collider(this.ball2, this.ball)
   this.physics.add.collider(this.ball3, this.ball)
   this.physics.add.collider(this.ball3, this.ball2)
+  this.physics.add.collider(this.players, this.players)
 
   // 10 seconds before player can be killed
   let countdown = 10;
@@ -178,15 +179,15 @@ update() {
   if(!(getWinnerName() === null)) {
     io.emit('gameOver', getWinnerName());
 
-    let countdown = 5;
-    const timerInterval = setInterval(() => {
+    let countdown = 10;
+    const timerInterval= setInterval(() => {
       countdown--;
       if(countdown === 0) {
         clearInterval(timerInterval);
         io.emit('stopDodgeballScene');
         this.scene.stop("Dodgeball");
       }
-    }, 300);
+    }, 1000);
   }
 
 }
@@ -257,11 +258,13 @@ function getWinnerName() {
       if(players[sockets[i]].alive == 'alive') {
           left++;
           winner = players[sockets[i]].username;
+          id = players[sockets[i]].playerId;
       };
     }
   }
 
   if(left === 1) {
+    players[id].invuln = true;
     return winner;
   }
   return null;

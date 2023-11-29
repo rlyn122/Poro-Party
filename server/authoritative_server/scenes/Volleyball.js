@@ -6,6 +6,11 @@ class Volleyball extends Phaser.Scene {
     constructor(){
         super("Volleyball");
     }
+
+    init(data){
+      this.socket = data.socket;
+      this.io = data.io;
+    }
   
   preload() {
     this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
@@ -28,39 +33,31 @@ class Volleyball extends Phaser.Scene {
     this.players = this.add.group();
     this.balls = this.add.group();
 
+    console.log("Serverside Volleyball Running")
+
+  //add players to this scene
+  for(const playerId in players) {
+    var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
+    var yPos = self.game.config.height - 100
+    players[playerId].y = yPos
+    players[playerId].x = randomX
+    addPlayer(this, players[playerId])
+  }
+
+  this.io.emit("currentPlayers_volley", players)
+
+  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    console.log(id);
+    socket.on('volleyInput', function (inputData) {
+      handlePlayerInput(self, id, inputData);
+    })
+  }
+
     //add score counters
     let countdownCompleted = false;
     this.blueScore = blueScore
     this.redScore = redScore
     this.gameOver = false;
-  
-    //creating movement animations
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('cat1', { start: 0, end: 1 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    
-    this.anims.create({
-      key: 'look_right',
-      frames: [{ key: 'cat1', frame: 2 }],
-      frameRate: 20
-    });
-    
-    this.anims.create({
-      key: 'look_left',
-      frames: [{ key: 'cat1', frame: 1 }],
-      frameRate: 20
-    });
-    
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('cat1', { start: 2, end: 3 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    
   
     //adding platforms to the game
     this.platforms = this.physics.add.staticGroup();
@@ -103,51 +100,6 @@ class Volleyball extends Phaser.Scene {
       io.emit('scoreUpdate', { blueScore, redScore });
     });
   
-    //socket connection established
-    io.on('connection', function (socket) {
-      console.log('a user connected');
-      
-      // create a new player and add it to our players object
-      players[socket.id] = {
-        x: Math.floor(Math.random() * 700) + 50,
-        y: 500,
-        playerId: socket.id,
-        input: {
-          left: false,
-          right: false,
-          up: false
-        }
-      };
-      
-      // add player to server
-      addPlayer(self, players[socket.id]);
-  
-      // send the players object to the new player
-      socket.emit('currentPlayers', players);
-  
-      // update all other players of the new player
-      socket.broadcast.emit('newPlayer', players[socket.id]);
-      
-  
-      socket.on('disconnect', function () {
-        console.log('user disconnected');
-        // remove player from server
-        removePlayer(self, socket.id);
-        // remove this player from our players object
-        delete players[socket.id];
-        // emit a message to all players to remove this player
-        io.emit('disconnect', socket.id);
-      });
-  
-      // when a player moves, update the player data
-      socket.on('playerInput', function (inputData) {
-        handlePlayerInput(self, socket.id, inputData);
-      });
-      
-      // Emit initial scores
-      socket.emit('scoreUpdate', { blueScore, redScore });
-    });
-  
     //add more general colliders
     this.physics.add.collider(this.players, this.platforms);
     this.physics.add.collider(this.players, this.players);
@@ -188,7 +140,7 @@ class Volleyball extends Phaser.Scene {
   
     });
     //emit player positions
-    io.emit('playerUpdates', players);
+    io.emit('playerUpdates_volley', players);
   
     var ball_x = this.ball.x;
     var ball_y = this.ball.y;

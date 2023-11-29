@@ -79,7 +79,6 @@ class Dodgeball extends Phaser.Scene {
 
   //listen for currentPlayers and self
   this.socket.on('currentPlayers_dodge', function (players) {
-    console.log("Players received")
     Object.keys(players).forEach(function (id) {
 
       //if it is this client
