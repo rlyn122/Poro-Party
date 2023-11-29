@@ -156,6 +156,10 @@ this.socket.on('gameOver', function(username) {
   this.scene.stop("Dodgeball")
 });
 
+this.socket.on('stopDodgeballScene', () => {
+  self.scene.stop("Dodgeball");
+});
+
 }
 
  update() {

@@ -173,6 +173,16 @@ update() {
 
   if(!(getWinnerName() === null)) {
     io.emit('gameOver', getWinnerName());
+
+    let countdown = 3;
+    const timerInterval = setInterval(() => {
+      countdown--;
+      if(countdown === 0) {
+        clearInterval(timerInterval);
+        io.emit('stopDodgeballScene');
+        this.scene.stop("Dodgeball");
+      }
+    }, 300);
   }
 
 }
@@ -224,7 +234,6 @@ function hitDodgeball(player, ball) {
     player.y = 2000;
     player.setVisible(false);
     players[player.playerId].alive = "dead";
-    // hitCounter++;
 
     if (ball.x < player.x) {
       ball.setVelocityX(-300);
@@ -239,7 +248,7 @@ function getWinnerName() {
   let left = 0;
   sockets = Object.keys(players);
 
-  if(!(players === null) && sockets.length > 1) {
+  if(!(players === null)) {
     for(let i = 0; i < sockets.length; i++) {
       if(players[sockets[i]].alive == 'alive') {
           left++;
