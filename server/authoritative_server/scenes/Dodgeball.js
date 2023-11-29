@@ -45,6 +45,7 @@ create() {
     var yPos = self.game.config.height - 100
     players[playerId].y = yPos
     players[playerId].x = randomX
+    players[playerId].alive = 'alive';
     addPlayer(this, players[playerId])
   }
 
@@ -53,7 +54,10 @@ create() {
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     console.log(id);
     socket.on('dodgeInput', function (inputData) {
-      handlePlayerInput(self, id, inputData);
+      try {
+        handlePlayerInput(self, id, inputData);
+      }
+      catch {}
     })
   }
 
@@ -184,6 +188,11 @@ update() {
       countdown--;
       if(countdown === 0) {
         clearInterval(timerInterval);
+        sockets = Object.keys(players);
+        for(let i = 0; i < sockets.length; i++) {
+          players[sockets[i]].alive = 'alive';
+          players[sockets[i]].invuln = true;
+        }
         io.emit('stopDodgeballScene');
         gameActive = false;
         this.scene.stop("Dodgeball");
@@ -205,28 +214,31 @@ function handlePlayerInput(self, playerId, input) {
 
 function hitDodgeball(player, ball) {
 
-  // Checks if player is in loading screen
-  // If they are then ball will bounce off
-  // Otherwise death
-  if(players[player.playerId].invuln) {
-    if (ball.x < player.x) {
-      ball.setVelocityX(-300);
-    } else {
-      ball.setVelocityX(300);
+  try {
+    // Checks if player is in loading screen
+    // If they are then ball will bounce off
+    // Otherwise death
+    if(players[player.playerId].invuln) {
+      if (ball.x < player.x) {
+        ball.setVelocityX(-300);
+      } else {
+        ball.setVelocityX(300);
+      }
     }
-  }
-  else {
-    player.x = 2000;
-    player.y = 2000;
-    player.setVisible(false);
-    players[player.playerId].alive = "dead";
+    else {
+      player.x = 2000;
+      player.y = 2000;
+      // player.setVisible(false);
+      players[player.playerId].alive = "dead";
 
-    if (ball.x < player.x) {
-      ball.setVelocityX(-300);
-    } else {
-      ball.setVelocityX(300);
+      if (ball.x < player.x) {
+        ball.setVelocityX(-300);
+      } else {
+        ball.setVelocityX(300);
+      }
     }
   }
+  catch(TypeError) {}
   
 }
 
