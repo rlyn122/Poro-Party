@@ -61,9 +61,6 @@ class Rules_Dodgeball extends Phaser.Scene {
               // Emit an event to notify that the scene is done
               scene.events.emit("RulesDodgeballDone");
 
-            //   socket.emit('rulesOver');
-              console.log('ALL DONE');
-
               scene.scene.resume("Volleyball");
           }
       }, 1000);

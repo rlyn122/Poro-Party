@@ -1,4 +1,3 @@
-
 class Volleyball extends Phaser.Scene {
 
   constructor(){
@@ -33,14 +32,11 @@ class Volleyball extends Phaser.Scene {
   this.scene.launch("Rules_Dodgeball");
 
   let countdownCompleted = false;
-  this.socket.emit('rulesTime', countdownCompleted);
 
   this.events.on("RulesDodgeballDone", function () {
     // self.scene.resume("Volleyball"); // Resume the Volleyball scene
     countdownCompleted = true;
   });
-
-  this.socket.emit('rulesTime', countdownCompleted);
 
   //creating movement animations
   this.anims.create({
@@ -129,24 +125,49 @@ class Volleyball extends Phaser.Scene {
 
   //update ball positions
   this.socket.on('ballUpdates', function(ball_Pos) {
-    // if (countdownCompleted) {
-        const {ball_x, ball_y} = ball_Pos;
-        ball.setPosition(ball_x, ball_y);
-    // }
+      const {ball_x, ball_y} = ball_Pos;
+      ball.setPosition(ball_x, ball_y);
 });
 
 this.socket.on('ballUpdates2', function(ball2_Pos) {
-    // if (countdownCompleted) {
-        const {ball2_x, ball2_y} = ball2_Pos;
-        ball2.setPosition(ball2_x, ball2_y);
-    // }
+      const {ball2_x, ball2_y} = ball2_Pos;
+      ball2.setPosition(ball2_x, ball2_y);
 });
 
 this.socket.on('ballUpdates3', function(ball3_Pos) {
-    // if (countdownCompleted) {
-        const {ball3_x, ball3_y} = ball3_Pos;
-        ball3.setPosition(ball3_x, ball3_y);
-    // }
+      const {ball3_x, ball3_y} = ball3_Pos;
+      ball3.setPosition(ball3_x, ball3_y);
+});
+
+this.socket.on('alive', function(playerId) {
+  console.log("setting alive");
+  if(playerId === self.socket.id) {
+    document.cookie = "state=alive; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/;";
+  }
+});
+
+this.socket.on('dead', function(playerId) {
+  if(playerId === self.socket.id) {
+    document.cookie = "state=dead; expires=Thu, 31 Dec 2099 23:59:59 GMT; path=/;";
+  }
+});
+
+this.socket.on('clear', function() {
+  console.log("clearing cookies");
+  document.cookie.split(";").forEach(function(c) { 
+    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + "path=/;"); 
+  });
+});
+
+this.socket.on('getState', function(playerId) {
+  if(self.socket.id === playerId) {
+    var state = getCookie("state");
+    console.log(typeof(state));
+  
+    if(state === null) { console.log("null state"); state = "alive"; }
+  }
+  console.log(state);
+  sendState(self, state);
 });
 
   //create cursors
@@ -154,6 +175,20 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
+
+  const gameOverText = this.add.text(250, 150, "", {
+      fill: "#000000",
+      fontFamily: 'Arial',
+      fontSize: "50px"
+  });
+  
+  this.socket.on('gameOver', () => {
+    gameOverText.setText("Someone Won");
+  });
+
+  this.socket.on('gameNotOver', () => {
+    gameOverText.setText("");
+  });
 }
 
  update() {
@@ -186,6 +221,7 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
     this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
   }
+
 }
 
 }
@@ -196,3 +232,25 @@ function displayPlayers(self, playerInfo, sprite) {
   player.playerId = playerInfo.playerId;
   self.players.add(player);
 }
+
+// Called to get value of given cookie
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return null;
+}
+
+// Sends the state back to the server
+function sendState(self, state) {
+  self.socket.emit('currentState', state);
+} 

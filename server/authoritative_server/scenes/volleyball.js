@@ -1,3 +1,4 @@
+let hitCounter = 0;
 class Volleyball extends Phaser.Scene {
 
   constructor(){
@@ -29,9 +30,10 @@ create() {
   //add background
 
   this.gameOver = false;
+  hitCounter = 0;
 
   this.events.on("RulesDodgeballDone", function () {
-    self.scene.resume("Volleyball");
+    this.scene.resume("Volleyball");
     countdownCompleted = true; // Set to true when countdown is done
 });
 
@@ -111,7 +113,7 @@ create() {
   //socket connection established
   io.on('connection', function (socket) {
     console.log('a user connected');
-    
+
     // create a new player and add it to our players object
     players[socket.id] = {
       x: Math.floor(Math.random() * 700) + 50,
@@ -122,11 +124,28 @@ create() {
         right: false,
         up: false
       },
-      invuln: true
+      invuln: true,
+      alive: "alive"
     };
-    
+
+    io.emit('getState', socket.id);
+    socket.on('currentState', function(state) {
+      players[socket.id].alive = state;
+    });
+
+    if(players[socket.id].alive == "dead") {
+      players[socket.id].x = 2000;
+      players[socket.id].y = 2000;
+    }
+    else {
+      io.emit('alive', socket.id);
+    }
+
+    hitCounter = 0;
+
     // add player to server
     addPlayer(self, players[socket.id]);
+    console.log(socket.id);
 
     // send the players object to the new player
     socket.emit('currentPlayers', players);
@@ -140,7 +159,12 @@ create() {
       countdown--;
       if(countdown === 0) {
         clearInterval(timerInterval);
-        players[socket.id].invuln = false;
+        try {
+          players[socket.id].invuln = false;
+        }
+        catch(TypeError) {
+          console.log("Wait for Invuln");
+        }
       }
     }, 1000);
 
@@ -220,7 +244,14 @@ update() {
   io.emit('ballUpdates2', {ball2_x,ball2_y})
   io.emit('ballUpdates3', {ball3_x,ball3_y})
 
+  if(!(getWinner(self) === null) && this.players.getChildren().length > 1) {
+    io.emit('gameOver');
+  }
+  else {
+    io.emit('gameNotOver');
+  }
 }
+
 }
 
 //pass data into player function
@@ -241,7 +272,6 @@ function addPlayer(self, playerInfo) {
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   player.setBounce(0.2);
-  player.setScale(0.12, 0.12);  
   player.setCollideWorldBounds(true);
 
 }
@@ -271,6 +301,9 @@ function hitVolleyball(player, ball) {
     player.x = 2000;
     player.y = 2000;
     player.setVisible(false);
+    setState('dead', players[player.playerId].playerId);
+    players[player.playerId].alive = "dead";
+    hitCounter++;
 
     if (ball.x < player.x) {
       ball.setVelocityX(-300);
@@ -278,5 +311,35 @@ function hitVolleyball(player, ball) {
       ball.setVelocityX(300);
     }
   }
+}
 
+// Tells client to make/change cookie on client side
+function setState(state, playerId) {
+  io.emit(state, playerId);
+}
+
+// Tells all clients to delete their cookies
+function clearStates() {
+  io.emit('clear');
+}
+
+function getWinner() {
+  let left = 0;
+  
+  sockets = Object.keys(players);
+
+  if(!(players === null) && sockets.length > 1) {
+    for(let i = 0; i < sockets.length; i++) {
+      if(players[sockets[i]].alive == 'alive') {
+          left++;
+      };
+    }
+  }
+
+  if(left === 1 && hitCounter === sockets.length - 1) {
+    console.log("Winner Found");
+    winner = "     ";
+    return winner;
+  }
+  return null;
 }
