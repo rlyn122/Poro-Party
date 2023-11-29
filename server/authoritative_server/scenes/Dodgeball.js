@@ -41,6 +41,10 @@ create() {
 
   //add players to this scene
   for(const playerId in players) {
+    var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
+    var yPos = self.game.config.height - 100
+    players[playerId].y = yPos
+    players[playerId].x = randomX
     addPlayer(this, players[playerId])
   }
 
