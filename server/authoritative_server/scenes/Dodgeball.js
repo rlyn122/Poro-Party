@@ -36,7 +36,7 @@ create() {
 
   console.log("Serverside Dodgeball Running")
 
-  let hitCounter = 0;
+  // let hitCounter = 0;
   this.gameOver = false;
 
   this.events.on("RulesDodgeballDone", function () {
@@ -46,8 +46,8 @@ create() {
 
 
   //add players to this scene
-  for (const playerId in players){
-    addPlayer(this , players[playerId])
+  for(const playerId in players) {
+    addPlayer(this, players[playerId])
   }
 
   this.io.emit("currentPlayers_dodge", players)
@@ -57,20 +57,10 @@ create() {
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     console.log(id);
     socket.on('dodgeInput', function (inputData) {
-      console.log(inputData)
+      // console.log(inputData)
       handlePlayerInput(self, id, inputData);
-      })
-
-      // let countdown = 10;
-      // const timerInterval = setInterval(() => {
-      //   countdown--;
-      //   if(countdown === 0) {
-      //     clearInterval(timerInterval);
-      //     players[id].invuln = false;
-      //   }
-      // }, 1000);
-}
-
+    })
+  }
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
@@ -117,16 +107,6 @@ create() {
     hitDodgeball(player, ball3);
   });
 
-  // 10 seconds before player can be killed
-  let countdown = 10;
-  const timerInterval = setInterval(() => {
-    countdown--;
-    if(countdown === 0) {
-      clearInterval(timerInterval);
-      players[this.socket.id].invuln = false;
-    }
-  }, 1000);
-
   this.physics.add.collider(this.platforms, this.ball)
   this.physics.add.collider(this.platforms, this.ball2)
   this.physics.add.collider(this.platforms, this.ball3)
@@ -135,8 +115,17 @@ create() {
   this.physics.add.collider(this.ball3, this.ball)
   this.physics.add.collider(this.ball3, this.ball2)
 
-
-
+  // 10 seconds before player can be killed
+  let countdown = 10;
+  const timerInterval = setInterval(() => {
+    countdown--;
+    if(countdown === 0) {
+      clearInterval(timerInterval);
+      for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+        players[id].invuln = false;
+      } 
+    }
+  }, 1000);
 
 }
 
@@ -144,29 +133,35 @@ update() {
   const speed = 250
   //constantly emit each player's position/animation
   this.players.getChildren().forEach((player) => {
-    const input = players[player.playerId].input;
-    let animationKey = 'look_left';
+    
+    try {
+      const input = players[player.playerId].input;
+      let animationKey = 'look_left';
 
-    if (input.left) {
-      player.setVelocityX(-speed);
-      animationKey = 'left'
-    } else if (input.right) {
-      player.setVelocityX(speed);
-      animationKey = 'right'
-    } else {
-      player.setVelocityX(0);
-      if (animationKey == 'right') {
-        animationKey = 'look_right'
+      if (input.left) {
+        player.setVelocityX(-speed);
+        animationKey = 'left'
+      } else if (input.right) {
+        player.setVelocityX(speed);
+        animationKey = 'right'
+      } else {
+        player.setVelocityX(0);
+        if (animationKey == 'right') {
+          animationKey = 'look_right'
+        }
       }
-    }
-    if (input.up && player.body.touching.down) {
-      player.setVelocityY(-400);
-    }
+      if (input.up && player.body.touching.down) {
+        player.setVelocityY(-400);
+      }
 
-    players[player.playerId].x = player.x;
-    players[player.playerId].y = player.y;
+      players[player.playerId].x = player.x;
+      players[player.playerId].y = player.y;
 
-    handlePlayerInput(this, player.playerId, input, animationKey); // Pass animation key
+      handlePlayerInput(this, player.playerId, input, animationKey); // Pass animation key
+    }
+    catch(TypeError) {
+      console.log("dodgeball not started");
+    }
 
   });
   //emit player positions
@@ -186,8 +181,7 @@ update() {
 
 
   if(!(getWinnerName() === null)) {
-    io.emit('gameOver');
-    console.log(getWinnerName())
+    io.emit('gameOver', getWinnerName());
   }
 
 }
@@ -238,6 +232,8 @@ function hitDodgeball(player, ball) {
     player.x = 2000;
     player.y = 2000;
     player.setVisible(false);
+    players[player.playerId].alive = "dead";
+    // hitCounter++;
 
     if (ball.x < player.x) {
       ball.setVelocityX(-300);
@@ -256,13 +252,12 @@ function getWinnerName() {
     for(let i = 0; i < sockets.length; i++) {
       if(players[sockets[i]].alive == 'alive') {
           left++;
+          winner = players[sockets[i]].username;
       };
     }
   }
 
-  if(left === 1 && hitCounter === sockets.length - 1) {
-    console.log("Winner Found");
-    winner = "     ";
+  if(left === 1) {
     return winner;
   }
   return null;

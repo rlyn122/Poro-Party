@@ -157,8 +157,8 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
     fontSize: "50px"
 });
 
-this.socket.on('gameOver', () => {
-  gameOverText.setText("Someone Won");
+this.socket.on('gameOver', function(username) {
+  gameOverText.setText(username + " Won")
 });
 
 }
