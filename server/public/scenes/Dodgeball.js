@@ -81,15 +81,7 @@ class Dodgeball extends Phaser.Scene {
   this.socket.on('currentPlayers_dodge', function (players) {
     console.log("Players received")
     Object.keys(players).forEach(function (id) {
-
-      //if it is this client
-      if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], players[id].cat);
-      }
-      //if it is another client
-      else{
         displayPlayers(self,players[id],players[id].cat)
-      }
     });
   });
 
