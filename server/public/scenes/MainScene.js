@@ -108,9 +108,11 @@ class MainScene extends Phaser.Scene {
         //disable game buttons while gameactive 
         self.socket.on('gameStatus',(gameActive)=>{
           if(gameActive){
+            console.log("disable buttons")
             disableButtons(self)
           }
           else{
+            console.log("enable buttons")
             enableButtons(self)
           }
         })
@@ -208,11 +210,13 @@ class MainScene extends Phaser.Scene {
 
 //display players
 function displayPlayers(self, playerInfo, sprite) {
+  if(playerInfo&&sprite){
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
   addUsername(player,self,playerInfo)
   player.playerId = playerInfo.playerId;
   self.players.add(player);
   console.log(self.players)
+  }
 }
 
 //function to add player username onto screen
@@ -228,16 +232,17 @@ function setUsername_Pos(player, posX, posY){
 
 function disableButtons(self) {
   // Disable the buttons
-  self.gameInProgressSign.setVisible(true);
-  self.startDodgeballGameButton.setInteractive(false);
-  self.startVolleyGameButton.setInteractive(false);
-  self.startSoccerGameButton.setInteractive(false);
+  //self.gameInProgressSign.setVisible(true);
+  self.startDodgeballGameButton.setTint(0x999999); // Change color for visual confirmation
+  self.startDodgeballGameButton.removeInteractive();
+  self.startVolleyGameButton.removeInteractive();
+  self.startSoccerGameButton.removeInteractive();
 }
 
 function enableButtons(self) {
   // Enable the buttons
   self.gameInProgressSign.setVisible(false);
-  self.startDodgeballGameButton.setInteractive(true);
-  self.startVolleyGameButton.setInteractive(true);
-  self.startSoccerGameButton.setInteractive(true);
+  self.startDodgeballGameButton.setInteractive();
+  self.startVolleyGameButton.setInteractive();
+  self.startSoccerGameButton.setInteractive();
 }

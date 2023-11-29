@@ -96,6 +96,15 @@ class Volleyball extends Phaser.Scene {
       let r = self.redScore
       io.emit('scoreUpdate', {blueScore:b, redScore:r });
     });
+
+    this.socket.on('disconnect', function () {
+      // remove player from server
+      removePlayer(self, self.socket.id);
+      // remove this player from our players object
+      delete players[self.socket.id];
+      // emit a message to all players to remove this player
+      io.emit('disconnect', self.socket.id);
+      });
   
     //add more general colliders
     this.physics.add.collider(this.players, this.platforms);
@@ -111,9 +120,12 @@ class Volleyball extends Phaser.Scene {
     const speed = 250
     //constantly emit each player's position/animation
     this.players.getChildren().forEach((player) => {
+
+      //if player exists
+      if(players[player.playerId]){
       const input = players[player.playerId].input;
       let animationKey = 'look_left';
-  
+      
       if (input.left) {
         player.setVelocityX(-speed);
         animationKey = 'left'
@@ -134,7 +146,7 @@ class Volleyball extends Phaser.Scene {
       players[player.playerId].y = player.y;
   
       handlePlayerInput(this, player.playerId, input, animationKey); // Pass animation key
-  
+    }
     });
     //emit player positions
     io.emit('playerUpdates_volley', players);
