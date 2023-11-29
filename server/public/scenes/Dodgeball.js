@@ -86,9 +86,7 @@ class Dodgeball extends Phaser.Scene {
   var ball2 = this.add.sprite(400, 200, 'mars');
   var ball3 = this.add.sprite(400, 200, 'saturn');
 
-  this.socket.on('asdf', ()=>{
-    console.log("asdf")
-  })
+
   //listen for currentPlayers and self
   this.socket.on('currentPlayers_dodge', function (players) {
     console.log("Players received")
@@ -128,6 +126,7 @@ class Dodgeball extends Phaser.Scene {
           if (player.anims.getName() !== players[id].animationKey) {
             player.anims.play(players[id].animationKey, true);
           }
+          setUsername_Pos(player,players[id].x, players[id].y);
         }
       });
     });

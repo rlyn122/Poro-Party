@@ -84,7 +84,7 @@ class MainScene extends Phaser.Scene {
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
           console.log(self.socket.id)
-          this.scene.start("Dodgeball",{socket:self.socket})
+          this.scene.launch("Dodgeball",{socket:self.socket})
         })
 
         //launch jump game from here
