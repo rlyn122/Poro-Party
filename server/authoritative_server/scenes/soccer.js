@@ -4,6 +4,11 @@ class Soccer extends Phaser.Scene {
       super("Soccer");
   }
 
+  init(data){
+    this.socket = data.socket;
+    this.io = data.io;
+  }
+
   preload() {
 
     this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
@@ -22,23 +27,43 @@ class Soccer extends Phaser.Scene {
   }
 
   create() {
+
+    console.log("Server-side Soccer Game Running")
+    
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
     
+    //add players to this scene
+    for (const playerId in players){
+      addPlayer(this , players[playerId])
+    }
+
+    //emit players to put
+    this.io.emit("currentPlayers_soccer", players)
+
+    //handle player inputs and change player object
+    for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+      console.log(id);
+      socket.on('soccerInput', function (inputData) {
+        handlePlayerInput(self, id, inputData);
+        })
+  }
+
+
     //add score counters
     let blueScore = 0;
     let redScore = 0;
     this.blueScore = blueScore
     this.redScore = redScore
-
+    
     this.gameOver = false;
 
     this.platforms = this.physics.add.staticGroup();
     this.net = this.physics.add.staticGroup();
     //ground
     this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    
+
     //sprite backbone
     //left sprite
     this.net.create(20, 460, 'net').setScale(0.02, 5).refreshBody();
@@ -124,51 +149,6 @@ class Soccer extends Phaser.Scene {
       repeat: -1
     });
 
-    //socket connection established
-    io.on('connection', function (socket) {
-      console.log('a user connected');
-      
-      // create a new player and add it to our players object
-      players[socket.id] = {
-        x: Math.floor(Math.random() * 700) + 50,
-        y: 500,
-        playerId: socket.id,
-        input: {
-          left: false,
-          right: false,
-          up: false
-        }
-      };
-      
-      // add player to server
-      addPlayer(self, players[socket.id]);
-
-      // send the players object to the new player
-      socket.emit('currentPlayers', players);
-
-      // update all other players of the new player
-      socket.broadcast.emit('newPlayer', players[socket.id]);
-
-
-      socket.on('disconnect', function () {
-        console.log('user disconnected');
-        // remove player from server
-        removePlayer(self, socket.id);
-        // remove this player from our players object
-        delete players[socket.id];
-        // emit a message to all players to remove this player
-        io.emit('disconnect', socket.id);
-      });
-
-      // when a player moves, update the player data
-      socket.on('playerInput', function (inputData) {
-        handlePlayerInput(self, socket.id, inputData);
-      });
-
-      // Emit initial scores
-      socket.emit('scoreUpdate', { blueScore, redScore });
-    });
-
     //add colliders
     this.physics.add.collider(this.players, this.platforms);
     this.physics.add.collider(this.players, this.players);
@@ -176,7 +156,6 @@ class Soccer extends Phaser.Scene {
     this.physics.add.collider(this.ball, this.players);
     this.physics.add.collider(this.net, this.ball);
     this.physics.add.collider(this.net, this.players);
-
   }
 
   update() {
@@ -210,45 +189,13 @@ class Soccer extends Phaser.Scene {
 
     });
     //emit player positions
-    io.emit('playerUpdates', players);
+    io.emit('playerUpdates_soccer', players);
 
     var ball_x = this.ball.x;
     var ball_y = this.ball.y;
 
     //emit ball positions
-    io.emit('ballUpdates', {ball_x,ball_y})
+    io.emit('soccer_ballUpdates', {ball_x,ball_y})
 
-  }
-
-  //pass data into player function
-  handlePlayerInput(self, playerId, input, animationKey) {
-    self.players.getChildren().forEach((player) => {
-      if (playerId === player.playerId) {
-        players[player.playerId].input = input;
-        players[player.playerId].animationKey = animationKey;
-      }
-    });
-  }
-
-  //create sprite for player
-  addPlayer(self, playerInfo) {
-    const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
-
-    // Set initial animation state
-    player.playerId = playerInfo.playerId;
-    self.players.add(player);
-    player.setBounce(0.2);
-    player.setScale(0.15, 0.15);  
-    player.setCollideWorldBounds(true);
-
-  }
-
-  //delete sprite for player
-  removePlayer(self, playerId) {
-    self.players.getChildren().forEach((player) => {
-      if (playerId === player.playerId) {
-        player.destroy();
-      }
-    });
   }
 }

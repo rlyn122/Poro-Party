@@ -39,12 +39,6 @@ create() {
   let hitCounter = 0;
   this.gameOver = false;
 
-  this.events.on("RulesDodgeballDone", function () {
-    self.scene.resume("Dodgeball");
-    countdownCompleted = true; // Set to true when  countdown is done
-});
-
-
   //add players to this scene
   for (const playerId in players){
     addPlayer(this , players[playerId])
@@ -52,12 +46,9 @@ create() {
 
   this.io.emit("currentPlayers_dodge", players)
 
-  console.log(this.socket.id)
-
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     console.log(id);
     socket.on('dodgeInput', function (inputData) {
-      console.log(inputData)
       handlePlayerInput(self, id, inputData);
       })
 
@@ -117,16 +108,6 @@ create() {
     hitDodgeball(player, ball3);
   });
 
-  // 10 seconds before player can be killed
-  let countdown = 10;
-  const timerInterval = setInterval(() => {
-    countdown--;
-    if(countdown === 0) {
-      clearInterval(timerInterval);
-      players[this.socket.id].invuln = false;
-    }
-  }, 1000);
-
   this.physics.add.collider(this.platforms, this.ball)
   this.physics.add.collider(this.platforms, this.ball2)
   this.physics.add.collider(this.platforms, this.ball3)
@@ -134,10 +115,6 @@ create() {
   this.physics.add.collider(this.ball2, this.ball)
   this.physics.add.collider(this.ball3, this.ball)
   this.physics.add.collider(this.ball3, this.ball2)
-
-
-
-
 }
 
 update() {
