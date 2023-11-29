@@ -159,6 +159,7 @@ class Volleyball extends Phaser.Scene {
         if(countdown === 0) {
           clearInterval(timerInterval);
           io.emit('stopVolleyballScene');
+          gameActive = false;
           this.scene.stop("Volleyball");
         }
       }, 300);

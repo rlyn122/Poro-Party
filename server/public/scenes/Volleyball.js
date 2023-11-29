@@ -111,9 +111,9 @@ class Volleyball extends Phaser.Scene {
           if (players[id].playerId === player.playerId) {
             player.setPosition(players[id].x, players[id].y);
             setUsername_Pos(player,players[id].x, players[id].y);
-            if (player.anims.getName() !== players[id].animationKey) {
-              player.anims.play(players[id].animationKey, true);
-            }
+            // if (player.anims.getName() !== players[id].animationKey) {
+            //   player.anims.play(players[id].animationKey, true);
+            // }
           }
         });
       });

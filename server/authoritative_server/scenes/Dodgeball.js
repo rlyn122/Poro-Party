@@ -185,6 +185,7 @@ update() {
       if(countdown === 0) {
         clearInterval(timerInterval);
         io.emit('stopDodgeballScene');
+        gameActive = false;
         this.scene.stop("Dodgeball");
       }
     }, 1000);
