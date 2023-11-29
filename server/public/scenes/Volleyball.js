@@ -63,6 +63,8 @@ class Volleyball extends Phaser.Scene {
     //add background
     this.add.image(400, 300, 'sky');
     this.add.image(400, 568, 'ground').setScale(2.3)
+    this.add.image(400, 600, 'ground').setScale(2.3).setTint(0)
+
     this.add.image(400, 350, 'net').setScale(0.5).setRotation(Phaser.Math.DegToRad(90));
   
     // create the ball
@@ -108,11 +110,10 @@ class Volleyball extends Phaser.Scene {
         self.players.getChildren().forEach(function (player) {
           if (players[id].playerId === player.playerId) {
             player.setPosition(players[id].x, players[id].y);
+            setUsername_Pos(player,players[id].x, players[id].y);
             if (player.anims.getName() !== players[id].animationKey) {
               player.anims.play(players[id].animationKey, true);
             }
-            setUsername_Pos(player,players[id].x, players[id].y);
-
           }
         });
       });

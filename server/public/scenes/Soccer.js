@@ -36,19 +36,12 @@ class Soccer extends Phaser.Scene {
     console.log("Client-side Soccer Running")
     this.scene.launch("Rules_Soccer");
 
-    let countdownCompleted = false;
-    this.socket.emit('rulesTime', countdownCompleted);
-
-    this.events.on("RulesSoccerDone", function () {
-      countdownCompleted = true;
-    });
-
-    this.socket.emit('rulesTime', countdownCompleted);
-
     //add background
 
     this.add.image(400, 300, 'sky');
     this.add.image(400, 568, 'ground').setScale(2);
+    this.add.image(400, 600, 'ground').setScale(2).setTint(0);
+
 
     let blueScore = 0;
     let redScore = 0;
@@ -100,9 +93,6 @@ class Soccer extends Phaser.Scene {
         self.players.getChildren().forEach(function (player) {
           if (players[id].playerId === player.playerId) {
             player.setPosition(players[id].x, players[id].y);
-            if (player.anims.getName() !== players[id].animationKey) {
-              player.anims.play(players[id].animationKey, true);
-            }
             setUsername_Pos(player,players[id].x, players[id].y);
           }
         });
