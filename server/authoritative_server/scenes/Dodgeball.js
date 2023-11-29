@@ -178,7 +178,7 @@ update() {
   if(!(getWinnerName() === null)) {
     io.emit('gameOver', getWinnerName());
 
-    let countdown = 3;
+    let countdown = 5;
     const timerInterval = setInterval(() => {
       countdown--;
       if(countdown === 0) {
@@ -253,7 +253,7 @@ function getWinnerName() {
   sockets = Object.keys(players);
 
   if(!(players === null)) {
-    for(let i = 0; i < sockets.length; i++) {
+    for (let i = 0; i < sockets.length; i++) {
       if(players[sockets[i]].alive == 'alive') {
           left++;
           winner = players[sockets[i]].username;

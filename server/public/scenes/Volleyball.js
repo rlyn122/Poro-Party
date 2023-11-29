@@ -142,6 +142,21 @@ class Volleyball extends Phaser.Scene {
     this.leftKeyPressed = false;
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
+
+    const gameOverText = this.add.text(250, 150, "", {
+      fill: "#000000",
+      fontFamily: 'Arial',
+      fontSize: "50px"
+    });
+  
+    this.socket.on('gameOver', function(team) {
+      gameOverText.setText(team + " Won")
+      self.socket.emit('')
+    });
+  
+    this.socket.on('stopVolleyballScene', () => {
+      self.scene.stop("Volleyball");
+    });
   }
   
    update() {

@@ -1,3 +1,6 @@
+let blueScore = 0;
+let redScore = 0;
+
 class Volleyball extends Phaser.Scene {
 
     constructor(){
@@ -27,8 +30,6 @@ class Volleyball extends Phaser.Scene {
 
     //add score counters
     let countdownCompleted = false;
-    let blueScore = 0;
-    let redScore = 0;
     this.blueScore = blueScore
     this.redScore = redScore
     this.gameOver = false;
@@ -86,18 +87,14 @@ class Volleyball extends Phaser.Scene {
       // Check for scoring when the ball touches the ground
       if (ball.x < 400) {
         // Blue side scores
-        if (countdownCompleted) {
-          blueScore++;
-        }
+        blueScore++;
         // Reset the ball position given to blue
         ball.setPosition(400, 170);
         ball.setVelocityX(200);
         ball.setVelocityY(-150);
       } else {
         // Red side scores
-        if (countdownCompleted) {
-          redScore++;
-        }
+        redScore++;
         // Reset the ball position given to red
         ball.setPosition(400, 170);
         ball.setVelocityX(-200);
@@ -198,6 +195,21 @@ class Volleyball extends Phaser.Scene {
   
     //emit ball positions
     io.emit('ballUpdates', {ball_x,ball_y})
+
+
+    if(getVolleyballWinner() != null) {
+      io.emit('gameOver', getVolleyballWinner());
+  
+      let countdown = 5;
+      const timerInterval = setInterval(() => {
+        countdown--;
+        if(countdown === 0) {
+          clearInterval(timerInterval);
+          io.emit('stopVolleyballScene');
+          this.scene.stop("Volleyball");
+        }
+      }, 300);
+    }
   }
   }
   
@@ -239,5 +251,17 @@ class Volleyball extends Phaser.Scene {
       ball.setVelocityX(-350);
     } else {
       ball.setVelocityX(350);
+    }
+  }
+
+  function getVolleyballWinner() {  
+    if (blueScore == 5) {
+      return "Blue"
+    }
+    else if (redScore == 5) {
+      return "Red";
+    }
+    else{
+      return null;
     }
   }
