@@ -20,12 +20,12 @@ class Dodgeball extends Phaser.Scene {
   this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
   //load background
-  this.load.image('sky', 'assets/dodgeball/spaceship.png');
-  this.load.image('net', 'assets/dodgeball/platform2.png');
+  this.load.image('dodgeball_sky', 'assets/dodgeball/spaceship.png');
+  this.load.image('dodgeball_net', 'assets/dodgeball/platform2.png');
   this.load.image('earth', 'assets/dodgeball/earth.png');
   this.load.image('mars', 'assets/dodgeball/mars.png');
   this.load.image('saturn', 'assets/dodgeball/saturn.png');
-  this.load.image('ground', 'assets/dodgeball/platform2.png');
+  this.load.image('dodgeball_ground', 'assets/dodgeball/platform2.png');
 }
 
  create() {
@@ -63,13 +63,13 @@ class Dodgeball extends Phaser.Scene {
   });
 
   //add background
-  this.add.image(400, 300, 'sky');
-  this.add.image(400, 568, 'ground').setScale(2)
-  this.add.image(400, 350, 'net').setScale(0.05, 7)
-  this.add.image(200, 220, 'ground').setScale(.5)
-  this.add.image(600, 220, 'ground').setScale(.5)
-  this.add.image(200, 400, 'ground').setScale(.5)
-  this.add.image(600, 400, 'ground').setScale(.5)
+  this.add.image(400, 300, 'dodgeball_sky');
+  this.add.image(400, 568, 'dodgeball_ground').setScale(2)
+  this.add.image(400, 350, 'dodgeball_net').setScale(0.05, 7)
+  this.add.image(200, 220, 'dodgeball_ground').setScale(.5)
+  this.add.image(600, 220, 'dodgeball_ground').setScale(.5)
+  this.add.image(200, 400, 'dodgeball_ground').setScale(.5)
+  this.add.image(600, 400, 'dodgeball_ground').setScale(.5)
 
   // create the first ball
   var ball = this.add.sprite(400, 200, 'earth');

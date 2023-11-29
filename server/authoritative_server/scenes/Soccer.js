@@ -22,10 +22,10 @@ class Soccer extends Phaser.Scene {
     this.load.spritesheet('cat7', 'assets/cats/Cat_7.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat8', 'assets/cats/Cat_8.png', { frameWidth: 250, frameHeight: 184 });   
     //load background
-    this.load.image('sky', 'assets/soccer/field.png');
-    this.load.image('net', 'assets/soccer/grass.png');
-    this.load.image('ball', 'assets/soccer/soccerball.png');
-    this.load.image('ground', 'assets/soccer/grass.png');
+    this.load.image('soccer_sky', 'assets/soccer/field.png');
+    this.load.image('soccer_net', 'assets/soccer/grass.png');
+    this.load.image('soccerball', 'assets/soccer/soccerball.png');
+    this.load.image('soccer_ground', 'assets/soccer/grass.png');
   }
 
   create() {
@@ -61,41 +61,41 @@ class Soccer extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup();
     this.net = this.physics.add.staticGroup();
     //ground
-    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    this.platforms.create(400, 600, 'ground').setScale(2).refreshBody().setTint(0);
+    this.platforms.create(400, 568, 'soccer_ground').setScale(2).refreshBody();
+    this.platforms.create(400, 600, 'soccer_ground').setScale(2).refreshBody().setTint(0);
 
     //sprite backbone
     //left sprite
-    this.net.create(20, 460, 'net').setScale(0.02, 5).refreshBody();
-    this.net.create(30, 380, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(40, 360, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(50, 350, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(60, 330, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(70, 315, 'net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(20, 460, 'soccer_net').setScale(0.02, 5).refreshBody();
+    this.net.create(30, 380, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(40, 360, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(50, 350, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(60, 330, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(70, 315, 'soccer_net').setScale(0.02, 0.5).refreshBody();
 
-    this.platforms.create(30, 360, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(40, 340, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(50, 330, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(60, 310, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(70, 295, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(80, 280, 'net').setScale(0.02, 1).refreshBody();
+    this.platforms.create(30, 360, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(40, 340, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(50, 330, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(60, 310, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(70, 295, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(80, 280, 'soccer_net').setScale(0.02, 1).refreshBody();
 
     //right sprite
-    this.net.create(780, 460, 'net').setScale(0.02, 5).refreshBody();
-    this.net.create(770, 380, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(760, 360, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(750, 350, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(740, 330, 'net').setScale(0.02, 0.5).refreshBody();
-    this.net.create(730, 315, 'net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(780, 460, 'soccer_net').setScale(0.02, 5).refreshBody();
+    this.net.create(770, 380, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(760, 360, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(750, 350, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(740, 330, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.net.create(730, 315, 'soccer_net').setScale(0.02, 0.5).refreshBody();
 
-    this.platforms.create(770, 360, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(760, 340, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(750, 330, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(740, 310, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(730, 295, 'net').setScale(0.02, 0.5).refreshBody();
-    this.platforms.create(720, 280, 'net').setScale(0.02, 1).refreshBody();
+    this.platforms.create(770, 360, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(760, 340, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(750, 330, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(740, 310, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(730, 295, 'soccer_net').setScale(0.02, 0.5).refreshBody();
+    this.platforms.create(720, 280, 'soccer_net').setScale(0.02, 1).refreshBody();
     
-    this.ball = this.physics.add.sprite(400, 200, 'ball');
+    this.ball = this.physics.add.sprite(400, 200, 'soccerball');
     this.ball.setBounce(1);
     this.ball.setCollideWorldBounds(true);
     this.ball.setVelocityY(300);

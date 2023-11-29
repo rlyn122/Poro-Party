@@ -21,9 +21,9 @@ class Soccer extends Phaser.Scene {
 
 
     //load background
-    this.load.image('sky', 'assets/soccer/field.png');
-    this.load.image('ball', 'assets/soccer/soccerball.png');
-    this.load.image('ground', 'assets/soccer/grass.png');
+    this.load.image('soccer_sky', 'assets/soccer/field.png');
+    this.load.image('soccerball', 'assets/soccer/soccerball.png');
+    this.load.image('soccer_ground', 'assets/soccer/grass.png');
     this.load.image('blue_goal', 'assets/soccer/blue_goal.png');
     this.load.image('red_goal', 'assets/soccer/red_goal.png');
 
@@ -38,9 +38,9 @@ class Soccer extends Phaser.Scene {
 
     //add background
 
-    this.add.image(400, 300, 'sky');
-    this.add.image(400, 568, 'ground').setScale(2);
-    this.add.image(400, 600, 'ground').setScale(2).setTint(0);
+    this.add.image(400, 300, 'soccer_sky');
+    this.add.image(400, 568, 'soccer_ground').setScale(2);
+    this.add.image(400, 600, 'soccer_ground').setScale(2).setTint(0);
 
 
     let blueScore = 0;
@@ -50,7 +50,7 @@ class Soccer extends Phaser.Scene {
     this.add.image(750, 415, 'blue_goal').setScale(-0.1, .1).setDepth(1);
 
     // create the first ball
-    var ball = this.add.sprite(400, 200, 'ball').setScale(2);
+    var ball = this.add.sprite(400, 200, 'soccerball').setScale(2);
 
     // Create text objects to display scores
     this.blueScoreText = this.add.text(640, 16, 'Blue: 0', {

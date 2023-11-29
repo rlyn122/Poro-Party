@@ -20,10 +20,10 @@ class Volleyball extends Phaser.Scene {
     this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
     //load background
-    this.load.image('sky', 'assets/volleyball/sky.png');
-    this.load.image('net', 'assets/volleyball/platform2.png');
+    this.load.image('volleyball_sky', 'assets/volleyball/sky.png');
+    this.load.image('volleyball_net', 'assets/volleyball/platform2.png');
     this.load.image('volleyball', 'assets/volleyball/volleyball.png');
-    this.load.image('ground', 'assets/volleyball/platform.png');
+    this.load.image('volleyball_ground', 'assets/volleyball/platform.png');
   }
   
   create() {
@@ -57,10 +57,10 @@ class Volleyball extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup();
     this.ground = this.physics.add.staticGroup(); 
 
-    this.ground.create(400, 568, 'ground').setScale(2.3).refreshBody();
-    this.ground.create(400, 600, 'ground').setScale(2.3).refreshBody();
+    this.ground.create(400, 568, 'volleyball_ground').setScale(2.3).refreshBody();
+    this.ground.create(400, 600, 'volleyball_ground').setScale(2.3).refreshBody();
 
-    this.platforms.create(400, 350, 'net').setScale(0.05, 6.4).refreshBody();
+    this.platforms.create(400, 350, 'volleyball_net').setScale(0.05, 6.4).refreshBody();
     
     //adding ball physics
     this.ball = this.physics.add.sprite(400, 200, 'volleyball');

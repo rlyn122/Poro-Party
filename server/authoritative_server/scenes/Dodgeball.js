@@ -19,12 +19,12 @@ preload() {
   this.load.spritesheet("cat7", "assets/cats/Cat_7.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
   //load background
-  this.load.image('sky', 'assets/dodgeball/spaceship.png');
-  this.load.image('net', 'assets/dodgeball/platform2.png');
+  this.load.image('dodgeball_sky', 'assets/dodgeball/spaceship.png');
+  this.load.image('dodgeball_net', 'assets/dodgeball/platform2.png');
   this.load.image('earth', 'assets/dodgeball/earth.png');
   this.load.image('mars', 'assets/dodgeball/mars.png');
   this.load.image('saturn', 'assets/dodgeball/saturn.png');
-  this.load.image('ground', 'assets/dodgeball/platform2.png');
+  this.load.image('dodgeball_ground', 'assets/dodgeball/platform2.png');
 }
 
 
@@ -63,12 +63,12 @@ create() {
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
-  this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-  this.platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
-  this.platforms.create(200, 220, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(600, 220, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(200, 400, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(600, 400, 'ground').setScale(.5).refreshBody();
+  this.platforms.create(400, 568, 'dodgeball_ground').setScale(2).refreshBody();
+  this.platforms.create(400, 350, 'dodgeball_net').setScale(0.05, 7).refreshBody();
+  this.platforms.create(200, 220, 'dodgeball_ground').setScale(.5).refreshBody();
+  this.platforms.create(600, 220, 'dodgeball_ground').setScale(.5).refreshBody();
+  this.platforms.create(200, 400, 'dodgeball_ground').setScale(.5).refreshBody();
+  this.platforms.create(600, 400, 'dodgeball_ground').setScale(.5).refreshBody();
   
   //adding ball physics
   this.ball = this.physics.add.sprite(400, 200, 'earth');

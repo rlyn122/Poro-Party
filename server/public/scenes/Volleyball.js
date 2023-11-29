@@ -20,10 +20,10 @@ class Volleyball extends Phaser.Scene {
     this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
   
     //load background
-    this.load.image('sky', 'assets/volleyball/sky.png');
-    this.load.image('net', 'assets/volleyball/platform2.png');
+    this.load.image('volleyball_sky', 'assets/volleyball/sky.png');
+    this.load.image('volleyball_net', 'assets/volleyball/platform2.png');
     this.load.image('volleyball', 'assets/volleyball/volleyball.png');
-    this.load.image('ground', 'assets/volleyball/platform.png');
+    this.load.image('volleyball_ground', 'assets/volleyball/platform.png');
   }
   
    create() {
