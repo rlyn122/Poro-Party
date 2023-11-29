@@ -40,8 +40,12 @@ create() {
   this.gameOver = false;
 
   //add players to this scene
-  for(const playerId in players) {
-    addPlayer(this, players[playerId])
+  for (const playerId in players){
+    const randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
+    const yPos = self.game.config.height - 100
+    players[playerId].y = yPos
+    players[playerId.x] = randomX
+    addPlayer(this , players[playerId])
   }
 
   this.io.emit("currentPlayers_dodge", players)
