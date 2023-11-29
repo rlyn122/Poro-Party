@@ -50,6 +50,14 @@ class Volleyball extends Phaser.Scene {
     socket.on('volleyInput', function (inputData) {
       handlePlayerInput(self, id, inputData);
     })
+    socket.on('disconnect', function () {
+      // remove player from server
+      removePlayer(self, self.socket.id);
+      // remove this player from our players object
+      delete players[self.socket.id];
+      // emit a message to all players to remove this player
+      io.emit('disconnect', self.socket.id);
+      });
   }
 
     //adding platforms to the game
@@ -96,15 +104,6 @@ class Volleyball extends Phaser.Scene {
       let r = self.redScore
       io.emit('scoreUpdate', {blueScore:b, redScore:r });
     });
-
-    this.socket.on('disconnect', function () {
-      // remove player from server
-      removePlayer(self, self.socket.id);
-      // remove this player from our players object
-      delete players[self.socket.id];
-      // emit a message to all players to remove this player
-      io.emit('disconnect', self.socket.id);
-      });
   
     //add more general colliders
     this.physics.add.collider(this.players, this.platforms);

@@ -54,11 +54,16 @@ create() {
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     console.log(id);
     socket.on('dodgeInput', function (inputData) {
-      try {
         handlePlayerInput(self, id, inputData);
-      }
-      catch {}
     })
+    socket.on('disconnect', function () {
+      // remove player from server
+      removePlayer(self, self.socket.id);
+      // remove this player from our players object
+      delete players[self.socket.id];
+      // emit a message to all players to remove this player
+      io.emit('disconnect', self.socket.id);
+      });
   }
 
   //adding platforms to the game

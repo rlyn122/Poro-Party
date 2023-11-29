@@ -54,6 +54,14 @@ class Soccer extends Phaser.Scene {
       socket.on('soccerInput', function (inputData) {
         handlePlayerInput(self, id, inputData);
         })
+        socket.on('disconnect', function () {
+          // remove player from server
+          removePlayer(self, self.socket.id);
+          // remove this player from our players object
+          delete players[self.socket.id];
+          // emit a message to all players to remove this player
+          io.emit('disconnect', self.socket.id);
+          });
   }
     
     this.gameOver = false;
