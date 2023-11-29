@@ -58,11 +58,11 @@ create() {
     })
     socket.on('disconnect', function () {
       // remove player from server
-      removePlayer(self, self.socket.id);
+      removePlayer(self, id);
       // remove this player from our players object
-      delete players[self.socket.id];
+      delete players[id];
       // emit a message to all players to remove this player
-      io.emit('disconnect', self.socket.id);
+      io.emit('disconnect_dodgeball', id);
       });
   }
 

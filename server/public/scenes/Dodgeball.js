@@ -66,9 +66,10 @@ class Dodgeball extends Phaser.Scene {
   });
 
   //listen for player disconnection
-  this.socket.on('disconnect', function (playerId) {
+  this.socket.on('disconnect_dodgeball', function (playerId) {
     self.players.getChildren().forEach(function (player) {
       if (playerId === player.playerId) {
+        player.usernameText.destroy();
         player.destroy();
       }
     });
