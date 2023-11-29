@@ -36,7 +36,11 @@ class Soccer extends Phaser.Scene {
     
     //add players to this scene
     for (const playerId in players){
-      addPlayer(this , players[playerId])
+      var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
+      var yPos = self.game.config.height - 100
+      players[playerId].y = yPos
+      players[playerId].x = randomX
+      addPlayer(this, players[playerId])
     }
 
     //emit players to put

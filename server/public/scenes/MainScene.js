@@ -192,7 +192,7 @@ function displayPlayers(self, playerInfo, sprite) {
 
 //function to add player username onto screen
 function addUsername(player, scene, playerInfo){
-  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ff70a7' });
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
 }
 
