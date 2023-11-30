@@ -165,18 +165,18 @@ this.players.children.iterate(function (player) {
 }
 
 
-// function displayPlayers(self, playerInfo, sprite) {
-//   if(playerInfo&&sprite){
-//   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-//   if (player) {
-//     addUsername(player,self,playerInfo)
-//     //high depth value to bring the player sprite to the front
-//     player.setDepth(100);
-//     player.playerId = playerInfo.playerId;
-//     self.players.add(player);
-//     console.log(self.players)
-//   } else {
-//     console.error('Failed to create player sprite');
-//   }
-//   }
-// }
+function displayPlayers(self, playerInfo, sprite) {
+  if(playerInfo&&sprite){
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+  if (player) {
+    addUsername(player,self,playerInfo)
+    //high depth value to bring the player sprite to the front
+    player.setDepth(100);
+    player.playerId = playerInfo.playerId;
+    self.players.add(player);
+    console.log(self.players)
+  } else {
+    console.error('Failed to create player sprite');
+  }
+  }
+}
