@@ -35,7 +35,7 @@ create() {
   this.balls = this.add.group();
 
   console.log("Serverside Dodgeball Running")
-
+  var currentPlayers = players
   // let hitCounter = 0;
   this.gameOver = false;
 
@@ -154,8 +154,6 @@ create() {
             players[id].invuln = false;
             }
           }
-          this.io.emit("currentPlayers_dodge", players)
-
       }
   });
 
@@ -163,7 +161,7 @@ create() {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_dodge", players)
+        this.io.emit("currentPlayers_dodge", currentPlayers)
       }
     });
 

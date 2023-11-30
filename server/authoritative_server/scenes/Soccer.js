@@ -36,6 +36,8 @@ class Soccer extends Phaser.Scene {
     this.blueScore = 0;
     this.redScore = 0;
 
+    var currentPlayers = players
+
     //add players to this scene
     for (const playerId in players){
       var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
@@ -156,7 +158,7 @@ class Soccer extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_soccer", players)
+        this.io.emit("currentPlayers_soccer", currentPlayers)
       }
     });
   }
