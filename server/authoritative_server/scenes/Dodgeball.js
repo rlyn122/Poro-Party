@@ -121,10 +121,13 @@ create() {
   this.physics.add.collider(this.players, this.players)
 
   // 10 seconds before player can be killed
-  let countdown = 10;
+  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    players[id].invuln = true;
+  }
+  let invulnCountdown = 10;
   const timerInterval = setInterval(() => {
-    countdown--;
-    if(countdown === 0) {
+    invulnCountdown--;
+    if(invulnCountdown === 0) {
       clearInterval(timerInterval);
       for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
         players[id].invuln = false;
