@@ -45,9 +45,6 @@ class Soccer extends Phaser.Scene {
       addPlayer(this, players[playerId])
     }
 
-    //emit players to put
-    this.io.emit("currentPlayers_soccer", players)
-
     //handle player inputs and change player object
     for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
       console.log(id);
@@ -61,7 +58,6 @@ class Soccer extends Phaser.Scene {
         delete players[id];
         // emit a message to all players to remove this player
         io.emit('disconnect_soccer', id);
-        io.emit('disconnect_mainScene', id);
         });
   }
     
@@ -156,6 +152,14 @@ class Soccer extends Phaser.Scene {
             this.ball.setVelocityX(200);
             this.ball.setVelocityY(-150);
         }
+    });
+
+    // Set a timed event to add players to the game after 5 seconds
+    this.time.addEvent({
+      delay: 10000,
+      callback: () => {
+        this.io.emit("currentPlayers_dodge", players)
+      }
     });
   }
 

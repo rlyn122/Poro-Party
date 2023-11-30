@@ -173,6 +173,7 @@ class MainScene extends Phaser.Scene {
       
        update() {
       
+      
         const left = this.leftKeyPressed;
         const right = this.rightKeyPressed;
         const up = this.upKeyPressed;
