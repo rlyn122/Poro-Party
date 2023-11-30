@@ -24,7 +24,7 @@ preload() {
   this.load.image('earth', 'assets/dodgeball/earth.png');
   this.load.image('mars', 'assets/dodgeball/mars.png');
   this.load.image('saturn', 'assets/dodgeball/saturn.png');
-  this.load.image('ground', 'assets/dodgeball/platform2.png');
+  this.load.image('dodge_ground', 'assets/dodgeball/platform2.png');
 }
 
 
@@ -68,12 +68,12 @@ create() {
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
-  this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+  this.platforms.create(400, 568, 'dodge_ground').setScale(2).refreshBody();
   this.platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
-  this.platforms.create(200, 220, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(600, 220, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(200, 400, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(600, 400, 'ground').setScale(.5).refreshBody();
+  this.platforms.create(200, 220, 'dodge_ground').setScale(.5).refreshBody();
+  this.platforms.create(600, 220, 'dodge_ground').setScale(.5).refreshBody();
+  this.platforms.create(200, 400, 'dodge_ground').setScale(.5).refreshBody();
+  this.platforms.create(600, 400, 'dodge_ground').setScale(.5).refreshBody();
   
   //adding ball physics
   this.ball = this.physics.add.sprite(400, 200, 'earth');
@@ -121,20 +121,37 @@ create() {
   this.physics.add.collider(this.players, this.players)
 
   // 10 seconds before player can be killed
-  let countdown = 10;
-  const timerInterval = setInterval(() => {
-    countdown--;
-    if(countdown === 0) {
-      clearInterval(timerInterval);
-      for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-        players[id].invuln = false;
-      } 
-    }
-  }, 1000);
+  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    players[id].invuln = true;
+  }
+
+  
+  // Initialize game as frozen
+  this.gameFrozen = true;
+  this.ball.setVelocity(0, 0);
+  this.ball2.setVelocity(0, 0);
+  this.ball3.setVelocity(0, 0);
+
+  // Set a timed event to unfreeze the game after 10 seconds
+  this.time.addEvent({
+      delay: 10000,
+      callback: () => {
+          this.gameFrozen = false;
+          // Restore ball physics
+          this.ball.setVelocity(300, 300);
+          this.ball2.setVelocity(300, 300);
+          this.ball3.setVelocity(300, 300);
+      }
+  });
 
 }
 
 update() {
+
+  if (this.gameFrozen) {
+    return;
+}
+
   const speed = 250
   //constantly emit each player's position/animation
   this.players.getChildren().forEach((player) => {

@@ -21,9 +21,9 @@ class Soccer extends Phaser.Scene {
 
 
     //load background
-    this.load.image('sky', 'assets/soccer/field.png');
+    this.load.image('soccer_background', 'assets/soccer/field.png');
     this.load.image('ball', 'assets/soccer/soccerball.png');
-    this.load.image('ground', 'assets/soccer/grass.png');
+    this.load.image('soccer_ground', 'assets/soccer/grass.png');
     this.load.image('blue_goal', 'assets/soccer/blue_goal.png');
     this.load.image('red_goal', 'assets/soccer/red_goal.png');
 
@@ -38,11 +38,11 @@ class Soccer extends Phaser.Scene {
 
     //add background
 
-    this.add.image(400, 300, 'sky');
-    this.add.image(400, 568, 'ground').setScale(2);
-    this.add.image(400, 600, 'ground').setScale(2).setTint(0);
-    this.add.image(50, 415, 'red_goal').setScale(.1);
-    this.add.image(750, 415, 'blue_goal').setScale(-0.1, .1);
+    this.add.image(400, 300, 'soccer_background');
+    this.add.image(400, 568, 'soccer_ground').setScale(2);
+    this.add.image(400, 600, 'soccer_ground').setScale(2).setTint(0);
+    this.add.image(50, 415, 'red_goal').setScale(.1).setDepth(2);
+    this.add.image(750, 415, 'blue_goal').setScale(-0.1, .1).setDepth(2);
 
     // create the first ball
     var ball = this.add.sprite(400, 200, 'ball').setScale(2);
@@ -60,18 +60,9 @@ class Soccer extends Phaser.Scene {
     //listen for currentPlayers and self
     this.socket.on('currentPlayers_soccer', function (players) {
       Object.keys(players).forEach(function (id) {
-
-        //if it is this client
-        if (players[id].playerId === self.socket.id) {
-          displayPlayers(self, players[id], players[id].cat);
-        }
-        //if it is another client
-        else{
-          displayPlayers(self,players[id], players[id].cat)
-        }
+        displayPlayers(self, players[id], players[id].cat);
       });
     });
-
 
     //listen for player disconnection
     this.socket.on('disconnect_soccer', function (playerId) {
@@ -165,5 +156,22 @@ class Soccer extends Phaser.Scene {
     if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
       this.socket.emit('soccerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
     }
+  }
+}
+
+
+function displayPlayers(self, playerInfo, sprite) {
+  if(playerInfo&&sprite){
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+  if (player) {
+    addUsername(player,self,playerInfo)
+    //high depth value to bring the player sprite to the front
+    player.setDepth(100);
+    player.playerId = playerInfo.playerId;
+    self.players.add(player);
+    console.log(self.players)
+  } else {
+    console.error('Failed to create player sprite');
+  }
   }
 }

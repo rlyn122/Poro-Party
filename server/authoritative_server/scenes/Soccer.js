@@ -23,7 +23,7 @@ class Soccer extends Phaser.Scene {
     this.load.image('sky', 'assets/soccer/field.png');
     this.load.image('net', 'assets/soccer/grass.png');
     this.load.image('ball', 'assets/soccer/soccerball.png');
-    this.load.image('ground', 'assets/soccer/grass.png');
+    this.load.image('soccer_ground', 'assets/soccer/grass.png');
   }
 
   create() {
@@ -69,8 +69,8 @@ class Soccer extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup();
     this.net = this.physics.add.staticGroup();
     //ground
-    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    this.platforms.create(400, 600, 'ground').setScale(2).refreshBody().setTint(0);
+    this.platforms.create(400, 568, 'soccer_ground').setScale(2).refreshBody();
+    this.platforms.create(400, 600, 'soccer_ground').setScale(2).refreshBody().setTint(0);
 
     //sprite backbone
     //left sprite
@@ -114,10 +114,10 @@ class Soccer extends Phaser.Scene {
 
     this.physics.add.collider(this.ball, this.net, function (ball, net) {
       // Check for scoring when the ball touches the ground
-      if (ball.x < 80 && ball.x > 20) {
+      if (ball.x < 90 && ball.x > 10) {
         // Blue side scores
         self.blueScore++;
-      } else if (ball.x > 720 && ball.x < 780) {
+      } else if (ball.x > 710 && ball.x < 790) {
         // Red side scores
         self.redScore++;
       }
@@ -140,9 +140,29 @@ class Soccer extends Phaser.Scene {
     this.physics.add.collider(this.ball, this.players);
     this.physics.add.collider(this.net, this.ball);
     this.physics.add.collider(this.net, this.players);
+
+
+    // Initialize game as frozen
+    this.gameFrozen = true;
+    this.ball.setVelocity(0, 0);
+
+    // Set a timed event to unfreeze the game after 10 seconds
+    this.time.addEvent({
+        delay: 10000,
+        callback: () => {
+            this.gameFrozen = false;
+            // Restore ball physics
+            this.ball.setVelocityX(200);
+            this.ball.setVelocityY(-150);
+        }
+    });
   }
 
   update() {
+
+    if (this.gameFrozen) {
+      return;
+  }
 
     const speed = 250
     //constantly emit each player's position
