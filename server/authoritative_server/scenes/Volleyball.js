@@ -112,10 +112,31 @@ class Volleyball extends Phaser.Scene {
     this.physics.add.collider(this.ball, this.ground);
     this.physics.add.collider(this.ball, this.platforms);
     this.physics.add.collider(this.ball, this.players);
+
+
+
+    // Initialize game as frozen
+    this.gameFrozen = true;
+    this.ball.setVelocity(0, 0);
+
+    // Set a timed event to unfreeze the game after 10 seconds
+    this.time.addEvent({
+        delay: 10000,
+        callback: () => {
+            this.gameFrozen = false;
+            // Restore ball physics
+            this.ball.setVelocityX(200);
+            this.ball.setVelocityY(-150);
+        }
+    });
   }
   
   update() {
   
+    if (this.gameFrozen) {
+      return;
+  }
+
     const speed = 250
     //constantly emit each player's position/animation
     this.players.getChildren().forEach((player) => {

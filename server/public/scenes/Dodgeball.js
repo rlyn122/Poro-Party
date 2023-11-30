@@ -20,7 +20,7 @@ class Dodgeball extends Phaser.Scene {
   this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
   //load background
-  this.load.image('sky', 'assets/dodgeball/spaceship.png');
+  this.load.image('dodge_background', 'assets/dodgeball/spaceship.png');
   this.load.image('net', 'assets/dodgeball/platform2.png');
   this.load.image('earth', 'assets/dodgeball/earth.png');
   this.load.image('mars', 'assets/dodgeball/mars.png');
@@ -36,7 +36,7 @@ class Dodgeball extends Phaser.Scene {
   this.scene.launch("Rules_Dodgeball");
 
   //add background
-  this.add.image(400, 300, 'sky');
+  this.add.image(400, 300, 'dodge_background');
   this.add.image(400, 568, 'ground').setScale(2)
   this.add.image(400, 350, 'net').setScale(0.05, 7)
   this.add.image(200, 220, 'ground').setScale(.5)
@@ -53,15 +53,7 @@ class Dodgeball extends Phaser.Scene {
   //listen for currentPlayers and self
   this.socket.on('currentPlayers_dodge', function (players) {
     Object.keys(players).forEach(function (id) {
-
-      //if it is this client
-      if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], players[id].cat);
-      }
-      //if it is another client
-      else{
-        displayPlayers(self,players[id],players[id].cat)
-      }
+      displayPlayers(self, players[id], players[id].cat);
     });
   });
 
@@ -169,4 +161,21 @@ this.players.children.iterate(function (player) {
   }
 }
 
+}
+
+
+function displayPlayers(self, playerInfo, sprite) {
+  if(playerInfo&&sprite){
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+  if (player) {
+    addUsername(player,self,playerInfo)
+    //high depth value to bring the player sprite to the front
+    player.setDepth(100);
+    player.playerId = playerInfo.playerId;
+    self.players.add(player);
+    console.log(self.players)
+  } else {
+    console.error('Failed to create player sprite');
+  }
+  }
 }
