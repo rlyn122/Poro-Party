@@ -49,10 +49,9 @@ create() {
     addPlayer(this, players[playerId])
   }
 
-  this.io.emit("currentPlayers_dodge", players)
 
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-    console.log(id);
+    
     socket.on('dodgeInput', function (inputData) {
         handlePlayerInput(self, id, inputData);
     })
@@ -64,6 +63,7 @@ create() {
       // emit a message to all players to remove this player
       io.emit('disconnect_dodgeball', id);
       });
+
   }
 
   //adding platforms to the game
@@ -122,7 +122,9 @@ create() {
 
   // 10 seconds before player can be killed
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    if(players[id]){
     players[id].invuln = true;
+    }
   }
 
   
@@ -141,8 +143,24 @@ create() {
           this.ball.setVelocity(300, 300);
           this.ball2.setVelocity(300, 300);
           this.ball3.setVelocity(300, 300);
+          // 10 seconds before player can be killed
+          for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+            if(players[id]){
+            players[id].invuln = false;
+            }
+          }
+          this.io.emit("currentPlayers_dodge", players)
+
       }
   });
+
+    // Set a timed event to add players to the game after 5 seconds
+    this.time.addEvent({
+      delay: 10000,
+      callback: () => {
+        this.io.emit("currentPlayers_dodge", players)
+      }
+    });
 
 }
 
@@ -281,6 +299,9 @@ function getWinnerName() {
   if(left === 1) {
     players[id].invuln = true;
     return winner;
+  }
+  else if(left === 0) {
+    return "nobody";
   }
   return null;
 }

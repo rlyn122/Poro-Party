@@ -29,7 +29,7 @@ class Dodgeball extends Phaser.Scene {
 }
 
  create() {
-  var self = this;
+  var dodge_self = this;
   this.players = this.add.group();
 
   console.log("Client-side Dodgeball Running")
@@ -52,14 +52,15 @@ class Dodgeball extends Phaser.Scene {
 
   //listen for currentPlayers and self
   this.socket.on('currentPlayers_dodge', function (players) {
+    console.log("currentPlayers receieved")
     Object.keys(players).forEach(function (id) {
-      displayPlayers(self, players[id], players[id].cat);
+      dodge_self.displayPlayers(dodge_self, players[id], players[id].cat);
     });
   });
 
   //listen for player disconnection
   this.socket.on('disconnect_dodgeball', function (playerId) {
-    self.players.getChildren().forEach(function (player) {
+    dodge_self.players.getChildren().forEach(function (player) {
       if (playerId === player.playerId) {
         player.usernameText.destroy();
         player.destroy();
@@ -70,12 +71,12 @@ class Dodgeball extends Phaser.Scene {
   //update player movements and animations from server
   this.socket.on('playerUpdates_dodge', function (players) {
     Object.keys(players).forEach(function (id) {
-      self.players.getChildren().forEach(function (player) {
+      dodge_self.players.getChildren().forEach(function (player) {
         if (players[id].playerId === player.playerId) {
           player.setPosition(players[id].x, players[id].y);
-          if (player.anims.getName() !== players[id].animationKey) {
-            player.anims.play(players[id].animationKey, true);
-          }
+          // if (player.anims.getName() !== players[id].animationKey) {
+          //   player.anims.play(players[id].animationKey, true);
+          // }
           setUsername_Pos(player,players[id].x, players[id].y);
         }
       });
@@ -116,7 +117,8 @@ this.socket.on('gameOver', function(username) {
 });
 
 this.socket.on('stopDodgeballScene', () => {
-  self.scene.stop("Dodgeball");
+  dodge_self.socket.emit("enableButtonsafterScene")
+  dodge_self.scene.stop("Dodgeball");
 });
 this.players.children.iterate(function (player) {
   player.setDepth(10);
@@ -151,26 +153,15 @@ this.players.children.iterate(function (player) {
   }
   //if the state of a key has been changed, emit the state of keys to server
   if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
-    console.log({ left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed })
     this.socket.emit('dodgeInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
   }
 }
 
-}
-
-
-function displayPlayers(self, playerInfo, sprite) {
-  if(playerInfo&&sprite){
+displayPlayers(self, playerInfo, sprite) {
+  console.log(`${playerInfo} displayed`)
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-  if (player) {
-    addUsername(player,self,playerInfo)
-    //high depth value to bring the player sprite to the front
-    player.setDepth(100);
+    addUsernameTeam(player,self,playerInfo,'#8A2BE2')
     player.playerId = playerInfo.playerId;
     self.players.add(player);
-    console.log(self.players)
-  } else {
-    console.error('Failed to create player sprite');
-  }
   }
 }

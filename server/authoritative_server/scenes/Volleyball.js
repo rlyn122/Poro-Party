@@ -44,8 +44,6 @@ class Volleyball extends Phaser.Scene {
     addPlayer(this, players[playerId])
   }
 
-  this.io.emit("currentPlayers_volley", players)
-
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     socket.on('volleyInput', function (inputData) {
       handlePlayerInput(self, id, inputData);
@@ -55,6 +53,8 @@ class Volleyball extends Phaser.Scene {
       removePlayer(self,id);
       // remove this player from our players object
       delete players[id];
+      console.log("Player Disconnected from Volleyball")
+
       // emit a message to all players to remove this player
       io.emit('disconnect_volleyball', id);
       });
@@ -127,7 +127,14 @@ class Volleyball extends Phaser.Scene {
             // Restore ball physics
             this.ball.setVelocityX(200);
             this.ball.setVelocityY(-150);
-        }
+        }   
+    });
+    // Set a timed event to add players to the game after 5 seconds
+    this.time.addEvent({
+      delay: 10000,
+      callback: () => {
+        this.io.emit("currentPlayers_volley", players)
+      }
     });
   }
   
