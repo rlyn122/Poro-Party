@@ -23,7 +23,7 @@ class Soccer extends Phaser.Scene {
     this.load.image('sky', 'assets/soccer/field.png');
     this.load.image('net', 'assets/soccer/grass.png');
     this.load.image('ball', 'assets/soccer/soccerball.png');
-    this.load.image('ground', 'assets/soccer/grass.png');
+    this.load.image('soccer_ground', 'assets/soccer/grass.png');
   }
 
   create() {
@@ -69,8 +69,8 @@ class Soccer extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup();
     this.net = this.physics.add.staticGroup();
     //ground
-    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    this.platforms.create(400, 600, 'ground').setScale(2).refreshBody().setTint(0);
+    this.platforms.create(400, 568, 'soccer_ground').setScale(2).refreshBody();
+    this.platforms.create(400, 600, 'soccer_ground').setScale(2).refreshBody().setTint(0);
 
     //sprite backbone
     //left sprite

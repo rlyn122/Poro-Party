@@ -24,7 +24,7 @@ preload() {
   this.load.image('earth', 'assets/dodgeball/earth.png');
   this.load.image('mars', 'assets/dodgeball/mars.png');
   this.load.image('saturn', 'assets/dodgeball/saturn.png');
-  this.load.image('ground', 'assets/dodgeball/platform2.png');
+  this.load.image('dodge_ground', 'assets/dodgeball/platform2.png');
 }
 
 
@@ -68,12 +68,12 @@ create() {
 
   //adding platforms to the game
   this.platforms = this.physics.add.staticGroup();
-  this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+  this.platforms.create(400, 568, 'dodge_ground').setScale(2).refreshBody();
   this.platforms.create(400, 350, 'net').setScale(0.05, 7).refreshBody();
-  this.platforms.create(200, 220, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(600, 220, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(200, 400, 'ground').setScale(.5).refreshBody();
-  this.platforms.create(600, 400, 'ground').setScale(.5).refreshBody();
+  this.platforms.create(200, 220, 'dodge_ground').setScale(.5).refreshBody();
+  this.platforms.create(600, 220, 'dodge_ground').setScale(.5).refreshBody();
+  this.platforms.create(200, 400, 'dodge_ground').setScale(.5).refreshBody();
+  this.platforms.create(600, 400, 'dodge_ground').setScale(.5).refreshBody();
   
   //adding ball physics
   this.ball = this.physics.add.sprite(400, 200, 'earth');
@@ -121,11 +121,14 @@ create() {
   this.physics.add.collider(this.players, this.players)
 
   // 10 seconds before player can be killed
-  let countdown = 10;
-  const timerInterval = setInterval(() => {
-    countdown--;
-    if(countdown === 0) {
-      clearInterval(timerInterval);
+  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    players[id].invuln = true;
+  }
+  let invulnCountdown = 10;
+  const invulnInterval = setInterval(() => {
+    invulnCountdown--;
+    if(invulnCountdown === 0) {
+      clearInterval(invulnInterval);
       for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
         players[id].invuln = false;
       } 

@@ -23,7 +23,7 @@ class Volleyball extends Phaser.Scene {
     this.load.image('volleyball_background', 'assets/volleyball/sky.png');
     this.load.image('net', 'assets/volleyball/platform2.png');
     this.load.image('volleyball', 'assets/volleyball/volleyball.png');
-    this.load.image('ground', 'assets/volleyball/platform.png');
+    this.load.image('volley_ground', 'assets/volleyball/platform.png');
   }
   
    create() {
@@ -35,8 +35,8 @@ class Volleyball extends Phaser.Scene {
 
     //add background
     this.add.image(400, 300, 'volleyball_background');
-    this.add.image(400, 568, 'ground').setScale(2.3)
-    this.add.image(400, 600, 'ground').setScale(2.3).setTint(0)
+    this.add.image(400, 568, 'volley_ground').setScale(2.3)
+    this.add.image(400, 600, 'volley_ground').setScale(2.3).setTint(0)
 
     this.add.image(400, 350, 'net').setScale(0.5).setRotation(Phaser.Math.DegToRad(90));
   
