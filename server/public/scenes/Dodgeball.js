@@ -105,11 +105,12 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
 
-  dodge_self.dodge_gameOverText = this.add.text(250, 150, "", {
+  const centerX = this.scale.width * 0.5;
+  dodge_self.dodge_gameOverText = this.add.text(centerX, 150, "", {
     fill: "#000000",
     fontFamily: 'Arial',
     fontSize: "50px"
-});
+}).setOrigin(0.5, 0);
 
 this.socket.on('gameOver', function(username) {
   if(username === null) { username = "Unknown" }

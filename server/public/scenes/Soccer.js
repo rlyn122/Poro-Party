@@ -106,11 +106,12 @@ class Soccer extends Phaser.Scene {
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
     
-    const soc_gameOverText = this.add.text(250, 150, "", {
+    const centerX = this.scale.width * 0.5;
+    const soc_gameOverText = this.add.text(centerX, 150, "", {
       fill: "#000000",
       fontFamily: 'Arial',
       fontSize: "50px"
-    });
+    }).setOrigin(0.5, 0);
   
     this.socket.on('gameOver', function(team) {
       soc_gameOverText.setText(team + " Won")
