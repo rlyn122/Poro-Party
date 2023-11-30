@@ -48,11 +48,11 @@ class Soccer extends Phaser.Scene {
     var ball = this.add.sprite(400, 200, 'ball').setScale(2);
 
     // Create text objects to display scores
-    this.blueScoreText = this.add.text(640, 16, 'Blue: 0', {
+    this.blueScoreTextSoccer = this.add.text(640, 16, 'Blue: 0', {
       fontSize: '32px',
       fill: '#0000FF',
     });
-    this.redScoreText = this.add.text(16, 16, 'Red: 0', {
+    this.redScoreTextSoccer = this.add.text(16, 16, 'Red: 0', {
       fontSize: '32px',
       fill: '#FF0000',
     });
@@ -95,8 +95,8 @@ class Soccer extends Phaser.Scene {
     //score updates
     this.socket.on('scoreUpdate', function (scores) {
       try{
-      self.blueScoreText.setText(`Blue: ${scores.blueScore}`);
-      self.redScoreText.setText(`Red: ${scores.redScore}`);
+      self.blueScoreTextSoccer.setText(`Blue: ${scores.blueScore}`);
+      self.redScoreTextSoccer.setText(`Red: ${scores.redScore}`);
       } catch(error){}
     });
 

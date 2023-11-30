@@ -26,7 +26,7 @@ class Rules_Volleyball extends Phaser.Scene {
 
       // Display the rules of the dodgeball game
       const rulesText = scene.add.text(140, 110, "Volleyball Game Rules:", {
-          fill: "#ffffff",
+          fill: "#000000",
           fontFamily: 'Arial',
           fontSize: "48px",
           fontStyle: "bold",
@@ -40,14 +40,14 @@ class Rules_Volleyball extends Phaser.Scene {
 
       // Display the rules as a list
       const rulesList = scene.add.text(180, 185, rules, {
-          fill: "#ffffff",
+          fill: "#000000",
           fontFamily: 'Arial',
           fontSize: "16px",
       });
 
       // Create a timer to auto-close the rules after 10 seconds
       const timerText = scene.add.text(230, 350, "The game will start in:", {
-          fill: "#ffffff",
+          fill: "#000000",
           fontFamily: 'Arial',
           fontSize: "22px",
       });
