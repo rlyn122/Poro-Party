@@ -124,20 +124,34 @@ create() {
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     players[id].invuln = true;
   }
-  let invulnCountdown = 10;
-  const invulnInterval = setInterval(() => {
-    invulnCountdown--;
-    if(invulnCountdown === 0) {
-      clearInterval(invulnInterval);
-      for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-        players[id].invuln = false;
-      } 
-    }
-  }, 1000);
+
+  
+  // Initialize game as frozen
+  this.gameFrozen = true;
+  this.ball.setVelocity(0, 0);
+  this.ball2.setVelocity(0, 0);
+  this.ball3.setVelocity(0, 0);
+
+  // Set a timed event to unfreeze the game after 10 seconds
+  this.time.addEvent({
+      delay: 10000,
+      callback: () => {
+          this.gameFrozen = false;
+          // Restore ball physics
+          this.ball.setVelocity(300, 300);
+          this.ball2.setVelocity(300, 300);
+          this.ball3.setVelocity(300, 300);
+      }
+  });
 
 }
 
 update() {
+
+  if (this.gameFrozen) {
+    return;
+}
+
   const speed = 250
   //constantly emit each player's position/animation
   this.players.getChildren().forEach((player) => {
