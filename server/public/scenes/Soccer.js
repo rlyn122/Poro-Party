@@ -60,7 +60,7 @@ class Soccer extends Phaser.Scene {
     //listen for currentPlayers and self
     this.socket.on('currentPlayers_soccer', function (players) {
       Object.keys(players).forEach(function (id) {
-        displayPlayers(self, players[id], players[id].cat);
+        displayPlayersTeam(self, players[id], players[id].cat);
       });
     });
 
@@ -160,18 +160,25 @@ class Soccer extends Phaser.Scene {
 }
 
 
-function displayPlayers(self, playerInfo, sprite) {
-  if(playerInfo&&sprite){
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-  if (player) {
-    addUsername(player,self,playerInfo)
-    //high depth value to bring the player sprite to the front
-    player.setDepth(100);
-    player.playerId = playerInfo.playerId;
-    self.players.add(player);
-    console.log(self.players)
-  } else {
-    console.error('Failed to create player sprite');
-  }
+function displayPlayersTeam(scene, playerInfo, sprite) {
+  if (playerInfo && sprite) {
+    const player = scene.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2, 0.2);
+    if (player) {
+      // High depth value to bring the player sprite to the front
+      player.setDepth(100);
+      player.playerId = playerInfo.playerId;
+      scene.players.add(player);
+
+      // Determine the team color based on the even/odd index of the player
+      const playerCount = scene.players.getLength();
+      const teamColor = playerCount % 2 === 0 ? '#ff0000' : '#0000ff'; // Hex color for red or blue
+
+      // Add the username with the team color
+      addUsernameTeam(player, scene, playerInfo, teamColor);
+
+      console.log(scene.players);
+    } else {
+      console.error('Failed to create player sprite');
+    }
   }
 }
