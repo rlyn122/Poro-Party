@@ -44,11 +44,11 @@ class Volleyball extends Phaser.Scene {
     var ball = this.add.sprite(400, 200, 'volleyball');
 
     // Create text objects to display scores
-    this.blueScoreText = this.add.text(640, 16, 'Blue: 0', {
+    this.blueScoreTextVolleyball = this.add.text(640, 16, 'Blue: 0', {
       fontSize: '32px',
       fill: '#0000FF',
     });
-    this.redScoreText = this.add.text(16, 16, 'Red: 0', {
+    this.redScoreTextVolleyball = this.add.text(16, 16, 'Red: 0', {
       fontSize: '32px',
       fill: '#FF0000',
     });
@@ -92,8 +92,8 @@ class Volleyball extends Phaser.Scene {
     });
 
     this.socket.on('scoreUpdate', function (scores) {
-      self.blueScoreText.setText(`Blue: ${scores.blueScore}`);
-      self.redScoreText.setText(`Red: ${scores.redScore}`);
+      self.blueScoreTextVolleyball.setText(`Blue: ${scores.blueScore}`);
+      self.redScoreTextVolleyball.setText(`Red: ${scores.redScore}`);
     });
   
     //create cursors
@@ -102,14 +102,14 @@ class Volleyball extends Phaser.Scene {
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
 
-    const volley_gameOverText = this.add.text(250, 150, "", {
+    this.volley_gameOverText = this.add.text(250, 150, "", {
       fill: "#000000",
       fontFamily: 'Arial',
       fontSize: "50px"
     });
   
     this.socket.on('gameOver', function(team) {
-      volley_gameOverText.setText(team + " Won")
+      self.volley_gameOverText.setText(team + " Won")
       self.socket.emit('')
     });
   

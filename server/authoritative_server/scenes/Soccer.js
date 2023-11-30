@@ -158,7 +158,7 @@ class Soccer extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_dodge", players)
+        this.io.emit("currentPlayers_soccer", players)
       }
     });
   }

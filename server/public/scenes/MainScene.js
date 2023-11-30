@@ -4,9 +4,7 @@ class MainScene extends Phaser.Scene {
         super("MainScene");
         this.playerCount = 0;
     }
-
-
-
+    
     preload(){
         //load cats
         this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
@@ -166,10 +164,7 @@ class MainScene extends Phaser.Scene {
         if ( left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
           this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
         }
-      }
-
-
-      
+      }     
       }
 
 //display players
