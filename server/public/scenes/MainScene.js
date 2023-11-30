@@ -91,6 +91,8 @@ class MainScene extends Phaser.Scene {
             self.startDodgeballGameButton.on("pointerdown", () => {
               self.socket.emit("stopMainSceneRequest","DodgeballGame");
             });
+            self.startDodgeballGameButton.removeInteractive();
+
 
             //asking server to launch volleyball scene
             self.startVolleyGameButton.setInteractive();
@@ -103,22 +105,17 @@ class MainScene extends Phaser.Scene {
             self.startSoccerGameButton.on("pointerdown", () => {
               self.socket.emit("stopMainSceneRequest","SoccerGame");
             });
+
+            //disable game buttons while gameactive 
+            self.socket.on('disableButtons',()=>{
+              disableButtons(self)
+            });
+
+            self.socket.on('enableButtons',()=>{
+              enableButtons(self)
+            });
           });
-
-        //disable game buttons while gameactive 
-        self.socket.on('gameStatus',(gameActive)=>{
-          if(gameActive){
-            console.log("disable buttons")
-            disableButtons(self)
-          }
-          else{
-            console.log("enable buttons")
-            enableButtons(self)
-          }
         })
-        });
-
-
         
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
@@ -238,7 +235,7 @@ function setUsername_Pos(player, posX, posY){
 
 function disableButtons(self) {
   // Disable the buttons
-  console.log("disabled")
+  console.log("buttons disabled")
   self.gameInProgressSign.setVisible(true);
   self.startDodgeballGameButton.removeInteractive();
   self.startVolleyGameButton.removeInteractive();
@@ -247,6 +244,8 @@ function disableButtons(self) {
 
 function enableButtons(self) {
   // Enable the buttons
+  console.log("buttons enabled")
+
   self.gameInProgressSign.setVisible(false);
   self.startDodgeballGameButton.setInteractive();
   self.startVolleyGameButton.setInteractive();

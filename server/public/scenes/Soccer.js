@@ -118,6 +118,7 @@ class Soccer extends Phaser.Scene {
     });
   
     this.socket.on('stopSoccerScene', () => {
+      self.socket.emit("enableButtonsafterScene")
       self.scene.stop("Soccer");
     });
 

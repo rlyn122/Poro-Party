@@ -122,6 +122,7 @@ this.socket.on('gameOver', function(username) {
 });
 
 this.socket.on('stopDodgeballScene', () => {
+  self.socket.emit("enableButtonsafterScene")
   self.scene.stop("Dodgeball");
 });
 this.players.children.iterate(function (player) {

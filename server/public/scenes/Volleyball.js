@@ -114,6 +114,7 @@ class Volleyball extends Phaser.Scene {
     });
   
     this.socket.on('stopVolleyballScene', () => {
+      self.socket.emit("enableButtonsafterScene")
       self.scene.stop("Volleyball");
     });
     this.players.children.iterate(function (player) {

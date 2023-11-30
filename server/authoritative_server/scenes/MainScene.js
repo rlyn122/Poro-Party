@@ -38,8 +38,16 @@ class MainScene extends Phaser.Scene {
       //socket connection established
       io.on('connection', function (socket) {
 
+        //handle enabling buttons when scene ends
+        socket.on('enableButtonsafterScene',()=>{
+          io.emit('enableButtons')
+        })
+
 
         socket.on('stopMainSceneRequest', function (gameName){
+          
+          //disable start buttons
+          io.emit("disableButtons")
 
           //let clients know to start game
           io.emit(gameName);
@@ -154,9 +162,30 @@ class MainScene extends Phaser.Scene {
 
   //emit player positions
   io.emit('playerUpdates', players);
-  //emit whether or not an active game is running
-  io.emit("gameStatus",gameActive);
+
+  // // Check if any other scene is active, if so, disable buttons
+  // if (this.isOtherSceneActive()) {
+  //   io.emit("disableButtons")
+  // } else {
+  //   io.emit("enableButtons")
+  // }
   }
+
+
+  isOtherSceneActive() {
+    // Get a list of all the scenes from the Scene Manager
+    const scenes = this.scene.manager.scenes;
+    
+    for (let i = 0; i < scenes.length; i++) {
+      // Check if the scene is active and it's not the current scene (MainScene)
+      if (scenes[i].scene.key !== "MainScene" && this.scene.manager.isActive(scenes[i].scene.key)) {
+        return true; // Another scene is active
+      }
+    }
+  
+    return false; // No other scene is active
+  }
+
 }
 
 
