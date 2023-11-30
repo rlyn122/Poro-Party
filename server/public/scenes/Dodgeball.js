@@ -77,17 +77,20 @@ class Dodgeball extends Phaser.Scene {
 
   //update player movements and animations from server
   this.socket.on('playerUpdates_dodge', function (players) {
-    Object.keys(players).forEach(function (id) {
-      self.players.getChildren().forEach(function (player) {
-        if (players[id].playerId === player.playerId) {
-          player.setPosition(players[id].x, players[id].y);
-          // if (player.anims.getName() !== players[id].animationKey) {
-          //   player.anims.play(players[id].animationKey, true);
-          // }
-          setUsername_Pos(player,players[id].x, players[id].y);
-        }
+    try {
+      Object.keys(players).forEach(function (id) {
+        self.players.getChildren().forEach(function (player) {
+          if (players[id].playerId === player.playerId) {
+            player.setPosition(players[id].x, players[id].y);
+            // if (player.anims.getName() !== players[id].animationKey) {
+            //   player.anims.play(players[id].animationKey, true);
+            // }
+            setUsername_Pos(player,players[id].x, players[id].y);
+          }
+        });
       });
-    });
+    }
+    catch(TypeError) {}
   });
 
   //update ball positions
