@@ -176,10 +176,6 @@ function displayPlayersTeam(scene, playerInfo, sprite) {
 
       // Add the username with the team color
       addUsernameTeam(player, scene, playerInfo, teamColor);
-
-      console.log(scene.players);
-    } else {
-      console.error('Failed to create player sprite');
     }
   }
 }

@@ -91,7 +91,6 @@ class MainScene extends Phaser.Scene {
             self.startDodgeballGameButton.on("pointerdown", () => {
               self.socket.emit("stopMainSceneRequest","DodgeballGame");
             });
-            self.startDodgeballGameButton.removeInteractive();
 
 
             //asking server to launch volleyball scene
@@ -142,7 +141,7 @@ class MainScene extends Phaser.Scene {
         });
       
         //listen for player disconnection
-        this.socket.on('disconnect', function (playerId) {
+        this.socket.on('disconnect_mainScene', function (playerId) {
           self.players.getChildren().forEach(function (player) {
             if (playerId === player.playerId) {
               player.usernameText.destroy();
@@ -215,7 +214,6 @@ function displayPlayers(self, playerInfo, sprite) {
     player.setDepth(100);
     player.playerId = playerInfo.playerId;
     self.players.add(player);
-    console.log(self.players)
   } else {
     console.error('Failed to create player sprite');
   }

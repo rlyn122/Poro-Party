@@ -63,6 +63,7 @@ create() {
       delete players[id];
       // emit a message to all players to remove this player
       io.emit('disconnect_dodgeball', id);
+      io.emit('disconnect_mainScene', id);
       });
   }
 

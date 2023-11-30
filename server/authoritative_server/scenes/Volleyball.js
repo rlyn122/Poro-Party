@@ -55,8 +55,12 @@ class Volleyball extends Phaser.Scene {
       removePlayer(self,id);
       // remove this player from our players object
       delete players[id];
+      console.log("Player Disconnected from Volleyball")
+
       // emit a message to all players to remove this player
       io.emit('disconnect_volleyball', id);
+      io.emit('disconnect_mainScene', id);
+
       });
   }
 
