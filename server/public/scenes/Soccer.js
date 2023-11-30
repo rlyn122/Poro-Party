@@ -165,8 +165,6 @@ function displayPlayersTeam(scene, playerInfo, sprite) {
   if (playerInfo && sprite) {
     const player = scene.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2, 0.2);
     if (player) {
-      // High depth value to bring the player sprite to the front
-      player.setDepth(100);
       player.playerId = playerInfo.playerId;
       scene.players.add(player);
 

@@ -223,18 +223,44 @@ function displayPlayers(self, playerInfo, sprite) {
 
 //function to add player username onto screen
 function addUsername(player, scene, playerInfo){
-  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { 
+    font: '20px Press Start 2P', 
+    fill: '#ffffff',
+    stroke: '#000000', // Black stroke
+    strokeThickness: 2,
+    shadow: { offsetX: 2, offsetY: 2, color: '#000', blur: 1, fill: true }
+  });
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
 }
 
 function addUsernameTeam(player, scene, playerInfo, teamColor){
-  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: teamColor });
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { 
+    font: '20px Press Start 2P', 
+    fill: teamColor,
+    stroke: '#000000', // Black stroke
+    strokeThickness: 2,
+    shadow: { offsetX: 2, offsetY: 2, color: '#000', blur: 1, fill: true }
+  });
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
 }
 
-function setUsername_Pos(player, posX, posY){
-  player.usernameText.x = posX-15;
-  player.usernameText.y = posY - player.height / 4;
+function setUsername_Pos(player, posX, posY) {
+  // Calculate the scaled dimensions of the sprite
+  const scaledSpriteWidth = player.width * player.scaleX;
+  const scaledSpriteHeight = player.height * player.scaleY;
+
+  // Calculate the center position of the scaled sprite
+  const spriteCenterX = posX + scaledSpriteWidth / 2;
+
+  // Get the width of the username text
+  const textWidth = player.usernameText.width;
+
+  // Center the text over the scaled sprite
+  player.usernameText.x = spriteCenterX - textWidth / 2- 25;
+
+  // Position the text above the scaled sprite
+  // Adjust this offset depending on the size of your scaled sprite and desired position
+  player.usernameText.y = posY - scaledSpriteHeight / 4 -35;
 }
 
 function disableButtons(self) {
