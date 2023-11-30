@@ -160,7 +160,7 @@ this.players.children.iterate(function (player) {
 displayPlayers(self, playerInfo, sprite) {
   console.log(`${playerInfo} displayed`)
   const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
-    addUsername(player,self,playerInfo)
+    addUsernameTeam(player,self,playerInfo,'#8A2BE2')
     player.playerId = playerInfo.playerId;
     self.players.add(player);
   }

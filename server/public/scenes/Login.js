@@ -52,7 +52,7 @@ class Login extends Phaser.Scene {
           event.preventDefault(); //prevent default form submission
           const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
           const catInput = document.querySelector('input[name="cats"]:checked');
-          
+            
           //if these values exist, save the data into data object and emit isKeyValid event
           if (usernameInput && catInput) {
             const username = usernameInput.value;
