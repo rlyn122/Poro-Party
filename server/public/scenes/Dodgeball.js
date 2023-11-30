@@ -73,9 +73,9 @@ class Dodgeball extends Phaser.Scene {
       self.players.getChildren().forEach(function (player) {
         if (players[id].playerId === player.playerId) {
           player.setPosition(players[id].x, players[id].y);
-          // if (player.anims.getName() !== players[id].animationKey) {
-          //   player.anims.play(players[id].animationKey, true);
-          // }
+          if (player.anims.getName() !== players[id].animationKey) {
+            player.anims.play(players[id].animationKey, true);
+          }
           setUsername_Pos(player,players[id].x, players[id].y);
         }
       });
@@ -84,24 +84,18 @@ class Dodgeball extends Phaser.Scene {
 
   //update ball positions
   this.socket.on('ballUpdates', function(ball_Pos) {
-    // if (countdownCompleted) {
-        const {ball_x, ball_y} = ball_Pos;
-        ball.setPosition(ball_x, ball_y);
-    // }
+    const {ball_x, ball_y} = ball_Pos;
+    ball.setPosition(ball_x, ball_y);
 });
 
 this.socket.on('ballUpdates2', function(ball2_Pos) {
-    // if (countdownCompleted) {
-        const {ball2_x, ball2_y} = ball2_Pos;
-        ball2.setPosition(ball2_x, ball2_y);
-    // }
+  const {ball2_x, ball2_y} = ball2_Pos;
+  ball2.setPosition(ball2_x, ball2_y);
 });
 
 this.socket.on('ballUpdates3', function(ball3_Pos) {
-    // if (countdownCompleted) {
-        const {ball3_x, ball3_y} = ball3_Pos;
-        ball3.setPosition(ball3_x, ball3_y);
-    // }
+  const {ball3_x, ball3_y} = ball3_Pos;
+  ball3.setPosition(ball3_x, ball3_y);
 });
 
   //create cursors
