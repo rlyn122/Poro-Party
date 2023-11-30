@@ -92,6 +92,7 @@ class MainScene extends Phaser.Scene {
               self.socket.emit("stopMainSceneRequest","DodgeballGame");
             });
 
+
             //asking server to launch volleyball scene
             self.startVolleyGameButton.setInteractive();
             self.startVolleyGameButton.on("pointerdown", () => {
@@ -103,22 +104,17 @@ class MainScene extends Phaser.Scene {
             self.startSoccerGameButton.on("pointerdown", () => {
               self.socket.emit("stopMainSceneRequest","SoccerGame");
             });
+
+            //disable game buttons while gameactive 
+            self.socket.on('disableButtons',()=>{
+              disableButtons(self)
+            });
+
+            self.socket.on('enableButtons',()=>{
+              enableButtons(self)
+            });
           });
-
-        //disable game buttons while gameactive 
-        self.socket.on('gameStatus',(gameActive)=>{
-          if(gameActive){
-            console.log("disable buttons")
-            disableButtons(self)
-          }
-          else{
-            console.log("enable buttons")
-            enableButtons(self)
-          }
         })
-        });
-
-
         
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
@@ -145,7 +141,7 @@ class MainScene extends Phaser.Scene {
         });
       
         //listen for player disconnection
-        this.socket.on('disconnect', function (playerId) {
+        this.socket.on('disconnect_mainScene', function (playerId) {
           self.players.getChildren().forEach(function (player) {
             if (playerId === player.playerId) {
               player.usernameText.destroy();
@@ -218,7 +214,6 @@ function displayPlayers(self, playerInfo, sprite) {
     player.setDepth(100);
     player.playerId = playerInfo.playerId;
     self.players.add(player);
-    console.log(self.players)
   } else {
     console.error('Failed to create player sprite');
   }
@@ -227,7 +222,12 @@ function displayPlayers(self, playerInfo, sprite) {
 
 //function to add player username onto screen
 function addUsername(player, scene, playerInfo){
-  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ff70a7' });
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: '#ffffff' });
+  this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
+}
+
+function addUsernameTeam(player, scene, playerInfo, teamColor){
+  player.usernameText = scene.add.text(0,0,playerInfo.username, { font: '16px Arial', fill: teamColor });
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
 }
 
@@ -238,7 +238,7 @@ function setUsername_Pos(player, posX, posY){
 
 function disableButtons(self) {
   // Disable the buttons
-  console.log("disabled")
+  console.log("buttons disabled")
   self.gameInProgressSign.setVisible(true);
   self.startDodgeballGameButton.removeInteractive();
   self.startVolleyGameButton.removeInteractive();
@@ -247,6 +247,8 @@ function disableButtons(self) {
 
 function enableButtons(self) {
   // Enable the buttons
+  console.log("buttons enabled")
+
   self.gameInProgressSign.setVisible(false);
   self.startDodgeballGameButton.setInteractive();
   self.startVolleyGameButton.setInteractive();

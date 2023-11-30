@@ -11,6 +11,7 @@ class Login extends Phaser.Scene {
 
     preload(){
         this.load.html('codeform', "assets/codeform.html");
+        this.load.image('title', "assets/letters/title.png")
     }  
 
     create() {
@@ -32,15 +33,9 @@ class Login extends Phaser.Scene {
         scene.popUp.fillRect(25, 25, 750, 500);
     
         //title
-        scene.title = scene.add.text(225, 60, "Poro Party!", {
-          fill: "#E75480",
-          fontFamily: 'Arial',
-          fontSize: "66px",
-          fontStyle: "bold",
-        });
+        scene.titleImage = scene.add.image(190, 60, 'title').setOrigin(0, 0).setScale(0.3);
 
-    
-        scene.JoinRoomButton = scene.add.text(250, 150, "Enter Username and Select Cat!", {
+        scene.JoinRoomButton = scene.add.text(250, 150, "Enter Username and Select a Cat!", {
           fill: "#000000",
           fontFamily: 'Arial',
           fontSize: "20px",

@@ -63,6 +63,7 @@ create() {
       delete players[id];
       // emit a message to all players to remove this player
       io.emit('disconnect_dodgeball', id);
+      io.emit('disconnect_mainScene', id);
       });
   }
 
@@ -141,6 +142,10 @@ create() {
           this.ball.setVelocity(300, 300);
           this.ball2.setVelocity(300, 300);
           this.ball3.setVelocity(300, 300);
+          // 10 seconds before player can be killed
+          for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+            players[id].invuln = false;
+  }
       }
   });
 
@@ -281,6 +286,9 @@ function getWinnerName() {
   if(left === 1) {
     players[id].invuln = true;
     return winner;
+  }
+  else if(left === 0) {
+    return "nobody";
   }
   return null;
 }
