@@ -54,57 +54,24 @@ class MainScene extends Phaser.Scene {
                 fontStyle: "bold",
               });
 
-            //create scene transition buttons
-            self.startDodgeballGameButton = self.add.text(500,20,"Start Dodgeball Game",{
-              fill: "#FFFFFF",
-              fontSize: "20px",
-              fontStyle: "bold",
-            });
-            
-            self.startVolleyGameButton = self.add.text(500,60,"Start Volleyball Game",{
-              fill: "#FFFFFF",
-              fontSize: "20px",
-              fontStyle: "bold",
-            });
+            // Creating buttons
+            self.startDodgeballGameButton = createButton(self, 500, 20, "Start Dodgeball Game", 'DodgeballGame',self.socket);
+            self.startVolleyGameButton = createButton(self, 500, 60, "Start Volleyball Game", 'VolleyballGame',self.socket);
+            self.startSoccerGameButton = createButton(self, 500, 100, "Start Soccer Game", 'SoccerGame',self.socket);
 
-            self.startSoccerGameButton = self.add.text(500,100,"Start Soccer Game",{
-              fill: "#FFFFFF",
-              fontSize: "20px",
-              fontStyle: "bold",
-            });
 
             // Create the 'Game in Progress' sign
-            self.gameInProgressSign = self.add.text(450, 20, "Game in progress, \nplease wait till finish", {
+            self.gameInProgressSign = self.add.text(450, 20, "Game in progress, \nplease wait \n buttons will refresh \n when game is over", {
               fill: "#FF0000",
               fontSize: "20px",
               fontStyle: "bold",
               backgroundColor: "#000000",
               padding: 20,
               align: 'center',
-              fixedWidth: 310,
-              fixedHeight: 100,
+              fixedWidth: 280,
+              fixedHeight: 125,
               border: "5px solid red",
           }).setVisible(false); // Initially hidden
-
-            //asking server to launch dodgeball scene
-            self.startDodgeballGameButton.setInteractive();
-            self.startDodgeballGameButton.on("pointerdown", () => {
-              self.socket.emit("stopMainSceneRequest","DodgeballGame");
-            });
-
-
-            //asking server to launch volleyball scene
-            self.startVolleyGameButton.setInteractive();
-            self.startVolleyGameButton.on("pointerdown", () => {
-              self.socket.emit("stopMainSceneRequest","VolleyballGame");
-            });
-
-            //asking server to launch volleyball scene
-            self.startSoccerGameButton.setInteractive();
-            self.startSoccerGameButton.on("pointerdown", () => {
-              self.socket.emit("stopMainSceneRequest","SoccerGame");
-            });
-
             //disable game buttons while gameactive 
             self.socket.on('disableButtons',()=>{
               disableButtons(self)
@@ -266,7 +233,7 @@ function setUsername_Pos(player, posX, posY) {
 function disableButtons(self) {
   // Disable the buttons
   console.log("buttons disabled")
-  self.gameInProgressSign.setVisible(true);
+  self.gameInProgressSign.setVisible(true).setDepth(2);
   self.startDodgeballGameButton.removeInteractive();
   self.startVolleyGameButton.removeInteractive();
   self.startSoccerGameButton.removeInteractive();
@@ -280,4 +247,44 @@ function enableButtons(self) {
   self.startDodgeballGameButton.setInteractive();
   self.startVolleyGameButton.setInteractive();
   self.startSoccerGameButton.setInteractive();
+}
+
+// Function to create a button
+function createButton(scene, x, y, text, gameName,socket) {
+  // Create the text element
+  let buttonText = scene.add.text(x, y, text, {
+      fill: "#FFFFFF",
+      font: '20px Pixelated', 
+      fontStyle: "bold",
+      backgroundColor: "#FFA500", // Example background color
+      padding: {
+          left: 10,
+          right: 10,
+          top: 5,
+          bottom: 5
+      }
+  }).setInteractive();
+
+  // Create a background rectangle (optional: rounded corners)
+  let background = scene.add.rectangle(buttonText.x, buttonText.y, buttonText.width, buttonText.height, 0xFFA500)
+                   .setOrigin(0, 0)
+                   .setInteractive();
+
+  // Move the text in front of the rectangle
+  buttonText.setDepth(1);
+
+  // Add hover effect
+  buttonText.on('pointerover', function () {
+      buttonText.setStyle({ fill: '#ff0' }); // Change text color on hover
+  });
+  buttonText.on('pointerout', function () {
+      buttonText.setStyle({ fill: '#FFF' }); // Change text color back
+  });
+
+  // Add click event
+  buttonText.on('pointerdown', ()=>{
+    socket.emit("stopMainSceneRequest",gameName);
+  });
+
+  return buttonText;
 }
