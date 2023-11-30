@@ -201,7 +201,7 @@ function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
   player.playerId = playerInfo.playerId;
   self.players.add(player);
-  player.setBounce(0.0);
+  player.setBounce(0.5);
   player.setScale(0.2, 0.2);  
   player.setCollideWorldBounds(true);
 }

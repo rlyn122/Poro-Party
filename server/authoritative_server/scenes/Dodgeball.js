@@ -56,13 +56,18 @@ create() {
         handlePlayerInput(self, id, inputData);
     })
     socket.on('disconnect', function () {
+      try{
       // remove player from server
       removePlayer(self, id);
       // remove this player from our players object
       delete players[id];
       // emit a message to all players to remove this player
       io.emit('disconnect_dodgeball', id);
-      });
+    }catch(error){
+      console.log(error)
+    }
+  });
+
 
   }
 

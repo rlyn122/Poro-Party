@@ -47,7 +47,6 @@ class Soccer extends Phaser.Scene {
 
     //handle player inputs and change player object
     for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-      console.log(id);
       socket.on('soccerInput', function (inputData) {
         handlePlayerInput(self, id, inputData);
         })
@@ -121,7 +120,6 @@ class Soccer extends Phaser.Scene {
       // Emit score updates to all players
       let b = self.blueScore;
       let r = self.redScore;
-      console.log(b)
       io.emit('scoreUpdate', { blueScore:b, redScore:r });
 
       // Reset the ball position
