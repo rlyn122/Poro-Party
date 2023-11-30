@@ -20,7 +20,7 @@ class Volleyball extends Phaser.Scene {
     this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
   
     //load background
-    this.load.image('sky', 'assets/volleyball/sky.png');
+    this.load.image('volleyball_background', 'assets/volleyball/sky.png');
     this.load.image('net', 'assets/volleyball/platform2.png');
     this.load.image('volleyball', 'assets/volleyball/volleyball.png');
     this.load.image('ground', 'assets/volleyball/platform.png');
@@ -34,7 +34,7 @@ class Volleyball extends Phaser.Scene {
     this.scene.launch("Rules_Volleyball");
 
     //add background
-    this.add.image(400, 300, 'sky');
+    this.add.image(400, 300, 'volleyball_background');
     this.add.image(400, 568, 'ground').setScale(2.3)
     this.add.image(400, 600, 'ground').setScale(2.3).setTint(0)
 
@@ -56,10 +56,7 @@ class Volleyball extends Phaser.Scene {
     //listen for currentPlayers and self
     this.socket.on('currentPlayers_volley', function (players) {
       Object.keys(players).forEach(function (id) {
-  
-      try{
-      displayPlayers(self, players[id], players[id].cat);
-      }catch(error){}
+        displayPlayers(self, players[id], players[id].cat);
       });
     });
   
@@ -158,3 +155,18 @@ class Volleyball extends Phaser.Scene {
   
   }
   
+function displayPlayers(self, playerInfo, sprite) {
+  if(playerInfo&&sprite){
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+  if (player) {
+    addUsername(player,self,playerInfo)
+    //high depth value to bring the player sprite to the front
+    player.setDepth(100);
+    player.playerId = playerInfo.playerId;
+    self.players.add(player);
+    console.log(self.players)
+  } else {
+    console.error('Failed to create player sprite');
+  }
+  }
+}

@@ -217,10 +217,7 @@ function displayPlayers(self, playerInfo, sprite) {
     //high depth value to bring the player sprite to the front
     player.setDepth(100);
     player.playerId = playerInfo.playerId;
-    try {
-      self.players.add(player);
-    }
-    catch {}
+    self.players.add(player);
     console.log(self.players)
   } else {
     console.error('Failed to create player sprite');
