@@ -33,6 +33,16 @@ class MainScene extends Phaser.Scene {
         this.letters = this.add.group();
         this.players = this.add.group();
 
+        this.input.once('pointerdown', function () {
+          // Check if the audio context is in a suspended state (this is usually true by default)
+          if (self.sound && self.sound.context && self.sound.context.state === 'suspended') {
+              self.sound.context.resume().then(() => {
+                  console.log('Playback resumed successfully');
+                  // Now that the audio context is resumed, start the audio
+                  self.main_bgm.play({ loop: true });
+              });
+          }
+       });
 
         //add background
         this.add.image(0,0,"bg").setOrigin(0);
