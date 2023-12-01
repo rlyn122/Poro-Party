@@ -28,7 +28,7 @@ class Soccer extends Phaser.Scene {
     this.load.image('red_goal', 'assets/soccer/red_goal.png');
 
     //sounds
-    this.load.audio('soccer_bgm', 'assets/sounds/wakawaka.mp3');
+    this.load.audio('soccer_bgm', 'assets/sounds/soccer.mp3');
     this.load.audio('yay', 'assets/sounds/yay.mp3');
     
 
@@ -47,7 +47,7 @@ class Soccer extends Phaser.Scene {
     this.soccer_bgm.play({
         loop: true
     });
-    this.soccer_bgm.volume = 0.5;
+    this.soccer_bgm.volume = 0.12;
 
     //add background
 
@@ -72,16 +72,16 @@ class Soccer extends Phaser.Scene {
     // 创建蓝队的圆角矩形背景
     this.blueScoreBg = this.add.graphics();
     this.blueScoreBg.fillStyle(0x4da2ee, 1); // 背景颜色
-    this.blueScoreBg.fillRoundedRect(560, 20, 140, 40, 20); // 圆角矩形
+    this.blueScoreBg.fillRoundedRect(560, 25, 140, 40, 20); // 圆角矩形
 
     // 创建红队的圆角矩形背景
     this.redScoreBg = this.add.graphics();
     this.redScoreBg.fillStyle(0xe3170d, 1); // 背景颜色
-    this.redScoreBg.fillRoundedRect(140, 20, 140, 40, 20); // 圆角矩形
+    this.redScoreBg.fillRoundedRect(120, 25, 140, 40, 20); // 圆角矩形
 
     // 添加计分文本
     this.blueScoreTextSoccer = this.add.text(630, 26, 'Blue: 0', scoreTextStyle).setOrigin(0.5, 0);
-    this.redScoreTextSoccer = this.add.text(210, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
+    this.redScoreTextSoccer = this.add.text(190, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
 
     //listen for currentPlayers and self
     this.socket.on('currentPlayers_soccer', function (players) {

@@ -84,7 +84,7 @@ class MainScene extends Phaser.Scene {
         this.main_bgm.play({
             loop: true
         });
-        this.main_bgm.volume = 1.4;
+        this.main_bgm.volume = 1;
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
@@ -119,11 +119,12 @@ class MainScene extends Phaser.Scene {
           }).setVisible(false); // Initially hidden
             //disable game buttons while gameactive 
             self.socket.on('disableButtons',()=>{
+              self.main_bgm.volume = 0;
               disableButtons(self)
             });
 
             self.socket.on('enableButtons',()=>{
-              self.main_bgm.volume = 1.4;
+              self.main_bgm.volume = 1;
               enableButtons(self)
             });
           });

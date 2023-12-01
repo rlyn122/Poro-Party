@@ -28,7 +28,7 @@ class Dodgeball extends Phaser.Scene {
   this.load.image('dodge_ground', 'assets/dodgeball/platform2.png');
 
   //sounds
-  this.load.audio('dodge_bgm', 'assets/sounds/pvz.mp3');
+  this.load.audio('dodge_bgm', 'assets/sounds/dodgeball.mp3');
 }
 
  create() {
@@ -52,7 +52,7 @@ class Dodgeball extends Phaser.Scene {
   this.dodge_bgm.play({
       loop: true
   });
-  this.dodge_bgm.volume = 0.3;
+  this.dodge_bgm.volume = 0.12;
 
 
 

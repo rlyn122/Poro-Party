@@ -43,7 +43,7 @@ class Volleyball extends Phaser.Scene {
     this.volley_bgm.play({
         loop: true
     });
-    this.volley_bgm.volume = 0.3;
+    this.volley_bgm.volume = 0.12;
 
     //add background
     this.add.image(400, 300, 'volleyball_background');
@@ -66,16 +66,16 @@ class Volleyball extends Phaser.Scene {
     // 创建蓝队的圆角矩形背景
     this.blueScoreBg = this.add.graphics();
     this.blueScoreBg.fillStyle(0x4da2ee, 1); // 背景颜色
-    this.blueScoreBg.fillRoundedRect(560, 20, 140, 40, 20); // 圆角矩形
+    this.blueScoreBg.fillRoundedRect(560, 25, 140, 40, 20); // 圆角矩形
 
     // 创建红队的圆角矩形背景
     this.redScoreBg = this.add.graphics();
     this.redScoreBg.fillStyle(0xe3170d, 1); // 背景颜色
-    this.redScoreBg.fillRoundedRect(140, 20, 140, 40, 20); // 圆角矩形
+    this.redScoreBg.fillRoundedRect(120, 25, 140, 40, 20); // 圆角矩形
 
     // 添加计分文本
     this.blueScoreTextVolleyball = this.add.text(630, 26, 'Blue: 0', scoreTextStyle).setOrigin(0.5, 0);
-    this.redScoreTextVolleyball = this.add.text(210, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
+    this.redScoreTextVolleyball = this.add.text(190, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
 
   
     //listen for currentPlayers and self
