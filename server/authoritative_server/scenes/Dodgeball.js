@@ -11,7 +11,7 @@ class Dodgeball extends Phaser.Scene {
   }
 
 preload() {
-  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
@@ -134,6 +134,14 @@ create() {
   this.physics.add.collider(this.ball3, this.ball)
   this.physics.add.collider(this.ball3, this.ball2)
   this.physics.add.collider(this.players, this.players)
+
+  // 10 seconds before player can be killed
+  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+    if(players[id]){
+    players[id].alive = 'alive';
+    }
+  }
+
   
   // Initialize game as frozen
   this.gameFrozen = true;
@@ -153,8 +161,12 @@ create() {
           // 10 seconds before player can be killed
           for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
             if(players[id]){
-            players[id].invuln = false;
+              players[id].invuln = false;
             }
+            try {
+              players[id].alive = 'alive';
+            }
+            catch {}
           }
       }
   });
@@ -226,7 +238,7 @@ update() {
 
 
   if(!(getWinnerName() === null) || this.gameOver_byDefault) {
-    io.emit('gameOver', getWinnerName());
+    io.emit('gameOver_Dodge', getWinnerName());
 
     let countdown = 10;
     const timerInterval= setInterval(() => {
@@ -238,6 +250,7 @@ update() {
           players[sockets[i]].alive = 'alive';
           players[sockets[i]].invuln = true;
         }
+        console.log("Buttons enabling");
         io.emit('stopDodgeballScene');
         gameActive = false;
         this.scene.stop("Dodgeball");

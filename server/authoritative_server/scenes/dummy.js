@@ -10,7 +10,7 @@ class Dummy extends Phaser.Scene {
     }
 
     preload() {
-        this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+        this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
         //load background
         this.load.image('sky', 'assets/volleyball/spaceship.png');
         this.load.image('net', 'assets/volleyball/platform2.png');
