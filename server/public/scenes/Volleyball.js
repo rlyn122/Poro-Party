@@ -62,12 +62,15 @@ class Volleyball extends Phaser.Scene {
   
     //listen for player disconnection
     this.socket.on('disconnect_volleyball', function (playerId) {
+      try{
       self.players.getChildren().forEach(function (player) {
         if (playerId === player.playerId) {
           player.usernameText.destroy();
           player.destroy();
         }
       });
+    }
+      catch(error){}
     });
   
     //update player movements and animations from server
@@ -91,7 +94,7 @@ class Volleyball extends Phaser.Scene {
       ball.setPosition(ball_x, ball_y);
     });
 
-    this.socket.on('scoreUpdate', function (scores) {
+    this.socket.on('scoreUpdate_volley', function (scores) {
       self.blueScoreTextVolleyball.setText(`Blue: ${scores.blueScore}`);
       self.redScoreTextVolleyball.setText(`Red: ${scores.redScore}`);
     });

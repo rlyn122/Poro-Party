@@ -134,7 +134,7 @@ class Soccer extends Phaser.Scene {
       // Emit score updates to all players
       let b = self.blueScore;
       let r = self.redScore;
-      io.emit('scoreUpdate', { blueScore:b, redScore:r });
+      io.emit('scoreUpdate_soccer', { blueScore:b, redScore:r });
 
       // Reset the ball position
       ball.setPosition(400, 200);

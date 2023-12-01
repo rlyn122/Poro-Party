@@ -103,7 +103,7 @@ class Volleyball extends Phaser.Scene {
       }
       let b = self.blueScore
       let r = self.redScore
-      io.emit('scoreUpdate', {blueScore:b, redScore:r });
+      io.emit('scoreUpdate_volley', {blueScore:b, redScore:r });
     });
   
     //add more general colliders
