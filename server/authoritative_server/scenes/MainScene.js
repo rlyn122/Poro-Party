@@ -160,7 +160,7 @@ class MainScene extends Phaser.Scene {
   //constantly emit each player's position
   this.players.getChildren().forEach((player) => {
       const input = players[player.playerId].input;
-
+      if(input){
       if (input.left) {
       player.setVelocityX(-speed);
       } else if (input.right) {
@@ -173,7 +173,7 @@ class MainScene extends Phaser.Scene {
       } 
       players[player.playerId].x = player.x;
       players[player.playerId].y = player.y;
-
+    }
   });
 
   //emit player positions
