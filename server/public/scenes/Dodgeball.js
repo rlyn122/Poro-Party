@@ -10,7 +10,7 @@ class Dodgeball extends Phaser.Scene {
 
  preload() {
   //load sprites
-  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
+  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
   this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
@@ -26,6 +26,9 @@ class Dodgeball extends Phaser.Scene {
   this.load.image('mars', 'assets/dodgeball/mars.png');
   this.load.image('saturn', 'assets/dodgeball/saturn.png');
   this.load.image('dodge_ground', 'assets/dodgeball/platform2.png');
+
+  //sounds
+  this.load.audio('dodge_bgm', 'assets/sounds/pvz.mp3');
 }
 
  create() {
@@ -43,6 +46,14 @@ class Dodgeball extends Phaser.Scene {
   this.add.image(600, 220, 'dodge_ground').setScale(.5)
   this.add.image(200, 400, 'dodge_ground').setScale(.5)
   this.add.image(600, 400, 'dodge_ground').setScale(.5)
+
+  //sounds
+  this.load.audio('dodge_bgm', 'assets/sounds/pvz.mp3');
+  this.dodge_bgm = this.sound.add('dodge_bgm');
+  this.dodge_bgm.play({
+      loop: true
+  });
+
 
   // create the first ball
   var ball = this.add.sprite(400, 200, 'earth');
@@ -118,6 +129,7 @@ this.socket.on('gameOver_Dodge', function(username) {
 });
 
 this.socket.on('stopDodgeballScene', () => {
+  dodge_self.dodge_bgm.stop();
   dodge_self.socket.emit("enableButtonsafterScene")
   dodge_self.scene.stop("Dodgeball");
 });

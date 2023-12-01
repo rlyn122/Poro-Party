@@ -19,6 +19,9 @@ class MainScene extends Phaser.Scene {
         //load background
         this.load.image("bg","assets/lobby.jpg");
         this.load.image('lobbyground', 'assets/dodgeball/lobbyground.png');
+
+        //sounds
+        this.load.audio('main_bgm', 'assets/sounds/minecraft.mp3');
     }
 
     create() {
@@ -37,7 +40,13 @@ class MainScene extends Phaser.Scene {
         this.add.image(100,450,'lobbyground').setScale(0.3);
         this.add.image(500,300,'lobbyground').setScale(0.3);
         this.add.image(600,200,'lobbyground').setScale(0.3);
-        this.add.image(300,350,'lobbyground').setScale(0.3);      
+        this.add.image(300,350,'lobbyground').setScale(0.3);     
+        
+        //play bgm in loop
+        this.main_bgm = this.sound.add('main_bgm');
+        this.main_bgm.play({
+            loop: true
+        });
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
@@ -83,16 +92,19 @@ class MainScene extends Phaser.Scene {
         
         //receive signals to launch games from server
         this.socket.on("DodgeballGame", ()=>{
+          this.main_bgm.volume = 0;
           this.scene.launch("Dodgeball",{socket:self.socket})
         })
 
         //launch volleyball game from here
         this.socket.on("VolleyballGame", ()=>{
+          this.main_bgm.volume = 0;
           this.scene.launch("Volleyball",{socket:self.socket})
         })
 
         //launch soccer game from here
         this.socket.on("SoccerGame", ()=>{
+          this.main_bgm.volume = 0;
           this.scene.launch("Soccer",{socket:self.socket})
         })
 
