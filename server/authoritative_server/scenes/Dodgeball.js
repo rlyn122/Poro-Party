@@ -8,7 +8,6 @@ class Dodgeball extends Phaser.Scene {
     this.socket = data.socket;
     this.io = data.io;
     this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
-
   }
 
 preload() {
@@ -135,14 +134,6 @@ create() {
   this.physics.add.collider(this.ball3, this.ball)
   this.physics.add.collider(this.ball3, this.ball2)
   this.physics.add.collider(this.players, this.players)
-
-  // 10 seconds before player can be killed
-  for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-    if(players[id]){
-    players[id].invuln = true;
-    }
-  }
-
   
   // Initialize game as frozen
   this.gameFrozen = true;
