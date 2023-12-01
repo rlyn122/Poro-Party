@@ -17,8 +17,6 @@ class MainScene extends Phaser.Scene {
 
       const self = this;
       this.players = this.add.group();
-      this.playerCountMain = Object.keys(players).length;
-      console.log(this.playerCountMain)
 
       //platforms
       this.platforms = this.physics.add.staticGroup();
@@ -40,12 +38,25 @@ class MainScene extends Phaser.Scene {
       //socket connection established
       io.on('connection', function (socket) {
 
+        //handle enabling buttons when scene ends
+        socket.on('enableButtonsafterScene',()=>{
+          io.emit('enableButtons')
+        })
 
+        //handles requests to start game
         socket.on('stopMainSceneRequest', function (gameName){
+          
+          //check if another scene is active
+          if(self.isAnyOtherSceneActive()){
+            console.log("Other scene is active, do not start other games")
+          }
+          else{
+          //disable start buttons
+          io.emit("disableButtons")
+          gameActive = true;
+          
           //let clients know to start game
           io.emit(gameName);
-          //handle disabling game buttons
-          gameActive = true;
 
           //launch game on the serverside
           if (gameName == "DodgeballGame"){
@@ -60,6 +71,8 @@ class MainScene extends Phaser.Scene {
             console.log("Soccer Game Launched!")
             self.scene.launch("Soccer",{socket:socket, io:io})
           }
+
+        }
 
           });
 
@@ -86,6 +99,14 @@ class MainScene extends Phaser.Scene {
 
             // send the players object to the new player
             socket.emit('currentPlayers', players);
+
+            //establish whether or not buttons should be enabled
+            if(gameActive){
+              io.emit('disableButtons')
+            }
+            else{
+              io.emit('enableButtons')
+            }
 
             // update all other players of the new player
             socket.broadcast.emit('newPlayer', players[socket.id]);
@@ -119,13 +140,16 @@ class MainScene extends Phaser.Scene {
             }
           })
 
+
           socket.on('disconnect', function () {
+          console.log("Player Disconnected from Mainscene")
           // remove player from server
           removePlayer(self, socket.id);
           // remove this player from our players object
           delete players[socket.id];
           // emit a message to all players to remove this player
-          io.emit('disconnect', socket.id);
+          io.emit('disconnect_mainScene', socket.id);
+          io.emit('')
           });
       });
 
@@ -152,14 +176,26 @@ class MainScene extends Phaser.Scene {
 
   });
 
-  //emit player count
-  io.emit('playerCount', this.playerCountMain);
   //emit player positions
   io.emit('playerUpdates', players);
-  //emit whether or not an active game is running
-  io.emit("gameStatus",gameActive);
   }
+
+
+  // Function to check if any scene other than 'MainScene' is active
+  isAnyOtherSceneActive() {
+    const allScenes = this.scene.manager.getScenes();
+
+    for (let scene of allScenes) {
+        if (scene.scene.key !== 'MainScene' && this.scene.isActive()) {
+            return true;
+        }
+    }
+    return false;
 }
+
+}
+
+
 
 //create sprite for player
 function addPlayer(self, playerInfo) {
@@ -169,8 +205,8 @@ function addPlayer(self, playerInfo) {
   player.setBounce(0.5);
   player.setScale(0.2, 0.2);  
   player.setCollideWorldBounds(true);
-  this.playerCountMain++
 }
+
 
 //delete sprite for player
 function removePlayer(self, playerId) {
@@ -180,6 +216,8 @@ function removePlayer(self, playerId) {
       player.destroy();
     }
   });
-  this.playerCountMain--
-}catch(error){}
+
+} catch(error){
+  console.log(error)
+}
 }
