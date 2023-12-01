@@ -149,7 +149,7 @@ class Soccer extends Phaser.Scene {
         callback: () => {
             this.gameFrozen = false;
             // Restore ball physics
-            this.ball.setVelocityX(0);
+            this.ball.setVelocityX(200);
             this.ball.setVelocityY(-150);
         }
     });
