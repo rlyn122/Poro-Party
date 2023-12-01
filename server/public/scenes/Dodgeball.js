@@ -118,6 +118,7 @@ this.socket.on('gameOver_Dodge', function(username) {
 });
 
 this.socket.on('stopDodgeballScene', () => {
+  console.log("buttons enabling");
   dodge_self.socket.emit("enableButtonsafterScene")
   dodge_self.scene.stop("Dodgeball");
 });

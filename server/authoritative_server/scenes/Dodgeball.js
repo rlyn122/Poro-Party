@@ -139,7 +139,7 @@ create() {
   // 10 seconds before player can be killed
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     if(players[id]){
-    players[id].invuln = true;
+    players[id].alive = 'alive';
     }
   }
 
@@ -162,8 +162,12 @@ create() {
           // 10 seconds before player can be killed
           for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
             if(players[id]){
-            players[id].invuln = false;
+              players[id].invuln = false;
             }
+            try {
+              players[id].alive = 'alive';
+            }
+            catch {}
           }
       }
   });
@@ -235,7 +239,7 @@ update() {
 
 
   if(!(getWinnerName() === null) || this.gameOver_byDefault) {
-    io.emit('gameOver', getWinnerName());
+    io.emit('gameOver_Dodge', getWinnerName());
 
     let countdown = 10;
     const timerInterval= setInterval(() => {
@@ -247,6 +251,7 @@ update() {
           players[sockets[i]].alive = 'alive';
           players[sockets[i]].invuln = true;
         }
+        console.log("Buttons enabling");
         io.emit('stopDodgeballScene');
         gameActive = false;
         this.scene.stop("Dodgeball");

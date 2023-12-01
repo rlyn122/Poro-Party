@@ -31,7 +31,7 @@ class MainScene extends Phaser.Scene {
 
       //add players to this scene
       for (const playerId in players){
-        players[playerId].alive = "alive"
+        players[playerId].alive = "dead"
         addPlayer(this , players[playerId])
       }
 
@@ -91,7 +91,7 @@ class MainScene extends Phaser.Scene {
             username:data.username,
             cat:data.cat,
             invuln:true,
-            alive:"alive",
+            alive:"dead",
             };
 
             // add player to server
