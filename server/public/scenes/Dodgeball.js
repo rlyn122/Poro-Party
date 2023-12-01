@@ -132,14 +132,16 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   // 创建胜利文本
   this.dodge_gameOverText = this.add.text(centerX, centerY, '', gameOverTextStyle).setOrigin(0.5, 0.5).setVisible(false);
 
-this.socket.on('gameOver_Dodge', function(username) {
+this.socket.on('gameOver_Dodge', (username) => {
   if(username === null) { username = "Unknown" }
 
-  // 设置文本内容和颜色
-  this.dodge_gameOverText.setText(username + " Won").setFill('#ff0000').setVisible(true);
+  console.log(username)
 
-  // 创建动画效果
-  this.tweens.add({
+  // 设置文本内容和颜色
+  if(this.dodge_gameOverText) {
+    this.dodge_gameOverText.setText(username + " Won").setFill('#ff0000').setVisible(true);
+      // 创建动画效果
+    this.tweens.add({
       targets: this.dodge_gameOverText,
       y: centerY - 100, // 向上移动
       alpha: { start: 0, to: 1 }, // 透明度变化
@@ -149,7 +151,10 @@ this.socket.on('gameOver_Dodge', function(username) {
       onComplete: () => {
           // 动画完成后的回调（可选）
       }
-});
+    });
+  } else {
+    console.error('dodge_gameOverText is not defined.');
+  }
 });
 
 this.socket.on('stopDodgeballScene', () => {
@@ -194,9 +199,9 @@ this.players.children.iterate(function (player) {
   }
 }
 
-displayPlayers(self, playerInfo, sprite) {
-  console.log(`${playerInfo} displayed`)
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
+  displayPlayers(self, playerInfo, sprite) {
+    console.log(`${playerInfo} displayed`)
+    const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setScale(0.2,0.2);
     addUsernameTeam(player,self,playerInfo,'#8A2BE2')
     player.playerId = playerInfo.playerId;
     self.players.add(player);

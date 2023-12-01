@@ -123,7 +123,7 @@ class MainScene extends Phaser.Scene {
             });
 
             self.socket.on('enableButtons',()=>{
-              this.main_bgm.volume = 1.4;
+              self.main_bgm.volume = 1.4;
               enableButtons(self)
             });
           });

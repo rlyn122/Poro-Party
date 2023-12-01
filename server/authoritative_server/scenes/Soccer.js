@@ -63,7 +63,6 @@ class Soccer extends Phaser.Scene {
       socket.on('disconnect', function () {
         // remove player from server
         removePlayer(self, id);
-        console.log(self.playerCountSoccer)
         self.playerCountSoccer--
         console.log(self.playerCountSoccer)
         // remove this player from our players object
