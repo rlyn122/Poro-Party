@@ -224,7 +224,7 @@ update() {
 
 
   if(!(getWinnerName() === null)) {
-    io.emit('gameOver', getWinnerName());
+    io.emit('gameOver_Dodge', getWinnerName());
 
     let countdown = 10;
     const timerInterval= setInterval(() => {

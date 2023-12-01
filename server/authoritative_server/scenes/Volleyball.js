@@ -188,7 +188,7 @@ class Volleyball extends Phaser.Scene {
     io.emit('ballUpdates', {ball_x,ball_y})
 
     if(getVolleyballWinner(this.blueScore, this.redScore) != null) {
-      io.emit('gameOver', getVolleyballWinner(this.blueScore, this.redScore));
+      io.emit('gameOver_volley', getVolleyballWinner(this.blueScore, this.redScore));
   
       let countdown = 5;
       const timerInterval = setInterval(() => {

@@ -113,7 +113,7 @@ class Soccer extends Phaser.Scene {
       fontSize: "50px"
     }).setOrigin(0.5, 0);
   
-    this.socket.on('gameOver', function(team) {
+    this.socket.on('gameOver_soccer', function(team) {
       soc_gameOverText.setText(team + " Won")
       self.socket.emit('')
     });

@@ -217,7 +217,7 @@ class Soccer extends Phaser.Scene {
     io.emit('soccer_ballUpdates', {ball_x,ball_y})
 
     if(getSoccerWinner(this.blueScore,this.redScore) != null || this.gameOver_byDefault) {
-      io.emit('gameOver', getSoccerWinner(this.blueScore,this.redScore));
+      io.emit('gameOver_soccer', getSoccerWinner(this.blueScore,this.redScore));
   
       let countdown = 5;
       const timerInterval = setInterval(() => {

@@ -112,7 +112,7 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
     fontSize: "50px"
 }).setOrigin(0.5, 0);
 
-this.socket.on('gameOver', function(username) {
+this.socket.on('gameOver_Dodge', function(username) {
   if(username === null) { username = "Unknown" }
   dodge_self.dodge_gameOverText.setText(username + " Won")
 });
