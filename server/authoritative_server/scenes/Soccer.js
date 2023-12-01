@@ -123,10 +123,10 @@ class Soccer extends Phaser.Scene {
 
     this.physics.add.collider(this.ball, this.net, function (ball, net) {
       // Check for scoring when the ball touches the ground
-      if (ball.x < 90 && ball.x > 10) {
+      if (ball.x < 140 && ball.x > 10) {
         // Blue side scores
         self.blueScore++;
-      } else if (ball.x > 710 && ball.x < 790) {
+      } else if (ball.x > 650 && ball.x < 790) {
         // Red side scores
         self.redScore++;
       }

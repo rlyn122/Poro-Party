@@ -94,10 +94,13 @@ class Soccer extends Phaser.Scene {
 
     //score updates
     this.socket.on('scoreUpdate_soccer', function (scores) {
+      console.log(scores)
       try{
       self.blueScoreTextSoccer.setText(`Blue: ${scores.blueScore}`);
       self.redScoreTextSoccer.setText(`Red: ${scores.redScore}`);
-      } catch(error){}
+      } catch(error){
+        console.log(error)
+      }
     });
 
     //create cursors

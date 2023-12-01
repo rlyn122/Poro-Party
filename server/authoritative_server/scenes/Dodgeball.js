@@ -8,7 +8,6 @@ class Dodgeball extends Phaser.Scene {
     this.socket = data.socket;
     this.io = data.io;
     this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
-
   }
 
 preload() {
