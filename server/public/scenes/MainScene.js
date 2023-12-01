@@ -30,6 +30,7 @@ class MainScene extends Phaser.Scene {
         this.letters = this.add.group();
         this.players = this.add.group();
 
+
         //add background
         this.add.image(0,0,"bg").setOrigin(0);
         this.add.image(400, 600, 'lobbyground').setScale(2).setTint(0); 
