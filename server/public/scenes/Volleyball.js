@@ -39,6 +39,7 @@ class Volleyball extends Phaser.Scene {
 
     //sounds
     this.yay = this.sound.add('yay');
+    this.yay.volume = 0.7
     this.volley_bgm = this.sound.add('volley_bgm');
     this.volley_bgm.play({
         loop: true

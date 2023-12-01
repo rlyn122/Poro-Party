@@ -43,6 +43,7 @@ class Soccer extends Phaser.Scene {
 
       //sounds
     this.yay = this.sound.add('yay');
+    this.yay.volume = 0.7
     this.soccer_bgm = this.sound.add('soccer_bgm');
     this.soccer_bgm.play({
         loop: true
