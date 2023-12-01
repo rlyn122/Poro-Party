@@ -156,7 +156,7 @@ class Soccer extends Phaser.Scene {
 
     // Set a timed event to add players to the game after 5 seconds
     this.time.addEvent({
-      delay: 1000,
+      delay: 10000,
       callback: () => {
         this.io.emit("currentPlayers_soccer", currentPlayers)
       }
