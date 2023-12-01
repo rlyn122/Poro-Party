@@ -36,6 +36,8 @@ class Soccer extends Phaser.Scene {
     this.blueScore = 0;
     this.redScore = 0;
 
+    var currentPlayers = players
+
     //add players to this scene
     for (const playerId in players){
       var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
@@ -47,7 +49,6 @@ class Soccer extends Phaser.Scene {
 
     //handle player inputs and change player object
     for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
-      console.log(id);
       socket.on('soccerInput', function (inputData) {
         handlePlayerInput(self, id, inputData);
         })
@@ -121,7 +122,6 @@ class Soccer extends Phaser.Scene {
       // Emit score updates to all players
       let b = self.blueScore;
       let r = self.redScore;
-      console.log(b)
       io.emit('scoreUpdate', { blueScore:b, redScore:r });
 
       // Reset the ball position
@@ -156,9 +156,9 @@ class Soccer extends Phaser.Scene {
 
     // Set a timed event to add players to the game after 5 seconds
     this.time.addEvent({
-      delay: 10000,
+      delay: 1000,
       callback: () => {
-        this.io.emit("currentPlayers_soccer", players)
+        this.io.emit("currentPlayers_soccer", currentPlayers)
       }
     });
   }

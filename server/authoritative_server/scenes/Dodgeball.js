@@ -35,7 +35,7 @@ create() {
   this.balls = this.add.group();
 
   console.log("Serverside Dodgeball Running")
-
+  var currentPlayers = players
   // let hitCounter = 0;
   this.gameOver = false;
 
@@ -56,13 +56,18 @@ create() {
         handlePlayerInput(self, id, inputData);
     })
     socket.on('disconnect', function () {
+      try{
       // remove player from server
       removePlayer(self, id);
       // remove this player from our players object
       delete players[id];
       // emit a message to all players to remove this player
       io.emit('disconnect_dodgeball', id);
-      });
+    }catch(error){
+      console.log(error)
+    }
+  });
+
 
   }
 
@@ -149,16 +154,14 @@ create() {
             players[id].invuln = false;
             }
           }
-          this.io.emit("currentPlayers_dodge", players)
-
       }
   });
 
     // Set a timed event to add players to the game after 5 seconds
     this.time.addEvent({
-      delay: 10000,
+      delay: 1000,
       callback: () => {
-        this.io.emit("currentPlayers_dodge", players)
+        this.io.emit("currentPlayers_dodge", currentPlayers)
       }
     });
 

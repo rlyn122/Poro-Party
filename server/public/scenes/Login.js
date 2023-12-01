@@ -35,10 +35,10 @@ class Login extends Phaser.Scene {
         //title
         scene.titleImage = scene.add.image(190, 60, 'title').setOrigin(0, 0).setScale(0.3);
 
-        scene.JoinRoomButton = scene.add.text(250, 150, "Enter Username and Select a Cat!", {
+        scene.JoinRoomButton = scene.add.text(230, 150, "Enter Username and Select a Cat!", {
           fill: "#000000",
-          fontFamily: 'Arial',
-          fontSize: "20px",
+          fontFamily: 'Bangers',
+          fontSize:'24px',
           fontStyle: "bold",
         });
         
@@ -52,7 +52,7 @@ class Login extends Phaser.Scene {
           event.preventDefault(); //prevent default form submission
           const usernameInput = scene.inputElement.node.querySelector('input[name="user-name"]');
           const catInput = document.querySelector('input[name="cats"]:checked');
-            
+
           //if these values exist, save the data into data object and emit isKeyValid event
           if (usernameInput && catInput) {
             const username = usernameInput.value;

@@ -54,7 +54,7 @@ class MainScene extends Phaser.Scene {
           //disable start buttons
           io.emit("disableButtons")
           gameActive = true;
-
+          
           //let clients know to start game
           io.emit(gameName);
 
@@ -149,6 +149,7 @@ class MainScene extends Phaser.Scene {
           delete players[socket.id];
           // emit a message to all players to remove this player
           io.emit('disconnect_mainScene', socket.id);
+          io.emit('')
           });
       });
 
@@ -201,7 +202,7 @@ function addPlayer(self, playerInfo) {
   const player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'cat1');
   player.playerId = playerInfo.playerId;
   self.players.add(player);
-  player.setBounce(0.0);
+  player.setBounce(0.5);
   player.setScale(0.2, 0.2);  
   player.setCollideWorldBounds(true);
 }
@@ -209,9 +210,14 @@ function addPlayer(self, playerInfo) {
 
 //delete sprite for player
 function removePlayer(self, playerId) {
-  self.players.getChildren().forEach((player) => {
+  try{
+    self.players.getChildren().forEach((player) => {
     if (playerId === player.playerId) {
       player.destroy();
     }
   });
+
+} catch(error){
+  console.log(error)
+}
 }
