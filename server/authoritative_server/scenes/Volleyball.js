@@ -30,11 +30,19 @@ class Volleyball extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
+    this.gameOver_byDefault = false;
 
     this.blueScore = 0;
     this.redScore = 0;
     console.log("Serverside Volleyball Running")
     var currentPlayers = players;
+
+    // incrementing player count
+    this.playerCountVolleyball = Object.keys(players).length;
+
+    // Start game timer (10 minutes in milliseconds)
+    this.gameStartTimeVolleyball = Date.now();
+    this.gameDurationVolleyball = 10 * 60 * 1000; // 10 minutes
 
   //add players to this scene
   for(const playerId in players) {
@@ -43,15 +51,18 @@ class Volleyball extends Phaser.Scene {
     players[playerId].y = yPos
     players[playerId].x = randomX
     addPlayer(this, players[playerId])
+    console.log(this.playerCountVolleyball)
   }
 
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     socket.on('volleyInput', function (inputData) {
       handlePlayerInput(self, id, inputData);
     })
-    socket.on('disconnect', function () {
+    socket.on('disconnect', () => {
       // remove player from server
       removePlayer(self,id);
+      this.playerCountVolleyball--
+      console.log(this.playerCountVolleyball)
       // remove this player from our players object
       delete players[id];
       console.log("Player Disconnected from Volleyball")
@@ -130,7 +141,7 @@ class Volleyball extends Phaser.Scene {
             this.ball.setVelocityY(-150);
         }   
     });
-    // Set a timed event to add players to the game after 5 seconds
+    // Set a timed event to add players to the game after 10 seconds
     this.time.addEvent({
       delay: 10000,
       callback: () => {
@@ -143,7 +154,7 @@ class Volleyball extends Phaser.Scene {
   
     if (this.gameFrozen) {
       return;
-  }
+    }
 
     const speed = 250
     //constantly emit each player's position/animation
@@ -185,7 +196,7 @@ class Volleyball extends Phaser.Scene {
     //emit ball positions
     io.emit('ballUpdates', {ball_x,ball_y})
 
-    if(getVolleyballWinner(this.blueScore, this.redScore) != null) {
+    if(getVolleyballWinner(this.blueScore, this.redScore) != null || this.gameOver_byDefault) {
       io.emit('gameOver', getVolleyballWinner(this.blueScore, this.redScore));
   
       let countdown = 5;
@@ -198,6 +209,17 @@ class Volleyball extends Phaser.Scene {
           this.scene.stop("Volleyball");
         }
       }, 300);
+    }
+
+    if (this.playerCountVolleyball == 0) {
+      endGameVolleyball(this,"No players in the room");
+      return;
+    }
+
+    // Check if game time exceeded 10 minutes
+    if (Date.now() - this.gameStartTime > this.gameDuration) {
+      endGameVolleyball(this,"Time limit reached");
+      return;
     }
   }
   }
@@ -222,3 +244,9 @@ class Volleyball extends Phaser.Scene {
       return null;
     }
   }
+
+  function endGameVolleyball(self,reason) {
+    console.log("Game Ended:", reason);
+    // Implement logic to end the game, e.g., emitting an event to players
+    self.gameOver_byDefault = true;
+}
