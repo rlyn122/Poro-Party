@@ -33,10 +33,18 @@ class Soccer extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
+    this.gameOver_byDefault = false;
     this.blueScore = 0;
     this.redScore = 0;
 
     var currentPlayers = players
+
+    // incrementing player count
+    this.playerCountSoccer = Object.keys(players).length;
+
+    // Start game timer (10 minutes in milliseconds)
+    this.gameStartTimeSoccer = Date.now();
+    this.gameDurationSoccer = 10 * 60 * 1000; // 10 minutes
 
     //add players to this scene
     for (const playerId in players){
@@ -45,6 +53,7 @@ class Soccer extends Phaser.Scene {
       players[playerId].y = yPos
       players[playerId].x = randomX
       addPlayer(this, players[playerId])
+      console.log(this.playerCountSoccer)
     }
 
     //handle player inputs and change player object
@@ -55,6 +64,9 @@ class Soccer extends Phaser.Scene {
       socket.on('disconnect', function () {
         // remove player from server
         removePlayer(self, id);
+        console.log(self.playerCountSoccer)
+        self.playerCountSoccer--
+        console.log(self.playerCountSoccer)
         // remove this player from our players object
         delete players[id];
         // emit a message to all players to remove this player
@@ -138,7 +150,6 @@ class Soccer extends Phaser.Scene {
     this.physics.add.collider(this.net, this.ball);
     this.physics.add.collider(this.net, this.players);
 
-
     // Initialize game as frozen
     this.gameFrozen = true;
     this.ball.setVelocity(0, 0);
@@ -149,14 +160,14 @@ class Soccer extends Phaser.Scene {
         callback: () => {
             this.gameFrozen = false;
             // Restore ball physics
-            this.ball.setVelocityX(200);
+            this.ball.setVelocityX(0);
             this.ball.setVelocityY(-150);
         }
     });
 
     // Set a timed event to add players to the game after 5 seconds
     this.time.addEvent({
-      delay: 1000,
+      delay: 10000,
       callback: () => {
         this.io.emit("currentPlayers_soccer", currentPlayers)
       }
@@ -205,7 +216,7 @@ class Soccer extends Phaser.Scene {
     //emit ball positions
     io.emit('soccer_ballUpdates', {ball_x,ball_y})
 
-    if(getSoccerWinner(this.blueScore,this.redScore) != null) {
+    if(getSoccerWinner(this.blueScore,this.redScore) != null || this.gameOver_byDefault) {
       io.emit('gameOver', getSoccerWinner(this.blueScore,this.redScore));
   
       let countdown = 5;
@@ -218,6 +229,16 @@ class Soccer extends Phaser.Scene {
           this.scene.stop("Soccer");
         }
       }, 300);
+    }
+    if (this.playerCountSoccer == 0) {
+      endGameSoccer(this,"No players in the room");
+      return;
+    }
+
+    // Check if game time exceeded 10 minutes
+    if (Date.now() - this.gameStartTime > this.gameDuration) {
+      endGameSoccer(this,"Time limit reached");
+      return;
     }
 
   }
@@ -232,4 +253,10 @@ function getSoccerWinner(blueScore, redScore) {
   else{
     return null;
   }
+}
+
+function endGameSoccer(self,reason) {
+  console.log("Game Ended:", reason);
+  // Implement logic to end the game, e.g., emitting an event to players
+  self.gameOver_byDefault = true;
 }
