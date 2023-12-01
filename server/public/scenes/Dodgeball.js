@@ -48,11 +48,12 @@ class Dodgeball extends Phaser.Scene {
   this.add.image(600, 400, 'dodge_ground').setScale(.5)
 
   //sounds
-  this.load.audio('dodge_bgm', 'assets/sounds/pvz.mp3');
   this.dodge_bgm = this.sound.add('dodge_bgm');
   this.dodge_bgm.play({
       loop: true
   });
+  this.dodge_bgm.volume = 0.3;
+
 
 
   // create the first ball
@@ -117,15 +118,38 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
   this.upKeyPressed = false;
 
   const centerX = this.scale.width * 0.5;
-  dodge_self.dodge_gameOverText = this.add.text(centerX, 150, "", {
-    fill: "#000000",
-    fontFamily: 'Arial',
-    fontSize: "50px"
-}).setOrigin(0.5, 0);
+  const centerY = this.scale.height * 0.5;
+
+  // 创建胜利文本的样式
+  const gameOverTextStyle = {
+      font: '50px Arial',
+      fill: '#ffffff', // 初始为白色
+      stroke: '#000000',
+      strokeThickness: 5,
+      shadow: { offsetX: 3, offsetY: 3, color: '#333', blur: 5, stroke: true, fill: true }
+  };
+
+  // 创建胜利文本
+  this.dodge_gameOverText = this.add.text(centerX, centerY, '', gameOverTextStyle).setOrigin(0.5, 0.5).setVisible(false);
 
 this.socket.on('gameOver_Dodge', function(username) {
   if(username === null) { username = "Unknown" }
-  dodge_self.dodge_gameOverText.setText(username + " Won")
+
+  // 设置文本内容和颜色
+  this.dodge_gameOverText.setText(username + " Won").setFill('#ff0000').setVisible(true);
+
+  // 创建动画效果
+  this.tweens.add({
+      targets: this.dodge_gameOverText,
+      y: centerY - 100, // 向上移动
+      alpha: { start: 0, to: 1 }, // 透明度变化
+      scale: { start: 0.5, to: 1.2 }, // 缩放效果
+      duration: 1500,
+      ease: 'Cubic.easeOut', // 缓动效果
+      onComplete: () => {
+          // 动画完成后的回调（可选）
+      }
+});
 });
 
 this.socket.on('stopDodgeballScene', () => {

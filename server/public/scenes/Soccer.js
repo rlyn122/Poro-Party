@@ -27,6 +27,11 @@ class Soccer extends Phaser.Scene {
     this.load.image('blue_goal', 'assets/soccer/blue_goal.png');
     this.load.image('red_goal', 'assets/soccer/red_goal.png');
 
+    //sounds
+    this.load.audio('soccer_bgm', 'assets/sounds/wakawaka.mp3');
+    this.load.audio('yay', 'assets/sounds/yay.mp3');
+    
+
   }
 
   create() {
@@ -35,6 +40,14 @@ class Soccer extends Phaser.Scene {
 
     console.log("Client-side Soccer Running")
     this.scene.launch("Rules_Soccer");
+
+      //sounds
+    this.yay = this.sound.add('yay');
+    this.soccer_bgm = this.sound.add('soccer_bgm');
+    this.soccer_bgm.play({
+        loop: true
+    });
+    this.soccer_bgm.volume = 0.5;
 
     //add background
 
@@ -47,15 +60,28 @@ class Soccer extends Phaser.Scene {
     // create the first ball
     var ball = this.add.sprite(400, 200, 'ball').setScale(2);
 
-    // Create text objects to display scores
-    this.blueScoreTextSoccer = this.add.text(640, 16, 'Blue: 0', {
-      fontSize: '32px',
-      fill: '#0000FF',
-    });
-    this.redScoreTextSoccer = this.add.text(16, 16, 'Red: 0', {
-      fontSize: '32px',
-      fill: '#FF0000',
-    });
+
+    const scoreTextStyle = {
+      font: '32px GameFont', // 更具游戏感的字体
+      fill: '#ffffff', // 白色文字
+      stroke: '#000000', // 黑色描边
+      strokeThickness: 6,
+      shadow: { offsetX: 2, offsetY: 2, color: '#000', blur: 2, stroke: true, fill: true }
+  };
+
+    // 创建蓝队的圆角矩形背景
+    this.blueScoreBg = this.add.graphics();
+    this.blueScoreBg.fillStyle(0x4da2ee, 1); // 背景颜色
+    this.blueScoreBg.fillRoundedRect(560, 20, 140, 40, 20); // 圆角矩形
+
+    // 创建红队的圆角矩形背景
+    this.redScoreBg = this.add.graphics();
+    this.redScoreBg.fillStyle(0xe3170d, 1); // 背景颜色
+    this.redScoreBg.fillRoundedRect(140, 20, 140, 40, 20); // 圆角矩形
+
+    // 添加计分文本
+    this.blueScoreTextSoccer = this.add.text(630, 26, 'Blue: 0', scoreTextStyle).setOrigin(0.5, 0);
+    this.redScoreTextSoccer = this.add.text(210, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
 
     //listen for currentPlayers and self
     this.socket.on('currentPlayers_soccer', function (players) {
@@ -95,7 +121,9 @@ class Soccer extends Phaser.Scene {
     //score updates
     this.socket.on('scoreUpdate_soccer', function (scores) {
       console.log(scores)
+
       try{
+      self.yay.play();
       self.blueScoreTextSoccer.setText(`Blue: ${scores.blueScore}`);
       self.redScoreTextSoccer.setText(`Red: ${scores.redScore}`);
       } catch(error){
@@ -110,18 +138,43 @@ class Soccer extends Phaser.Scene {
     this.upKeyPressed = false;
     
     const centerX = this.scale.width * 0.5;
-    const soc_gameOverText = this.add.text(centerX, 150, "", {
-      fill: "#000000",
-      fontFamily: 'Arial',
-      fontSize: "50px"
-    }).setOrigin(0.5, 0);
-  
+    const centerY = this.scale.height * 0.5;
+
+    // 创建胜利文本样式
+    const style = {
+        font: '50px Pixelated', // 更具游戏感的字体
+        fill: '#ffffff', // 更鲜艳的颜色
+        stroke: '#000000', // 黑色描边
+        strokeThickness: 5, // 描边的粗细
+        shadow: { offsetX: 3, offsetY: 3, color: '#333', blur: 5, stroke: true, fill: true }
+    };
+
+    // 创建胜利文本，并初始化为隐藏
+    this.soc_gameOverText = this.add.text(centerX, centerY, '', style).setOrigin(0.5, 0.5).setVisible(false);
+
     this.socket.on('gameOver_soccer', function(team) {
-      soc_gameOverText.setText(team + " Won")
-      self.socket.emit('')
+          if (team === 'red') {
+            self.soc_gameOverText.setFill('#ff0000');
+        } else if (team === 'blue') {
+            self.soc_gameOverText.setFill('#0000ff');
+        }
+        // 设置文本内容
+        self.soc_gameOverText.setText(team + " Won").setVisible(true);
+
+        // 添加一个简单的动画效果
+        self.tweens.add({
+            targets: self.soc_gameOverText,
+            scale: { from: 1, to: 1.5 },
+            alpha: { start: 0, to: 1 },
+            yoyo: true,
+            repeat: 5,
+            ease: 'Power1',
+            duration: 800
+        });
     });
   
     this.socket.on('stopSoccerScene', () => {
+      self.soccer_bgm.stop();
       self.socket.emit("enableButtonsafterScene")
       self.scene.stop("Soccer");
     });

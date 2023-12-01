@@ -11,6 +11,9 @@ class MainScene extends Phaser.Scene {
       //load cats
       this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
       this.load.image('ground', 'assets/volleyball/platform.png');
+      this.load.image('p1', 'assets/platform1.png');
+      this.load.image('p2', 'assets/platform2.png');
+      this.load.image('p3', 'assets/platform3.png');
   }
 
   create(){
@@ -21,10 +24,11 @@ class MainScene extends Phaser.Scene {
       //platforms
       this.platforms = this.physics.add.staticGroup();
       this.platforms.create(400, 600, 'ground').setScale(2).refreshBody();
-      this.platforms.create(100,450,'ground').setScale(0.3).refreshBody();
-      this.platforms.create(500,300,'ground').setScale(0.3).refreshBody();
-      this.platforms.create(600,200,'ground').setScale(0.3).refreshBody();
-      this.platforms.create(300,350,'ground').setScale(0.3).refreshBody();
+      this.platforms.create(450,450,'p2').setScale(0.1).refreshBody();
+      this.platforms.create(700,375,'p2').setScale(0.1).refreshBody();
+      this.platforms.create(500,300,'p2').setScale(0.1).refreshBody();
+      this.platforms.create(600,200,'p2').setScale(0.1).refreshBody();
+      this.platforms.create(300,350,'p2').setScale(0.1).refreshBody();
       this.physics.add.collider(this.platforms,this.players);
       this.physics.add.collider(this.players,this.players);
 
