@@ -36,8 +36,14 @@ create() {
 
   console.log("Serverside Dodgeball Running")
   var currentPlayers = players
-  // let hitCounter = 0;
   this.gameOver = false;
+  this.gameOver_byDefault = false;
+
+  this.playerCountDodgeball = Object.keys(players).length;
+
+  // Start game timer (10 minutes in milliseconds)
+  this.gameStartTimeDodgeball = Date.now();
+  this.gameDurationDodgeball = 10 * 60 * 1000; // 10 minutes
 
   //add players to this scene
   for(const playerId in players) {
@@ -47,6 +53,7 @@ create() {
     players[playerId].x = randomX
     players[playerId].alive = 'alive';
     addPlayer(this, players[playerId])
+    console.log(this.playerCountDodgeball)
   }
 
 
@@ -59,6 +66,9 @@ create() {
       try{
       // remove player from server
       removePlayer(self, id);
+      console.log(self.playerCountDodgeball)
+      self.playerCountDodgeball--
+      console.log(self.playerCountDodgeball)
       // remove this player from our players object
       delete players[id];
       // emit a message to all players to remove this player
@@ -223,8 +233,8 @@ update() {
   io.emit('ballUpdates3', {ball3_x,ball3_y})
 
 
-  if(!(getWinnerName() === null)) {
-    io.emit('gameOver_Dodge', getWinnerName());
+  if(!(getWinnerName() === null) || this.gameOver_byDefault) {
+    io.emit('gameOver', getWinnerName());
 
     let countdown = 10;
     const timerInterval= setInterval(() => {
@@ -243,6 +253,16 @@ update() {
     }, 1000);
   }
 
+  if (this.playerCountDodgeball == 0) {
+    endGameDodgeball(this,"No players in the room");
+    return;
+  }
+
+  // Check if game time exceeded 10 minutes
+  if (Date.now() - this.gameStartTime > this.gameDuration) {
+    endGameDodgeball(this,"Time limit reached");
+    return;
+  }
 }
 
 
@@ -307,4 +327,10 @@ function getWinnerName() {
     return "nobody";
   }
   return null;
+}
+
+function endGameDodgeball(self,reason) {
+  console.log("Game Ended:", reason);
+  // Implement logic to end the game, e.g., emitting an event to players
+  self.gameOver_byDefault = true;
 }
