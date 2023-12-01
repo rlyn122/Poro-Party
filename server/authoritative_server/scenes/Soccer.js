@@ -11,7 +11,7 @@ class Soccer extends Phaser.Scene {
 
   preload() {
 
-    this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
+    this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat3', 'assets/cats/Cat_3.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat4', 'assets/cats/Cat_4.png', { frameWidth: 250, frameHeight: 184 });  
