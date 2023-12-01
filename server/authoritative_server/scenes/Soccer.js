@@ -64,9 +64,9 @@ class Soccer extends Phaser.Scene {
       socket.on('disconnect', function () {
         // remove player from server
         removePlayer(self, id);
-        console.log(this.playerCountSoccer)
+        console.log(self.playerCountSoccer)
         self.playerCountSoccer--
-        console.log(this.playerCountSoccer)
+        console.log(self.playerCountSoccer)
         // remove this player from our players object
         delete players[id];
         // emit a message to all players to remove this player
@@ -160,7 +160,7 @@ class Soccer extends Phaser.Scene {
         callback: () => {
             this.gameFrozen = false;
             // Restore ball physics
-            this.ball.setVelocityX(200);
+            this.ball.setVelocityX(0);
             this.ball.setVelocityY(-150);
         }
     });
