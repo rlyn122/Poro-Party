@@ -134,9 +134,11 @@ class Volleyball extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_volley", currentPlayers)
       }
     });
+
+    this.io.emit("currentPlayers_volley", currentPlayers)
+
   }
   
   update() {
