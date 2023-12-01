@@ -7,6 +7,7 @@ class Soccer extends Phaser.Scene {
   init(data){
     this.socket = data.socket;
     this.io = data.io;
+    this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
   }
 
   preload() {
@@ -36,8 +37,6 @@ class Soccer extends Phaser.Scene {
     this.gameOver_byDefault = false;
     this.blueScore = 0;
     this.redScore = 0;
-
-    var currentPlayers = players
 
     // incrementing player count
     this.playerCountSoccer = Object.keys(players).length;
@@ -169,7 +168,7 @@ class Soccer extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_soccer", currentPlayers)
+        this.io.emit("currentPlayers_soccer", self.initialPlayers)
       }
     });
   }

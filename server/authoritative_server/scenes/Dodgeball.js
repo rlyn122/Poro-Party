@@ -7,6 +7,8 @@ class Dodgeball extends Phaser.Scene {
   init(data){
     this.socket = data.socket;
     this.io = data.io;
+    this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
+
   }
 
 preload() {
@@ -35,7 +37,6 @@ create() {
   this.balls = this.add.group();
 
   console.log("Serverside Dodgeball Running")
-  var currentPlayers = players
   this.gameOver = false;
   this.gameOver_byDefault = false;
 
@@ -171,7 +172,7 @@ create() {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_dodge", currentPlayers)
+        this.io.emit("currentPlayers_dodge", self.initialPlayers)
       }
     });
 

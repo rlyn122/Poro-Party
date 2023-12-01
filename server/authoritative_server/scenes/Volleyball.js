@@ -8,6 +8,7 @@ class Volleyball extends Phaser.Scene {
     init(data){
       this.socket = data.socket;
       this.io = data.io;
+      this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
     }
   
   preload() {
@@ -30,11 +31,9 @@ class Volleyball extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
-
     this.blueScore = 0;
     this.redScore = 0;
     console.log("Serverside Volleyball Running")
-    var currentPlayers = players;
 
   //add players to this scene
   for(const playerId in players) {
@@ -134,7 +133,7 @@ class Volleyball extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_volley", currentPlayers)
+        this.io.emit("currentPlayers_volley", self.initialPlayers)
       }
     });
 
