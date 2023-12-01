@@ -8,10 +8,11 @@ class Volleyball extends Phaser.Scene {
     init(data){
       this.socket = data.socket;
       this.io = data.io;
+      this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
     }
   
   preload() {
-    this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+    this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
@@ -30,11 +31,9 @@ class Volleyball extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
-
     this.blueScore = 0;
     this.redScore = 0;
     console.log("Serverside Volleyball Running")
-    var currentPlayers = players;
 
   //add players to this scene
   for(const playerId in players) {
@@ -103,7 +102,7 @@ class Volleyball extends Phaser.Scene {
       }
       let b = self.blueScore
       let r = self.redScore
-      io.emit('scoreUpdate', {blueScore:b, redScore:r });
+      io.emit('scoreUpdate_volley', {blueScore:b, redScore:r });
     });
   
     //add more general colliders
@@ -134,7 +133,7 @@ class Volleyball extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_volley", currentPlayers)
+        this.io.emit("currentPlayers_volley", self.initialPlayers)
       }
     });
 
@@ -188,7 +187,7 @@ class Volleyball extends Phaser.Scene {
     io.emit('ballUpdates', {ball_x,ball_y})
 
     if(getVolleyballWinner(this.blueScore, this.redScore) != null) {
-      io.emit('gameOver', getVolleyballWinner(this.blueScore, this.redScore));
+      io.emit('gameOver_volley', getVolleyballWinner(this.blueScore, this.redScore));
   
       let countdown = 5;
       const timerInterval = setInterval(() => {

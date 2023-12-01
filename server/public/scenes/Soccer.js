@@ -10,7 +10,7 @@ class Soccer extends Phaser.Scene {
 
   preload() {
     //load sprites
-    this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
+    this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat3', 'assets/cats/Cat_3.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat4', 'assets/cats/Cat_4.png', { frameWidth: 250, frameHeight: 184 });  
@@ -93,11 +93,14 @@ class Soccer extends Phaser.Scene {
     })
 
     //score updates
-    this.socket.on('scoreUpdate', function (scores) {
+    this.socket.on('scoreUpdate_soccer', function (scores) {
+      console.log(scores)
       try{
       self.blueScoreTextSoccer.setText(`Blue: ${scores.blueScore}`);
       self.redScoreTextSoccer.setText(`Red: ${scores.redScore}`);
-      } catch(error){}
+      } catch(error){
+        console.log(error)
+      }
     });
 
     //create cursors
@@ -113,7 +116,7 @@ class Soccer extends Phaser.Scene {
       fontSize: "50px"
     }).setOrigin(0.5, 0);
   
-    this.socket.on('gameOver', function(team) {
+    this.socket.on('gameOver_soccer', function(team) {
       soc_gameOverText.setText(team + " Won")
       self.socket.emit('')
     });

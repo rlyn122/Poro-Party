@@ -7,11 +7,12 @@ class Soccer extends Phaser.Scene {
   init(data){
     this.socket = data.socket;
     this.io = data.io;
+    this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
   }
 
   preload() {
 
-    this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
+    this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat3', 'assets/cats/Cat_3.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat4', 'assets/cats/Cat_4.png', { frameWidth: 250, frameHeight: 184 });  
@@ -36,8 +37,6 @@ class Soccer extends Phaser.Scene {
     this.gameOver_byDefault = false;
     this.blueScore = 0;
     this.redScore = 0;
-
-    var currentPlayers = players
 
     // incrementing player count
     this.playerCountSoccer = Object.keys(players).length;
@@ -124,17 +123,17 @@ class Soccer extends Phaser.Scene {
 
     this.physics.add.collider(this.ball, this.net, function (ball, net) {
       // Check for scoring when the ball touches the ground
-      if (ball.x < 90 && ball.x > 10) {
+      if (ball.x < 140 && ball.x > 10) {
         // Blue side scores
         self.blueScore++;
-      } else if (ball.x > 710 && ball.x < 790) {
+      } else if (ball.x > 650 && ball.x < 790) {
         // Red side scores
         self.redScore++;
       }
       // Emit score updates to all players
       let b = self.blueScore;
       let r = self.redScore;
-      io.emit('scoreUpdate', { blueScore:b, redScore:r });
+      io.emit('scoreUpdate_soccer', { blueScore:b, redScore:r });
 
       // Reset the ball position
       ball.setPosition(400, 200);
@@ -169,7 +168,7 @@ class Soccer extends Phaser.Scene {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_soccer", currentPlayers)
+        this.io.emit("currentPlayers_soccer", self.initialPlayers)
       }
     });
   }
@@ -217,7 +216,7 @@ class Soccer extends Phaser.Scene {
     io.emit('soccer_ballUpdates', {ball_x,ball_y})
 
     if(getSoccerWinner(this.blueScore,this.redScore) != null || this.gameOver_byDefault) {
-      io.emit('gameOver', getSoccerWinner(this.blueScore,this.redScore));
+      io.emit('gameOver_soccer', getSoccerWinner(this.blueScore,this.redScore));
   
       let countdown = 5;
       const timerInterval = setInterval(() => {

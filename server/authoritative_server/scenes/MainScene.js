@@ -9,7 +9,7 @@ class MainScene extends Phaser.Scene {
 
   preload(){
       //load cats
-      this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+      this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
       this.load.image('ground', 'assets/volleyball/platform.png');
   }
 
@@ -31,7 +31,7 @@ class MainScene extends Phaser.Scene {
 
       //add players to this scene
       for (const playerId in players){
-        players[playerId].alive = "alive"
+        players[playerId].alive = "dead"
         addPlayer(this , players[playerId])
       }
 
@@ -91,7 +91,7 @@ class MainScene extends Phaser.Scene {
             username:data.username,
             cat:data.cat,
             invuln:true,
-            alive:"alive",
+            alive:"dead",
             };
 
             // add player to server
@@ -160,7 +160,7 @@ class MainScene extends Phaser.Scene {
   //constantly emit each player's position
   this.players.getChildren().forEach((player) => {
       const input = players[player.playerId].input;
-
+      if(input){
       if (input.left) {
       player.setVelocityX(-speed);
       } else if (input.right) {
@@ -173,7 +173,7 @@ class MainScene extends Phaser.Scene {
       } 
       players[player.playerId].x = player.x;
       players[player.playerId].y = player.y;
-
+    }
   });
 
   //emit player positions

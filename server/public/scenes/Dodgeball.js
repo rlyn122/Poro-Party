@@ -26,6 +26,9 @@ class Dodgeball extends Phaser.Scene {
   this.load.image('mars', 'assets/dodgeball/mars.png');
   this.load.image('saturn', 'assets/dodgeball/saturn.png');
   this.load.image('dodge_ground', 'assets/dodgeball/platform2.png');
+
+  //sounds
+  this.load.audio('dodge_bgm', 'assets/sounds/pvz.mp3');
 }
 
  create() {
@@ -43,6 +46,14 @@ class Dodgeball extends Phaser.Scene {
   this.add.image(600, 220, 'dodge_ground').setScale(.5)
   this.add.image(200, 400, 'dodge_ground').setScale(.5)
   this.add.image(600, 400, 'dodge_ground').setScale(.5)
+
+  //sounds
+  this.load.audio('dodge_bgm', 'assets/sounds/pvz.mp3');
+  this.dodge_bgm = this.sound.add('dodge_bgm');
+  this.dodge_bgm.play({
+      loop: true
+  });
+
 
   // create the first ball
   var ball = this.add.sprite(400, 200, 'earth');
@@ -112,12 +123,13 @@ this.socket.on('ballUpdates3', function(ball3_Pos) {
     fontSize: "50px"
 }).setOrigin(0.5, 0);
 
-this.socket.on('gameOver', function(username) {
+this.socket.on('gameOver_Dodge', function(username) {
   if(username === null) { username = "Unknown" }
   dodge_self.dodge_gameOverText.setText(username + " Won")
 });
 
 this.socket.on('stopDodgeballScene', () => {
+  dodge_self.dodge_bgm.stop();
   dodge_self.socket.emit("enableButtonsafterScene")
   dodge_self.scene.stop("Dodgeball");
 });

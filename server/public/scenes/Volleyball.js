@@ -10,7 +10,7 @@ class Volleyball extends Phaser.Scene {
   
    preload() {
     //load sprites
-    this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+    this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
@@ -62,12 +62,15 @@ class Volleyball extends Phaser.Scene {
   
     //listen for player disconnection
     this.socket.on('disconnect_volleyball', function (playerId) {
+      try{
       self.players.getChildren().forEach(function (player) {
         if (playerId === player.playerId) {
           player.usernameText.destroy();
           player.destroy();
         }
       });
+    }
+      catch(error){}
     });
   
     //update player movements and animations from server
@@ -91,7 +94,7 @@ class Volleyball extends Phaser.Scene {
       ball.setPosition(ball_x, ball_y);
     });
 
-    this.socket.on('scoreUpdate', function (scores) {
+    this.socket.on('scoreUpdate_volley', function (scores) {
       self.blueScoreTextVolleyball.setText(`Blue: ${scores.blueScore}`);
       self.redScoreTextVolleyball.setText(`Red: ${scores.redScore}`);
     });
@@ -109,7 +112,7 @@ class Volleyball extends Phaser.Scene {
       fontSize: "50px"
     }).setOrigin(0.5, 0);
   
-    this.socket.on('gameOver', function(team) {
+    this.socket.on('gameOver_volley', function(team) {
       self.volley_gameOverText.setText(team + " Won")
       self.socket.emit('')
     });

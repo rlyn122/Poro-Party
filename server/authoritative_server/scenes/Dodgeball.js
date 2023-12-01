@@ -7,10 +7,11 @@ class Dodgeball extends Phaser.Scene {
   init(data){
     this.socket = data.socket;
     this.io = data.io;
+    this.initialPlayers = JSON.parse(JSON.stringify(players)); // Deep copy
   }
 
 preload() {
-  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
+  this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat4", "assets/cats/Cat_4.png", {frameWidth:250, frameHeight:184});
@@ -35,9 +36,14 @@ create() {
   this.balls = this.add.group();
 
   console.log("Serverside Dodgeball Running")
-  var currentPlayers = players
-  // let hitCounter = 0;
   this.gameOver = false;
+  this.gameOver_byDefault = false;
+
+  this.playerCountDodgeball = Object.keys(players).length;
+
+  // Start game timer (10 minutes in milliseconds)
+  this.gameStartTimeDodgeball = Date.now();
+  this.gameDurationDodgeball = 10 * 60 * 1000; // 10 minutes
 
   //add players to this scene
   for(const playerId in players) {
@@ -47,6 +53,7 @@ create() {
     players[playerId].x = randomX
     players[playerId].alive = 'alive';
     addPlayer(this, players[playerId])
+    console.log(this.playerCountDodgeball)
   }
 
 
@@ -59,6 +66,9 @@ create() {
       try{
       // remove player from server
       removePlayer(self, id);
+      console.log(self.playerCountDodgeball)
+      self.playerCountDodgeball--
+      console.log(self.playerCountDodgeball)
       // remove this player from our players object
       delete players[id];
       // emit a message to all players to remove this player
@@ -128,7 +138,7 @@ create() {
   // 10 seconds before player can be killed
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     if(players[id]){
-    players[id].invuln = true;
+    players[id].alive = 'alive';
     }
   }
 
@@ -151,8 +161,12 @@ create() {
           // 10 seconds before player can be killed
           for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
             if(players[id]){
-            players[id].invuln = false;
+              players[id].invuln = false;
             }
+            try {
+              players[id].alive = 'alive';
+            }
+            catch {}
           }
       }
   });
@@ -161,7 +175,7 @@ create() {
     this.time.addEvent({
       delay: 10000,
       callback: () => {
-        this.io.emit("currentPlayers_dodge", currentPlayers)
+        this.io.emit("currentPlayers_dodge", self.initialPlayers)
       }
     });
 
@@ -223,8 +237,8 @@ update() {
   io.emit('ballUpdates3', {ball3_x,ball3_y})
 
 
-  if(!(getWinnerName() === null)) {
-    io.emit('gameOver', getWinnerName());
+  if(!(getWinnerName() === null) || this.gameOver_byDefault) {
+    io.emit('gameOver_Dodge', getWinnerName());
 
     let countdown = 10;
     const timerInterval= setInterval(() => {
@@ -236,6 +250,7 @@ update() {
           players[sockets[i]].alive = 'alive';
           players[sockets[i]].invuln = true;
         }
+        console.log("Buttons enabling");
         io.emit('stopDodgeballScene');
         gameActive = false;
         this.scene.stop("Dodgeball");
@@ -243,6 +258,16 @@ update() {
     }, 1000);
   }
 
+  if (this.playerCountDodgeball == 0) {
+    endGameDodgeball(this,"No players in the room");
+    return;
+  }
+
+  // Check if game time exceeded 10 minutes
+  if (Date.now() - this.gameStartTime > this.gameDuration) {
+    endGameDodgeball(this,"Time limit reached");
+    return;
+  }
 }
 
 
@@ -307,4 +332,10 @@ function getWinnerName() {
     return "nobody";
   }
   return null;
+}
+
+function endGameDodgeball(self,reason) {
+  console.log("Game Ended:", reason);
+  // Implement logic to end the game, e.g., emitting an event to players
+  self.gameOver_byDefault = true;
 }
