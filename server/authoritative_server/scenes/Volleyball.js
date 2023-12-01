@@ -132,7 +132,7 @@ class Volleyball extends Phaser.Scene {
     });
     // Set a timed event to add players to the game after 5 seconds
     this.time.addEvent({
-      delay: 100,
+      delay: 1000,
       callback: () => {
         this.io.emit("currentPlayers_volley", currentPlayers)
       }

@@ -121,6 +121,9 @@ class Volleyball extends Phaser.Scene {
     this.players.children.iterate(function (player) {
       player.setDepth(10);
   });
+
+    this.socket.emit("volleyloaded");
+
   }
   
    update() {
