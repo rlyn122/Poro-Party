@@ -8,7 +8,7 @@ class MainScene extends Phaser.Scene {
   }
 
   preload(){
-      //load cats
+      // Load Cats
       this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
       this.load.image('ground', 'assets/volleyball/platform.png');
       this.load.image('p1', 'assets/platform1.png');
