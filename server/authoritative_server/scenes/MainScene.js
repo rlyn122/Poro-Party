@@ -38,7 +38,7 @@ class MainScene extends Phaser.Scene {
       //socket connection established
       io.on('connection', function (socket) {
 
-
+        //handle requests to stop the main scene and enter a game
         socket.on('stopMainSceneRequest', function (gameName){
 
           //let clients know to start game
@@ -61,73 +61,71 @@ class MainScene extends Phaser.Scene {
           }
 
           });
+        
+        //handle requests to join the lobby
+        socket.on('joinRoom', function (data){
+          // create a new player and add it to our players object
+        players[socket.id] = {
+          x: Math.floor(Math.random() * 700) + 50,
+          y: 500,
+          playerId: socket.id,
+          input: {
+              left: false,
+              right: false,
+              up: false
+          },
+          username:data.username,
+          cat:data.cat,
+          invuln:true,
+          alive:"alive",
+          };
 
+          // add player to server
+          addPlayer(self, players[socket.id]);
 
-          socket.on('joinRoom', function (data){
-            // create a new player and add it to our players object
-          players[socket.id] = {
-            x: Math.floor(Math.random() * 700) + 50,
-            y: 500,
-            playerId: socket.id,
-            input: {
-                left: false,
-                right: false,
-                up: false
-            },
-            username:data.username,
-            cat:data.cat,
-            invuln:true,
-            alive:"alive",
-            };
+          // send the players object to the new player
+          socket.emit('currentPlayers', players);
 
-            // add player to server
-            addPlayer(self, players[socket.id]);
-
-            // send the players object to the new player
-            socket.emit('currentPlayers', players);
-
-            // update all other players of the new player
-            socket.broadcast.emit('newPlayer', players[socket.id]);
-            // when a player moves, update the player data
-            socket.on('playerInput', function (inputData) {
-              handlePlayerInput(self, socket.id, inputData);
-              });
-            })
-          
-
-
-          //ask if username is valid
-          socket.on('isKeyValid', (data)=>{
-            //parse through player names set name_exists = true if username already exists
-            var name_exists = false
-            for (var playerId in players)
-            {
-              var player = players[playerId]
-              //if player name is already available change value of name_exists
-              if (data.username == player.username){
-                name_exists = true
-              }
-            }
-
-            //only emit for non-existent usernames
-            if(name_exists){
-              socket.emit("KeyNotValid",data)
-            }
-            else{
-              socket.emit("KeyisValid",data)
-            }
+          // update all other players of the new player
+          socket.broadcast.emit('newPlayer', players[socket.id]);
+          // when a player moves, update the player data
+          socket.on('playerInput', function (inputData) {
+            handlePlayerInput(self, socket.id, inputData);
+            });
           })
+        
+        //check if user name is valid
+        socket.on('isKeyValid', (data)=>{
+          //parse through player names set name_exists = true if username already exists
+          var name_exists = false
+          for (var playerId in players)
+          {
+            var player = players[playerId]
+            //if player name is already available change value of name_exists
+            if (data.username == player.username){
+              name_exists = true
+            }
+          }
 
+          //only emit for non-existent usernames
+          if(name_exists){
+            socket.emit("KeyNotValid",data)
+          }
+          else{
+            socket.emit("KeyisValid",data)
+          }
+        })
 
-          socket.on('disconnect', function () {
-          // remove player from server
-          removePlayer(self, socket.id);
-          // remove this player from our players object
-          delete players[socket.id];
-          // emit a message to all players to remove this player
-          io.emit('disconnect', socket.id);
-          });
-      });
+        //handle disconnects
+        socket.on('disconnect', function () {
+        // remove player from server
+        removePlayer(self, socket.id);
+        // remove this player from our players object
+        delete players[socket.id];
+        // emit a message to all players to remove this player
+        io.emit('disconnect', socket.id);
+        });
+    });
 
   }
 
