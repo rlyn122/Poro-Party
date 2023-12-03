@@ -1,5 +1,5 @@
 # File Structure
-Tree of the outline of the file structure Poro Party uses. The file structure includes `/node_modules`, a directory used by Node.js to run the application on web pages.
+Tree of the outline of the file structure Poro Party uses.
 
 ```bash
 ├── Poro-Party/
@@ -52,3 +52,9 @@ Tree of the outline of the file structure Poro Party uses. The file structure in
     /package.json
     /README.md
 ```
+
+`docs/` - Overview of the code and all relevant information used for the development of the project. 
+
+`node_modules/` - A directory used by Node.js to run the application on web pages
+
+`server/` - Contains .html and scripts to be run on the web page
