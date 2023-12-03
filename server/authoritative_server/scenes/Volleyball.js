@@ -11,6 +11,7 @@ class Volleyball extends Phaser.Scene {
     }
   
   preload() {
+    //load sprite images
     this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:263, frameHeight:194});
     this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
     this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
@@ -44,8 +45,9 @@ class Volleyball extends Phaser.Scene {
     addPlayer(this, players[playerId])
   }
 
+  //send current players to client
   this.io.emit("currentPlayers_volley", players)
-
+  //add input handling for sockets on server-side
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     console.log(id);
     socket.on('volleyInput', function (inputData) {
@@ -164,6 +166,7 @@ class Volleyball extends Phaser.Scene {
   }
   }
   
+  //when contact with volleyball, change ball velocity
   function hitVolleyball(player, ball) {  
     ball.setVelocityY(-500)
     if (ball.x < player.x) {
@@ -173,6 +176,7 @@ class Volleyball extends Phaser.Scene {
     }
   }
 
+  //checkwinner for volleyball
   function getVolleyballWinner(blueScore,redScore) {  
     if (blueScore == 5) {
       return "Blue"

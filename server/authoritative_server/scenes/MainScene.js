@@ -45,7 +45,6 @@ class MainScene extends Phaser.Scene {
           io.emit(gameName);
           //handle disabling game buttons
           gameActive = true;
-
           //launch game on the serverside
           if (gameName == "DodgeballGame"){
             self.scene.launch("Dodgeball",{socket:socket, io:io})
@@ -64,7 +63,7 @@ class MainScene extends Phaser.Scene {
         
         //handle requests to join the lobby
         socket.on('joinRoom', function (data){
-          // create a new player and add it to our players object
+        // create a new player and add it to our players object
         players[socket.id] = {
           x: Math.floor(Math.random() * 700) + 50,
           y: 500,

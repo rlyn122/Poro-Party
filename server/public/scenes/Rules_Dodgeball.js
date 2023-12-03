@@ -58,10 +58,6 @@ class Rules_Dodgeball extends Phaser.Scene {
           if (countdown === 0) {
               clearInterval(timerInterval);
               scene.scene.stop("Rules_Dodgeball"); // Close the popup after 10 seconds
-              // Emit an event to notify that the scene is done
-              scene.events.emit("RulesDodgeballDone");
-
-            
               scene.scene.resume("Dodgeball");
           }
       }, 1000);

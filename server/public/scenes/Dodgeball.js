@@ -32,7 +32,7 @@ class Dodgeball extends Phaser.Scene {
   var self = this;
   this.players = this.add.group();
 
-  console.log("Client-side Dodgeball Running")
+  //console.log("Client-side Dodgeball Running")
   this.scene.launch("Rules_Dodgeball");
 
   //creating movement animations

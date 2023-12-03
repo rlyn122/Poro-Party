@@ -159,7 +159,6 @@ class Volleyball extends Phaser.Scene {
     const up = this.upKeyPressed;
   
     //handle cursor inputs
-    //added new movements and cleaned up control/inputs
     if (this.cursors.right.isDown) {
       this.rightKeyPressed = true;
       this.leftKeyPressed = false;

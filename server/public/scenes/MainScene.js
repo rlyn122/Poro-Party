@@ -219,21 +219,21 @@ function addUsername(player, scene, playerInfo){
   this.setUsername_Pos(player,playerInfo.x,playerInfo.y)
 }
 
+//sets position of a player's username
 function setUsername_Pos(player, posX, posY){
   player.usernameText.x = posX-15;
   player.usernameText.y = posY - player.height / 4;
 }
 
+//disable start game buttons
 function disableButtons(self) {
-  // Disable the buttons
   self.gameInProgressSign.setVisible(true);
   self.startDodgeballGameButton.setInteractive(false);
   self.startVolleyGameButton.setInteractive(false);
   self.startSoccerGameButton.setInteractive(false);
 }
-
+//enable start game buttons
 function enableButtons(self) {
-  // Enable the buttons
   self.gameInProgressSign.setVisible(false);
   self.startDodgeballGameButton.setInteractive(true);
   self.startVolleyGameButton.setInteractive(true);

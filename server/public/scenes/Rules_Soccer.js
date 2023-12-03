@@ -60,11 +60,6 @@ class Rules_Soccer extends Phaser.Scene {
           if (countdown === 0) {
               clearInterval(timerInterval);
               scene.scene.stop("Rules_Soccer"); // Close the popup after 10 seconds
-              // Emit an event to notify that the scene is done
-              scene.events.emit("RulesSoccerDone");
-
-              console.log('ALL DONE');
-
               scene.scene.resume("Soccer");
           }
       }, 1000);

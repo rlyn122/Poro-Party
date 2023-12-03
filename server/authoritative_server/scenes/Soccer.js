@@ -12,7 +12,7 @@ class Soccer extends Phaser.Scene {
   }
 
   preload() {
-
+    //load spritesheets
     this.load.spritesheet('cat1', 'assets/cats/Cat_1.png', { frameWidth: 263, frameHeight: 192 });  
     this.load.spritesheet('cat2', 'assets/cats/Cat_2.png', { frameWidth: 250, frameHeight: 184 });  
     this.load.spritesheet('cat3', 'assets/cats/Cat_3.png', { frameWidth: 250, frameHeight: 184 });  
@@ -64,8 +64,7 @@ class Soccer extends Phaser.Scene {
     this.platforms.create(400, 568, 'soccer_ground').setScale(2).refreshBody();
     this.platforms.create(400, 600, 'soccer_ground').setScale(2).refreshBody().setTint(0);
 
-    //sprite backbone
-    //left sprite
+    //create left net object
     this.net.create(20, 460, 'soccer_net').setScale(0.02, 5).refreshBody();
     this.net.create(30, 380, 'soccer_net').setScale(0.02, 0.5).refreshBody();
     this.net.create(40, 360, 'soccer_net').setScale(0.02, 0.5).refreshBody();
@@ -80,7 +79,7 @@ class Soccer extends Phaser.Scene {
     this.platforms.create(70, 295, 'soccer_net').setScale(0.02, 0.5).refreshBody();
     this.platforms.create(80, 280, 'soccer_net').setScale(0.02, 1).refreshBody();
 
-    //right sprite
+    //create right net objects
     this.net.create(780, 460, 'soccer_net').setScale(0.02, 5).refreshBody();
     this.net.create(770, 380, 'soccer_net').setScale(0.02, 0.5).refreshBody();
     this.net.create(760, 360, 'soccer_net').setScale(0.02, 0.5).refreshBody();
@@ -95,6 +94,7 @@ class Soccer extends Phaser.Scene {
     this.platforms.create(730, 295, 'soccer_net').setScale(0.02, 0.5).refreshBody();
     this.platforms.create(720, 280, 'soccer_net').setScale(0.02, 1).refreshBody();
     
+    //create ball sprite
     this.ball = this.physics.add.sprite(400, 200, 'soccerball');
     this.ball.setBounce(1);
     this.ball.setCollideWorldBounds(true);
@@ -103,7 +103,6 @@ class Soccer extends Phaser.Scene {
     this.ball.setScale(2);
 
     this.physics.add.collider(this.players, this.ball);
-
     this.physics.add.collider(this.ball, this.net, function (ball, net) {
       // Check for scoring when the ball touches the ground
       if (ball.x < 80 && ball.x > 20) {

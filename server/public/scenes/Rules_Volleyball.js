@@ -60,12 +60,6 @@ class Rules_Volleyball extends Phaser.Scene {
           if (countdown === 0) {
               clearInterval(timerInterval);
               scene.scene.stop("Rules_Volleyball"); // Close the popup after 10 seconds
-
-              // Emit an event to notify that the scene is done
-              scene.events.emit("RulesVolleyballDone");
-
-              console.log('ALL DONE');
-
               scene.scene.resume("Volleyball");
           }
       }, 1000);
