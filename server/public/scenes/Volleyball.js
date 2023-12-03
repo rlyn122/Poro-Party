@@ -24,6 +24,10 @@ class Volleyball extends Phaser.Scene {
     this.load.image('net', 'assets/volleyball/platform2.png');
     this.load.image('volleyball', 'assets/volleyball/volleyball.png');
     this.load.image('volley_ground', 'assets/volleyball/platform.png');
+
+    //sounds
+    this.load.audio('volley_bgm', 'assets/sounds/volleyball.mp3');
+    this.load.audio('yay', 'assets/sounds/yay.mp3');
   }
   
    create() {
@@ -32,6 +36,15 @@ class Volleyball extends Phaser.Scene {
 
     console.log("Client-side Volleyball Running")
     this.scene.launch("Rules_Volleyball");
+
+    //sounds
+    this.yay = this.sound.add('yay');
+    this.yay.volume = 0.7
+    this.volley_bgm = this.sound.add('volley_bgm');
+    this.volley_bgm.play({
+        loop: true
+    });
+    this.volley_bgm.volume = 0.12;
 
     //add background
     this.add.image(400, 300, 'volleyball_background');
@@ -43,15 +56,28 @@ class Volleyball extends Phaser.Scene {
     // create the ball
     var ball = this.add.sprite(400, 200, 'volleyball');
 
-    // Create text objects to display scores
-    this.blueScoreTextVolleyball = this.add.text(640, 16, 'Blue: 0', {
-      fontSize: '32px',
-      fill: '#0000FF',
-    });
-    this.redScoreTextVolleyball = this.add.text(16, 16, 'Red: 0', {
-      fontSize: '32px',
-      fill: '#FF0000',
-    });
+    const scoreTextStyle = {
+      font: '32px GameFont', // 更具游戏感的字体
+      fill: '#ffffff', // 白色文字
+      stroke: '#000000', // 黑色描边
+      strokeThickness: 6,
+      shadow: { offsetX: 2, offsetY: 2, color: '#000', blur: 2, stroke: true, fill: true }
+  };
+
+    // 创建蓝队的圆角矩形背景
+    this.blueScoreBg = this.add.graphics();
+    this.blueScoreBg.fillStyle(0x4da2ee, 1); // 背景颜色
+    this.blueScoreBg.fillRoundedRect(560, 25, 140, 40, 20); // 圆角矩形
+
+    // 创建红队的圆角矩形背景
+    this.redScoreBg = this.add.graphics();
+    this.redScoreBg.fillStyle(0xe3170d, 1); // 背景颜色
+    this.redScoreBg.fillRoundedRect(120, 25, 140, 40, 20); // 圆角矩形
+
+    // 添加计分文本
+    this.blueScoreTextVolleyball = this.add.text(630, 26, 'Blue: 0', scoreTextStyle).setOrigin(0.5, 0);
+    this.redScoreTextVolleyball = this.add.text(190, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
+
   
     //listen for currentPlayers and self
     this.socket.on('currentPlayers_volley', function (players) {
@@ -95,6 +121,7 @@ class Volleyball extends Phaser.Scene {
     });
 
     this.socket.on('scoreUpdate_volley', function (scores) {
+      self.yay.play();
       self.blueScoreTextVolleyball.setText(`Blue: ${scores.blueScore}`);
       self.redScoreTextVolleyball.setText(`Red: ${scores.redScore}`);
     });
@@ -105,19 +132,47 @@ class Volleyball extends Phaser.Scene {
     this.rightKeyPressed = false;
     this.upKeyPressed = false;
 
+
+
     const centerX = this.scale.width * 0.5;
-    this.volley_gameOverText = this.add.text(centerX, 150, "", {
-      fill: "#000000",
-      fontFamily: 'Arial',
-      fontSize: "50px"
-    }).setOrigin(0.5, 0);
-  
+    const centerY = this.scale.height * 0.5;
+
+    // 创建胜利文本样式
+    const style = {
+        font: '50px Pixelated', // 更具游戏感的字体
+        fill: '#ffffff', // 更鲜艳的颜色
+        stroke: '#000000', // 黑色描边
+        strokeThickness: 5, // 描边的粗细
+        shadow: { offsetX: 3, offsetY: 3, color: '#333', blur: 5, stroke: true, fill: true }
+    };
+
+    // 创建胜利文本，并初始化为隐藏
+    this.volley_gameOverText = this.add.text(centerX, centerY, '', style).setOrigin(0.5, 0.5).setVisible(false);
+
     this.socket.on('gameOver_volley', function(team) {
-      self.volley_gameOverText.setText(team + " Won")
-      self.socket.emit('')
+          if (team === 'red') {
+            self.volley_gameOverText.setFill('#ff0000');
+        } else if (team === 'blue') {
+            self.volley_gameOverText.setFill('#0000ff');
+        }
+        // 设置文本内容
+        self.volley_gameOverText.setText(team + " Won").setVisible(true);
+
+        // 添加一个简单的动画效果
+        self.tweens.add({
+            targets: self.volley_gameOverText,
+            scale: { from: 1, to: 1.5 },
+            alpha: { start: 0, to: 1 },
+            yoyo: true,
+            repeat: 5,
+            ease: 'Power1',
+            duration: 800
+        });
     });
+
   
     this.socket.on('stopVolleyballScene', () => {
+      self.volley_bgm.stop();
       self.socket.emit("enableButtonsafterScene")
       self.scene.stop("Volleyball");
     });

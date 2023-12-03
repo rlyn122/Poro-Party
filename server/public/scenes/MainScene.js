@@ -17,11 +17,19 @@ class MainScene extends Phaser.Scene {
         this.load.spritesheet("cat8", "assets/cats/Cat_8.png", {frameWidth:250, frameHeight:184});
 
         //load background
-        this.load.image("bg","assets/lobby.jpg");
         this.load.image('lobbyground', 'assets/dodgeball/lobbyground.png');
+        this.load.image('p1', 'assets/platform1.png');
+        this.load.image('p2', 'assets/platform2.png');
+        this.load.image('p3', 'assets/platform3.png');
 
         //sounds
         this.load.audio('main_bgm', 'assets/sounds/minecraft.mp3');
+
+        //background
+        for (let i = 0; i <= 238; i++) {
+          let frameNumber = i.toString().padStart(3, '0');
+          this.load.image(`gif_frame_${i}`, `assets/gif_frames/frame_${frameNumber}_delay-0.04s.png`);
+      }
     }
 
     create() {
@@ -45,18 +53,38 @@ class MainScene extends Phaser.Scene {
        });
 
         //add background
-        this.add.image(0,0,"bg").setOrigin(0);
+        let frames = [];
+        for (let i = 0; i <= 238; i++) {
+            frames.push({ key: 'gif_frame_' + i });
+        }
+        
+        this.anims.create({
+            key: 'gif_animation',
+            frames: frames,
+            frameRate: 25,  //取决于您的GIF的帧率
+            repeat: -1  //无限循环
+        });
+        
+        let gifSprite = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, 'gif_frame_0');
+        gifSprite.setScrollFactor(0);
+        gifSprite.setScale(1.4);
+        gifSprite.setDepth(-100);  // 确保GIF背景位于其他游戏元素的后面
+        gifSprite.play('gif_animation');
+
+        //platforms
         this.add.image(400, 600, 'lobbyground').setScale(2).setTint(0); 
-        this.add.image(100,450,'lobbyground').setScale(0.3);
-        this.add.image(500,300,'lobbyground').setScale(0.3);
-        this.add.image(600,200,'lobbyground').setScale(0.3);
-        this.add.image(300,350,'lobbyground').setScale(0.3);     
+        this.add.image(450,450,'p1').setScale(0.1);
+        this.add.image(700,375,'p1').setScale(0.1);
+        this.add.image(500,300,'p3').setScale(0.1);
+        this.add.image(600,200,'p2').setScale(0.1);
+        this.add.image(300,350,'p2').setScale(0.1);  
         
         //play bgm in loop
         this.main_bgm = this.sound.add('main_bgm');
         this.main_bgm.play({
             loop: true
         });
+        this.main_bgm.volume = 1;
 
         //listen for currentPlayers and self
         this.socket.on('currentPlayers', function (players) {
@@ -91,10 +119,12 @@ class MainScene extends Phaser.Scene {
           }).setVisible(false); // Initially hidden
             //disable game buttons while gameactive 
             self.socket.on('disableButtons',()=>{
+              self.main_bgm.volume = 0;
               disableButtons(self)
             });
 
             self.socket.on('enableButtons',()=>{
+              self.main_bgm.volume = 1;
               enableButtons(self)
             });
           });
@@ -269,23 +299,21 @@ function enableButtons(self) {
 // Function to create a button
 function createButton(scene, x, y, text, gameName,socket) {
   // Create the text element
-  let buttonText = scene.add.text(x, y, text, {
-      fill: "#FFFFFF",
-      font: '20px Pixelated', 
+  let buttonText = scene.add.text(x+100, y+15, text, {
+      fill: "#ffffff",
+      font: '20px GameFont', 
       fontStyle: "bold",
-      backgroundColor: "#FFA500", // Example background color
-      padding: {
-          left: 10,
-          right: 10,
-          top: 5,
-          bottom: 5
-      }
-  }).setInteractive();
+      stroke: '#000000', // 黑色描边
+      strokeThickness: 3,
+  }).setOrigin(0.5, 0.5).setInteractive();
 
   // Create a background rectangle (optional: rounded corners)
-  let background = scene.add.rectangle(buttonText.x, buttonText.y, buttonText.width, buttonText.height, 0xFFA500)
-                   .setOrigin(0, 0)
-                   .setInteractive();
+  let background = scene.add.graphics();
+    background.fillStyle(0xD87968, 1); // 设置背景颜色
+    background.fillRoundedRect(x, y, 200, 30, 15); // 创建圆角矩形
+  let hitArea = new Phaser.Geom.Rectangle(x, y, 200, 50);
+  background.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
+
 
   // Move the text in front of the rectangle
   buttonText.setDepth(1);

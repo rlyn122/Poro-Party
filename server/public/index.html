@@ -1,9 +1,49 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8">
-    </head>
+<head>
+    <meta charset="utf-8">
+    <title>Poro Party</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        canvas {
+            display: block; /* 保持 canvas 的自然大小 */
+        }
+
+        /* 霓虹边框效果 */
+        .neon-border {
+            border: 3px solid #00f3ff;
+            box-shadow: 0 0 15px #00f3ff, inset 0 0 15px #00f3ff;
+        }
+
+        /* 霓虹文字效果 */
+        .neon-text {
+            color: #00f3ff;
+            text-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #ff00ff, 0 0 20px #ff00ff;
+        }
+
+        /* 页脚样式 */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.7);
+            font-size: 16px;
+            color: #fff;
+        }
+    </style>
+</head>
+
 
     <body>
         <!--Phaser Library-->

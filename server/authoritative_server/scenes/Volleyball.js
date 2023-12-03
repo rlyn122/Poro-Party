@@ -31,18 +31,13 @@ class Volleyball extends Phaser.Scene {
     const self = this;
     this.players = this.add.group();
     this.balls = this.add.group();
+    this.gameOver_byDefault = false;
     this.blueScore = 0;
     this.redScore = 0;
     console.log("Serverside Volleyball Running")
 
-  //add players to this scene
-  for(const playerId in players) {
-    var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
-    var yPos = self.game.config.height - 100
-    players[playerId].y = yPos
-    players[playerId].x = randomX
-    addPlayer(this, players[playerId])
-  }
+    // incrementing player count
+    this.playerCountVolleyball = Object.keys(players).length;
 
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     socket.on('volleyInput', function (inputData) {
@@ -63,6 +58,37 @@ class Volleyball extends Phaser.Scene {
       }
       });
   }
+    // Start game timer (10 minutes in milliseconds)
+    this.gameStartTimeVolleyball = Date.now();
+    this.gameDurationVolleyball = 10 * 60 * 1000; // 10 minutes
+
+    //add players to this scene
+    for(const playerId in players) {
+      var randomX = Math.random() * self.game.config.width //set the cats at random y position and standard x position
+      var yPos = self.game.config.height - 100
+      players[playerId].y = yPos
+      players[playerId].x = randomX
+      addPlayer(this, players[playerId])
+      console.log(this.playerCountVolleyball)
+    }
+
+    for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
+      socket.on('volleyInput', function (inputData) {
+        handlePlayerInput(self, id, inputData);
+      })
+      socket.on('disconnect', function () {
+        // remove player from server
+        removePlayer(self,id);
+        self.playerCountVolleyball--
+        console.log(self.playerCountVolleyball)
+        // remove this player from our players object
+        delete players[id];
+        console.log("Player Disconnected from Volleyball")
+
+        // emit a message to all players to remove this player
+        io.emit('disconnect_volleyball', id);
+        });
+    }
 
     //adding platforms to the game
     this.platforms = this.physics.add.staticGroup();
@@ -87,7 +113,7 @@ class Volleyball extends Phaser.Scene {
     });
 
      // Adding collision between ball and ground
-     this.physics.add.collider(this.ball, this.ground, function (ball, ground) {
+    this.physics.add.collider(this.ball, this.ground, function (ball, ground) {
       // Check for scoring when the ball touches the ground
       if (ball.x < 400) {
         // Blue side scores
@@ -140,15 +166,13 @@ class Volleyball extends Phaser.Scene {
         this.io.emit("currentPlayers_volley", self.initialPlayers)
       }
     });
-
-
   }
   
   update() {
   
     if (this.gameFrozen) {
       return;
-  }
+    }
 
     const speed = 250
     //constantly emit each player's position/animation
@@ -190,7 +214,7 @@ class Volleyball extends Phaser.Scene {
     //emit ball positions
     io.emit('ballUpdates', {ball_x,ball_y})
 
-    if(getVolleyballWinner(this.blueScore, this.redScore) != null) {
+    if(getVolleyballWinner(this.blueScore, this.redScore) != null || this.gameOver_byDefault) {
       io.emit('gameOver_volley', getVolleyballWinner(this.blueScore, this.redScore));
   
       let countdown = 5;
@@ -203,6 +227,17 @@ class Volleyball extends Phaser.Scene {
           this.scene.stop("Volleyball");
         }
       }, 300);
+    }
+
+    if (this.playerCountVolleyball == 0) {
+      endGameSoccer(this,"No players in the room");
+      return;
+    }
+
+    // Check if game time exceeded 10 minutes
+    if (Date.now() - this.gameStartTime > this.gameDuration) {
+      endGameSoccer(this,"Time limit reached");
+      return;
     }
   }
   }
@@ -226,4 +261,10 @@ class Volleyball extends Phaser.Scene {
     else{
       return null;
     }
+  }
+
+  function endGameVolleyball(self,reason) {
+    console.log("Game Ended:", reason);
+    // Implement logic to end the game, e.g., emitting an event to players
+    self.gameOver_byDefault = true;
   }
