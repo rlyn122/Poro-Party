@@ -61,6 +61,7 @@ class Soccer extends Phaser.Scene {
         handlePlayerInput(self, id, inputData);
         })
       socket.on('disconnect', function () {
+        try{
         // remove player from server
         removePlayer(self, id);
         console.log(self.playerCountSoccer)
@@ -70,6 +71,9 @@ class Soccer extends Phaser.Scene {
         delete players[id];
         // emit a message to all players to remove this player
         io.emit('disconnect_soccer', id);
+        }catch(error){
+          console.log("error")
+        }
         });
   }
     

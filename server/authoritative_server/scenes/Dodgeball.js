@@ -155,9 +155,9 @@ create() {
       callback: () => {
           this.gameFrozen = false;
           // Restore ball physics
-          this.ball.setVelocity(300, 300);
-          this.ball2.setVelocity(300, 300);
-          this.ball3.setVelocity(300, 300);
+          this.ball.setVelocity(200, 200);
+          this.ball2.setVelocity(200, 200);
+          this.ball3.setVelocity(200, 200);
           // 10 seconds before player can be killed
           for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
             if(players[id]){
