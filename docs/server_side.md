@@ -16,9 +16,6 @@ The code running on the server side is all contained in the `authoritative_serve
 ## scenes/
 The folder contains all the seperate Java Script files that run at different times on the webpage. The three files that contain the minigames have large sections of code that are very similar to each other. In addition to this, the Phaser 3 base functions, NodeJS sockets, and some shared variables are present. These similar chunks and variables will be covered in three sections, before expanding on the code that is unique to each. More information about Phaser 3 documentation can be found here: https://newdocs.phaser.io/docs/3.54.0/
 
-### Login.js
-
-
 ### Shared Variables
 
 `players` - Array object to store the data on all clients, of each player, currently connected to the server; shared to all the minigame files. Contains the following properties:
@@ -36,7 +33,7 @@ The folder contains all the seperate Java Script files that run at different tim
 
 `gameActive` - Variable to track the status of whether a minigame is in progress
 
-`this.players` - Seperate from the `players` object defined before, this is a group kept by Phaser 3 to keep track of a specific class of sprites
+`this.players` - Seperate from the `players` object defined before, this is a group defined using Phaser 3 to keep track of a specific class of sprites
 
 ### Phaser 3 Functions
 
@@ -50,7 +47,7 @@ The folder contains all the seperate Java Script files that run at different tim
 
 `load.x(name, location, (optional: size))` - Loads external content such as spritesheets, background images, and sprites, using a `location` from the project directory
 
-`n.create(x, y, asset).refreshBody()` - Creates a member of group `n` at position `x,y` using the image `asset`
+`n.create(x, y, asset)` - Creates a member of group `n` at position `x,y` using the image `asset`
 
 `n.setScale(x, (optional: y = x))` - Sets the horizontal scale of the object to `x` and if the vertical scale is given, then it will set it to `y`, else both will be set to `x`
 
@@ -84,7 +81,7 @@ The folder contains all the seperate Java Script files that run at different tim
 
 `n.body.allowGravity` - Boolean that determines whether an object `n` is affected by gravity, `false` if they are not, `true` if they are, the latter of which is the default
 
-`n.destroy()` - Deletes the given sprite from the screen
+`n.destroy()` - Deletes the given sprite `n` from the screen
 
 `game.config.width` - Variable containing the width initially set by the configuration
 
