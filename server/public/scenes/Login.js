@@ -42,8 +42,8 @@ class Login extends Phaser.Scene {
           fontStyle: "bold",
         });
         
+        //add html codeform into the scene which contains login boxes
         scene.inputElement = this.add.dom(300, 250).createFromCache("codeform");
-
 
         const form = document.getElementById('roomForm');
 

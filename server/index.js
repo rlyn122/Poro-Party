@@ -8,12 +8,15 @@ const { JSDOM } = jsdom;
 const Datauri = require('datauri');
 const datauri = new Datauri();
 
+//server public files 
 app.use(express.static(__dirname + '/public'));
 
+//serve client-side html
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+//uses jsdom to create an instance of phaser on the server by serving serverside html
 function setupAuthoritativePhaser() {
   JSDOM.fromFile(path.join(__dirname, 'authoritative_server/index.html'), {
     // To run the scripts in the html file

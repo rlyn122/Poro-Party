@@ -241,6 +241,7 @@ class Soccer extends Phaser.Scene {
 
   }
 }
+
 function getSoccerWinner(blueScore, redScore) {  
   if (blueScore == 5) {
     return "Blue"
