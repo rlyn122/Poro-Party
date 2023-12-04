@@ -6,9 +6,12 @@
 - Ryan Lin
 - William Hao
 - Yoyo Wang
+
 # Overview
-Our goal with Poro Party is to create a fun, web-based multiplayer game to be played on the web by a desktop/laptop. The theme of our game revolves around players controlling cats in a variety of small sport-based minigames, such as dodgeball, soccer, and volleyball. We used the Phaser 3 HTML framework as the basis for the game, and coupled it with the NodeJS environment so the game can be played across seperate connections. 
-https://poro-party-9062755d3ce0.herokuapp.com/
+Our goal with Poro Party is to create a fun and easy-to-play web-based multiplayer game meant to be played on the laptop. The theme of our game revolves around players controlling cats in a variety of small sport-based minigames, such as dodgeball, soccer, and volleyball. We used the Phaser 3 game engine, and it runs on the client and the server-side. Next, we used websockets to communicate between clients and server, and finally the NodeJS server is hosted by heroku. You can also run our project's server locally and use localhost to test our game!
+
+Check out our deployment at this link: https://poro-party-9062755d3ce0.herokuapp.com/
+
 # Project Proposal
 https://docs.google.com/presentation/d/1aZ9yOpoReOecFn-jpxjH4Wdg6dpP9F-nJDOlZVY2IGU/edit?usp=sharing
 # Project Demo Video
