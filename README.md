@@ -21,3 +21,6 @@ https://docs.google.com/presentation/d/1aZ9yOpoReOecFn-jpxjH4Wdg6dpP9F-nJDOlZVY2
 
 # Project Demo Video
 Coming soon!
+
+# Project Installation, User Guide, and other Documentation
+Please visit the ~/docs directory to read more

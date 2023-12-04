@@ -11,6 +11,7 @@ class Dodgeball extends Phaser.Scene {
   }
 
 preload() {
+  //load sprites
   this.load.spritesheet("cat1", "assets/cats/Cat_1.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat2", "assets/cats/Cat_2.png", {frameWidth:250, frameHeight:184});
   this.load.spritesheet("cat3", "assets/cats/Cat_3.png", {frameWidth:250, frameHeight:184});
@@ -56,7 +57,7 @@ create() {
     console.log(this.playerCountDodgeball)
   }
 
-
+  //create socket listeners for players in new scene
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     
     socket.on('dodgeInput', function (inputData) {
@@ -126,6 +127,7 @@ create() {
     hitDodgeball(player, ball3);
   });
 
+  //ad physics colliders
   this.physics.add.collider(this.platforms, this.ball)
   this.physics.add.collider(this.platforms, this.ball2)
   this.physics.add.collider(this.platforms, this.ball3)
@@ -135,14 +137,13 @@ create() {
   this.physics.add.collider(this.ball3, this.ball2)
   this.physics.add.collider(this.players, this.players)
 
-  // 10 seconds before player can be killed
+  // 10 seconds before player can be killed make them alive
   for (let [id, socket] of Object.entries(this.io.sockets.connected)) {
     if(players[id]){
     players[id].alive = 'alive';
     }
   }
 
-  
   // Initialize game as frozen
   this.gameFrozen = true;
   this.ball.setVelocity(0, 0);
@@ -178,14 +179,13 @@ create() {
         this.io.emit("currentPlayers_dodge", self.initialPlayers)
       }
     });
-
 }
 
 update() {
 
   if (this.gameFrozen) {
     return;
-}
+  }
 
   const speed = 250
   //constantly emit each player's position/animation
@@ -221,6 +221,7 @@ update() {
     }
 
   });
+
   //emit player positions
   io.emit('playerUpdates_dodge', players);
 
@@ -236,7 +237,7 @@ update() {
   io.emit('ballUpdates2', {ball2_x,ball2_y})
   io.emit('ballUpdates3', {ball3_x,ball3_y})
 
-
+  //check winner function, if winner found emit the event to stop the scene
   if(!(getWinnerName() === null) || this.gameOver_byDefault) {
     io.emit('gameOver_Dodge', getWinnerName());
 
@@ -310,6 +311,7 @@ function hitDodgeball(player, ball) {
   
 }
 
+//checks winner and returns their name 
 function getWinnerName() {
   let left = 0;
   sockets = Object.keys(players);
@@ -334,6 +336,7 @@ function getWinnerName() {
   return null;
 }
 
+//ends the game by default by setting gameOver to true
 function endGameDodgeball(self,reason) {
   console.log("Game Ended:", reason);
   // Implement logic to end the game, e.g., emitting an event to players

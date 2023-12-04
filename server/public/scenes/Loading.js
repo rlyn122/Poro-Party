@@ -50,7 +50,7 @@ class Loading extends Phaser.Scene {
 
         // Create a timed event to update the text
         scene.time.addEvent({
-            delay: 1000, // Delay in ms (500ms here)
+            delay: 1000, // 1000ms delay
             callback: () => {
                 dots += '.';
                 if (dots.length > 3) {
@@ -66,7 +66,7 @@ class Loading extends Phaser.Scene {
         // Create the walking animation
         scene.anims.create({
             key: 'walk',
-            frames: scene.anims.generateFrameNumbers('cat4', { start: 0, end: 3 }), // Adjust frame numbers according to your spritesheet
+            frames: scene.anims.generateFrameNumbers('cat4', { start: 0, end: 3 }), 
             frameRate: 5,
             repeat: -1 // This will loop the animation
         });
