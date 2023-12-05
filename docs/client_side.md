@@ -8,17 +8,17 @@ The code running on the client side is all contained in the `public/` directory
 `index.html` is the .html file that the client is given to run on the page
 
 ## assets/
-`assets/` contains all of the sprites, used by their specific games, as well as all of the different cat sprites, that are seen on the server side
+`assets/` contains all of the sprites, used by their specific games, as well as all of the different cat sprites, that are seen on the server side. It also contains `codeform.html` which allows players to input their username and their chosen cat sprite and place it into the `players` object server-side.
 
 ### letters
 `letters/` contains the images of the letters that make up the **PORO PARTY** on the login page
 
 ## scenes/
-The folder contains all the seperate Java Script files that run at different times on the webpage. The three files that contain the minigames have large sections of code that are very similar to each other. In addition to this, the Phaser 3 base functions, NodeJS sockets, and some shared variables are present. These similar chunks and variables will be covered in three sections, before expanding on the code that is unique to each. More information about Phaser 3 documentation can be found here: https://newdocs.phaser.io/docs/3.54.0/
+The folder contains all the seperate Java Script files that run at different times on the webpage. The three files that contain the minigames have large sections of code that are very similar to each other. In addition to this, the Phaser 3 base functions and NodeJS sockets. The rules for all the games are also coded very similar, so they will be covered in one section. More information about Phaser 3 documentation can be found here: https://newdocs.phaser.io/docs/3.54.0/
 
 ### Phaser 3 Functions
 
-`this.players` - Group defined using Phaser 3 to keep track of a specific class of sprites
+`this.players` - Group defined using Phaser 3 to keep track of a specific class of sprites, those that are used by the players
 
 `constructor()` - Function required by Phaser 3 to setup Scene subclass
 
@@ -31,6 +31,8 @@ The folder contains all the seperate Java Script files that run at different tim
 `load.x(name, location, (optional: size))` - Loads external content such as spritesheets, background images, and sprites, using a `location` from the project directory
 
 `anims.create(config)` - Creates a new animation with the desired `config`
+
+`anims.play(name, value)` - Changes the animation of the current sprite `name` to either value `true`, to turn on the animation, or `false`, to stop the animation
 
 `sound.add(name)` - Creates an instance of the sound object with name `name`
 
@@ -75,14 +77,6 @@ The folder contains all the seperate Java Script files that run at different tim
 `new Phaser.Geom.Rectangle(x, y, w, h)` - Creates an instance of the rectangle class, with position `x, y` and width `w` and height `h`
 
 `text.setStyle(style)` - Sets the style of a given text object `text` to `style`
-
-`createButton()` - 
-
-`sound()` - 
-
-`sound.context()` - 
-
-`sound.context.state()` - 
 
 ### Socket.io Functions
 
@@ -140,8 +134,163 @@ The folder contains all the seperate Java Script files that run at different tim
 
 `addUsernameTeam(player, scene, playerInfo, teamColor)` - Shows the team of the given `player` to them in the specified `scene` using the username that is given in the `playerInfo` object and the color by `teamColor`
 
-`setUsername_Pos()` - 
+`setUsername_Pos(player, posX, posY)` - Positions the username of the `player` at a position above the given sprite at the center
 
-`disableButtons()` - 
+`disableButtons(self)` - Disables the game buttons on the specified scene `self`
 
-`setPosition()` - 
+`createButtons(scene, x, y, text, gameName, socket)` - 
+Creates a button on the specified scene `scene` at position `x, y`, with the specified `text` using the given `gameName` and the `socket` where the signal can be emitted from
+
+### Loading.js
+
+`this.letters()` - Group defined using Phaser 3 that contains the letters that are used in the loading screen
+
+`letterx` - Integer variable containing the initial starting x-position of the letters that will be shown during the loading screen
+
+`lettery` - Integer variable containing the initial starting x-position of the letters that will be shown during the loading screen
+
+`dots` - String variable containing the dots that show up during the loading screen
+
+`catSprite` - Sprite object containg the sprite animation used for the loading screen
+
+### Login.js
+
+`scene.popUp` - Graphics object containing the login popup that occurs when entering the web page
+
+`scene.boxes` - Graphics object containing the box that will contain the rest of the text used for the login page
+
+`scene.titleImage` - Image object that indicates where the text for the title will be placed
+
+`JoinRoomButton` - Text object that indicates to the user how to join the room
+
+`inputElement` - DOM (Document Object Model) object defined with Phaser 3 that contains the html provided by `codeform.html`
+
+`form` - Form element that is placed in the document using `codeform.html`
+
+`notValidText` - Text object to indicate to the user that the username they entered is not valid
+
+### Dodgeball.js
+
+`this.players()` - Game object group that contains the players that are seen on screen
+
+`dodge_bgm` - Sound object created for the dodgeball game when the players enter
+
+`ball` - Game object created for the "earth" ball
+
+`ball2` - Game object created for the "mars" ball
+
+`ball3` - Game object created for the "saturn" ball
+
+`leftKeyPressed` - Boolean that is set to the value of the client's left arrow key status, `true` if it is pressed, else `false`
+
+`rightKeyPressed` - Boolean that is set to the value of the client's right arrow key status, `true` if it is pressed, else `false`
+
+`upKeyPressed` - Boolean that is set to the value of the client's up arrow key status, `true` if it is pressed, else `false`
+
+`centerX` - Double variable containing the x-position of the center of the screen
+
+`centerY` - Double variable containing the y-position of the center of the screen
+
+`gameOverTextStyle` - Style object that has the styling for the text that indicates to the user that the game is over
+
+`left` - Boolean that contains the current state of the player's left arrow key, so it can be used for the rest of the `update()` function 
+
+`right` - Boolean that contains the current state of the player's right arrow key, so it can be used for the rest of the `update()` function
+
+`up` - Boolean that contains the current state of the player's up arrow key, so it can be used for the rest of the `update()` function
+
+`displayPlayers(self, playerInfo, sprite)` - Displays players to the given scene `self` using information like x- and y-positions from `playerInfo`, with the given sprite object `sprite`
+
+### Soccer.js
+
+`this.players()` - Game object group that contains the players that are seen on screen
+
+`yay` - Sound object that plays when a team scores a goal
+
+`ball` - Game object that is used in the game as the soccer ball
+
+`blueScoreBg` - Graphics object indicating where the blue team's score will be shown
+
+`redScoreBg` - Graphics object indicating where the red team's score will be shown
+
+`blueScoreTextSoccer` - Text object showing the blue team's score
+
+`redScoreTextSoccer` - Text object showing the red team's score
+
+`leftKeyPressed` - Boolean that is set to the value of the client's left arrow key status, `true` if it is pressed, else `false`
+
+`rightKeyPressed` - Boolean that is set to the value of the client's right arrow key status, `true` if it is pressed, else `false`
+
+`upKeyPressed` - Boolean that is set to the value of the client's up arrow key status, `true` if it is pressed, else `false`
+
+`centerX` - Double variable containing the x-position of the center of the screen
+
+`centerY` - Double variable containing the y-position of the center of the screen
+
+`style` - Style object containing the CSS styling for the `soc_gameOverText`
+
+`soc_gameOverText` - Text object showing the winner of the game
+
+`left` - Boolean that contains the current state of the player's left arrow key, so it can be used for the rest of the `update()` function 
+
+`right` - Boolean that contains the current state of the player's right arrow key, so it can be used for the rest of the `update()` function
+
+`up` - Boolean that contains the current state of the player's up arrow key, so it can be used for the rest of the `update()` function
+
+`displayPlayersTeam(scene, playerInfo, sprite)` - Changes the username from the given `playerInfo` in the scene so that their `sprite` has a different username above them based on their team
+
+### Volleyball.js
+
+`this.players()` - Game object group that contains the players that are seen on screen
+
+`yay` - Sound object that plays when a team scores a point
+
+`volley_bgm` - Sound object that plays during the whole volleyball game
+
+`ball` - Game object that is used in the game as the volleyball
+
+`scoreTextStyle` - The CSS styling used for the text that shows the game score
+
+`blueScoreBg` - Graphics object indicating where the blue team's score will be shown
+
+`redScoreBg` - Graphics object indicating where the red team's score will be shown
+
+`blueScoreTextVolleyball` - Text object showing the blue team's score
+
+`redScoreTextVolleyball` - Text object showing the red team's score
+
+`leftKeyPressed` - Boolean that is set to the value of the client's left arrow key status, `true` if it is pressed, else `false`
+
+`rightKeyPressed` - Boolean that is set to the value of the client's right arrow key status, `true` if it is pressed, else `false`
+
+`upKeyPressed` - Boolean that is set to the value of the client's up arrow key status, `true` if it is pressed, else `false`
+
+`centerX` - Double variable containing the x-position of the center of the screen
+
+`centerY` - Double variable containing the y-position of the center of the screen
+
+`style` - Style object containing the CSS styling for the `volley_gameOverText`
+
+`volley_gameOverText` - Text object showing the winner of the game
+
+`left` - Boolean that contains the current state of the player's left arrow key, so it can be used for the rest of the `update()` function 
+
+`right` - Boolean that contains the current state of the player's right arrow key, so it can be used for the rest of the `update()` function
+
+`up` - Boolean that contains the current state of the player's up arrow key, so it can be used for the rest of the `update()` function
+
+### Rules_X.js
+
+`scene.popUp` - Graphics object containing the rules popup that occurs when entering the game
+
+`scene.boxes` - Graphics object containing the box that will contain the rest of the text used for the rules popup
+
+`rulesText` - Text object containing the rules for the game
+
+`rules` - Array of strings containing the rules for the game
+
+`rulesList` - CSS styling for the rules of the game
+
+`timerText` - Text object containing the timer showing the amount of time left before the game starts
+
+`timerInterval` - Interval object that counts down and incrementally changes the seconds displayed in `timerText`
