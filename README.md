@@ -20,7 +20,7 @@ Once you go to the link, you can enter a username, select a cat, and hit enter. 
 https://docs.google.com/presentation/d/1aZ9yOpoReOecFn-jpxjH4Wdg6dpP9F-nJDOlZVY2IGU/edit?usp=sharing
 
 # Project Demo Video
-Coming soon!
+https://www.youtube.com/watch?v=hZsyl4SV3jQ
 
 # Project Installation, User Guide, and other Documentation
 Please visit the ~/docs directory to read more
