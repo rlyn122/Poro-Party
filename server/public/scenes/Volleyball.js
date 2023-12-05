@@ -137,16 +137,14 @@ class Volleyball extends Phaser.Scene {
     const centerX = this.scale.width * 0.5;
     const centerY = this.scale.height * 0.5;
 
-    // 创建胜利文本样式
     const style = {
-        font: '50px Pixelated', // 更具游戏感的字体
-        fill: '#ffffff', // 更鲜艳的颜色
-        stroke: '#000000', // 黑色描边
-        strokeThickness: 5, // 描边的粗细
+        font: '50px Pixelated',
+        fill: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 5,
         shadow: { offsetX: 3, offsetY: 3, color: '#333', blur: 5, stroke: true, fill: true }
     };
 
-    // 创建胜利文本，并初始化为隐藏
     this.volley_gameOverText = this.add.text(centerX, centerY, '', style).setOrigin(0.5, 0.5).setVisible(false);
 
     this.socket.on('gameOver_volley', function(team) {
@@ -155,10 +153,8 @@ class Volleyball extends Phaser.Scene {
         } else if (team === 'blue') {
             self.volley_gameOverText.setFill('#0000ff');
         }
-        // 设置文本内容
         self.volley_gameOverText.setText(team + " Won").setVisible(true);
 
-        // 添加一个简单的动画效果
         self.tweens.add({
             targets: self.volley_gameOverText,
             scale: { from: 1, to: 1.5 },

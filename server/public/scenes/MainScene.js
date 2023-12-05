@@ -303,14 +303,14 @@ function createButton(scene, x, y, text, gameName,socket) {
       fill: "#ffffff",
       font: '20px GameFont', 
       fontStyle: "bold",
-      stroke: '#000000', // 黑色描边
+      stroke: '#000000',
       strokeThickness: 3,
   }).setOrigin(0.5, 0.5).setInteractive();
 
   // Create a background rectangle (optional: rounded corners)
   let background = scene.add.graphics();
-    background.fillStyle(0xD87968, 1); // 设置背景颜色
-    background.fillRoundedRect(x, y, 200, 30, 15); // 创建圆角矩形
+    background.fillStyle(0xD87968, 1);
+    background.fillRoundedRect(x, y, 200, 30, 15);
   let hitArea = new Phaser.Geom.Rectangle(x, y, 200, 50);
   background.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
 

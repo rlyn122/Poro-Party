@@ -63,24 +63,22 @@ class Soccer extends Phaser.Scene {
 
 
     const scoreTextStyle = {
-      font: '32px GameFont', // 更具游戏感的字体
-      fill: '#ffffff', // 白色文字
-      stroke: '#000000', // 黑色描边
+      font: '32px GameFont',
+      fill: '#ffffff', 
+      stroke: '#000000', 
       strokeThickness: 6,
       shadow: { offsetX: 2, offsetY: 2, color: '#000', blur: 2, stroke: true, fill: true }
   };
 
-    // 创建蓝队的圆角矩形背景
+
     this.blueScoreBg = this.add.graphics();
-    this.blueScoreBg.fillStyle(0x4da2ee, 1); // 背景颜色
-    this.blueScoreBg.fillRoundedRect(560, 25, 140, 40, 20); // 圆角矩形
+    this.blueScoreBg.fillStyle(0x4da2ee, 1); 
+    this.blueScoreBg.fillRoundedRect(560, 25, 140, 40, 20);
 
-    // 创建红队的圆角矩形背景
     this.redScoreBg = this.add.graphics();
-    this.redScoreBg.fillStyle(0xe3170d, 1); // 背景颜色
-    this.redScoreBg.fillRoundedRect(120, 25, 140, 40, 20); // 圆角矩形
+    this.redScoreBg.fillStyle(0xe3170d, 1);
+    this.redScoreBg.fillRoundedRect(120, 25, 140, 40, 20);
 
-    // 添加计分文本
     this.blueScoreTextSoccer = this.add.text(630, 26, 'Blue: 0', scoreTextStyle).setOrigin(0.5, 0);
     this.redScoreTextSoccer = this.add.text(190, 26, 'Red: 0', scoreTextStyle).setOrigin(0.5, 0);
 
@@ -141,16 +139,15 @@ class Soccer extends Phaser.Scene {
     const centerX = this.scale.width * 0.5;
     const centerY = this.scale.height * 0.5;
 
-    // 创建胜利文本样式
+
     const style = {
-        font: '50px Pixelated', // 更具游戏感的字体
-        fill: '#ffffff', // 更鲜艳的颜色
-        stroke: '#000000', // 黑色描边
-        strokeThickness: 5, // 描边的粗细
+        font: '50px Pixelated',
+        fill: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 5,
         shadow: { offsetX: 3, offsetY: 3, color: '#333', blur: 5, stroke: true, fill: true }
     };
 
-    // 创建胜利文本，并初始化为隐藏
     this.soc_gameOverText = this.add.text(centerX, centerY, '', style).setOrigin(0.5, 0.5).setVisible(false);
 
     this.socket.on('gameOver_soccer', function(team) {
@@ -159,10 +156,8 @@ class Soccer extends Phaser.Scene {
         } else if (team === 'blue') {
             self.soc_gameOverText.setFill('#0000ff');
         }
-        // 设置文本内容
         self.soc_gameOverText.setText(team + " Won").setVisible(true);
 
-        // 添加一个简单的动画效果
         self.tweens.add({
             targets: self.soc_gameOverText,
             scale: { from: 1, to: 1.5 },
