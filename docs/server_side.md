@@ -129,13 +129,6 @@ The folder contains all the seperate Java Script files that run at different tim
 
 `playerCountSoccer` - Integer that is equal to the number of players in the game
 
-`gameStartTimeSoccer` - Integer that 
-
-
-
-
-
-
 `randomX` - Random integer in the bounds of the screen width that will be the x-position of a player
 
 `yPos` - Position to place a player at in the y-direction, 100 pixels above the bottom of the screen

@@ -78,24 +78,6 @@ The folder contains all the seperate Java Script files that run at different tim
 
 `text.setStyle(style)` - Sets the style of a given text object `text` to `style`
 
-`sound()` - 
-
-`sound.context()` - 
-
-`sound.context.state()` - 
-
-`text.setShadow()` - 
-
-`time.addEvent()` - 
-
-`graphics.lineStyle()` - 
-
-`graphics.fillStyle()` - 
-
-`graphics.strokeRect()` - 
-
-`graphics.fillRect()` - 
-
 ### Socket.io Functions
 
 `io.on('connection', function(data))` - Runs a defined `function(data)` upon a new connection occurring from a client
